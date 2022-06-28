@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class KScaffoldScreen extends StatelessWidget {
+  final bool? resizeToAvoidBottomInset;
   final String title;
   final bool? isLeading;
   final List<Widget>? actions;
   final Widget body;
   const KScaffoldScreen(
       {Key? key,
+      this.resizeToAvoidBottomInset,
       required this.title,
       this.isLeading,
       this.actions,
@@ -16,6 +18,7 @@ class KScaffoldScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),

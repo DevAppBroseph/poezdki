@@ -1,7 +1,8 @@
-import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/src/auth/components/social_buttons.dart';
 import 'package:app_poezdka/src/auth/signup.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
+import 'package:app_poezdka/widget/divider/row_divider.dart';
 import 'package:app_poezdka/widget/text_field/custom_password_text_field.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -34,9 +35,9 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Column(
           children: [
             _authForm(),
-            _div(),
+            const KDivider(text: "Войти через"),
             const SocialAuthButtons(),
-            _singInButton(),
+            _singInButton(context),
             _restorePassword(),
             _signUp()
           ],
@@ -62,25 +63,16 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Widget _div() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 30, bottom: 20, left: 25, right: 25),
-      child: Row(children: const <Widget>[
-        Expanded(child: Divider()),
-        Text(
-          "     Войти через     ",
-          style: TextStyle(color: kPrimaryLightGrey),
-        ),
-        Expanded(child: Divider()),
-      ]),
-    );
-  }
+  
 
-  Widget _singInButton() {
+  Widget _singInButton(context) {
+    final authBloc = BlocProvider.of<AuthBloc>(context);
     return FullWidthElevButton(
       margin: const EdgeInsets.fromLTRB(10, 60, 10, 5),
       title: "Войти",
-      onPressed: () {},
+      onPressed: () {
+        authBloc.add(OnDevLogIn());
+      },
     );
   }
 

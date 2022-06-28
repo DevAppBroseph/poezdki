@@ -1,4 +1,6 @@
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/export/blocs.dart';
+import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/auth/components/signup_account_info.dart';
 import 'package:app_poezdka/src/auth/components/signup_personal_info.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
@@ -36,6 +38,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
 
   @override
   Widget build(BuildContext context) {
+    final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
     initializeDateFormatting('ru', null);
     return Scaffold(
       appBar: AppBar(
@@ -112,25 +115,40 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                 FullWidthElevButton(
                   title: currentPage == 1 ? "Зарегистрироваться" : "Далее",
                   onPressed: () {
-                    // if (currentPage == 0 &&
-                    //     _regFormAccount.currentState!.validate()) {
-                    //   setState(() {
-                    //     currentPage++;
-                    //     controller.animateToPage(currentPage++,
-                    //         duration: Duration(seconds: 1),
-                    //         curve: Curves.fastLinearToSlowEaseIn);
-                    //   });
-                    // }
-                    // if (currentPage == 1 &&
-                    //     _regFormPersonal.currentState!.validate()) {
-                    //   ///TODO: Navigate to home screen
-                    // }
-                    setState(() {
-                      currentPage++;
-                      controller.animateToPage(currentPage++,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.fastLinearToSlowEaseIn);
-                    });
+                    if (currentPage == 0 &&
+                        _regFormAccount.currentState!.validate()) {
+                      setState(() {
+                        currentPage++;
+                        controller.animateToPage(currentPage++,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.fastLinearToSlowEaseIn);
+                      });
+                    } else if (currentPage == 1 &&
+                        _regFormPersonal.currentState!.validate()) {
+                      print("start sign up");
+                      authBloc.add(SignUp(
+                          login: email.text,
+                          password: pw.text,
+                          userModel: UserModel(
+                              firstName: name.text,
+                              lastName: surname.text,
+                              gender: selectedGender!,
+                              birth: selectedDate.millisecondsSinceEpoch)));
+                    }
+                    // setState(() {
+                    //   currentPage++;
+                    //   controller.animateToPage(currentPage++,
+                    //       duration: const Duration(seconds: 1),
+                    //       curve: Curves.fastLinearToSlowEaseIn);
+                    // });
+                    // final auth = AuthService();
+                    // auth.signUp(
+                    //     login: "login@mail.ru",
+                    //     password: "123456",
+                    //     firstName: "John",
+                    //     lastName: "Doe",
+                    //     gender: "male",
+                    //     birth: DateTime.now().millisecondsSinceEpoch);
                   },
                 ),
                 InkWell(
@@ -177,15 +195,19 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                   children: [
                     ListTile(
                       onTap: () => setState(() {
-                        selectedGender = "Мужской";
+                        gender.text = "Мужской";
+                        selectedGender = "male";
+                        Navigator.pop(context);
                       }),
-                      title: Text("Мужской"),
+                      title: const Text("Мужской"),
                     ),
                     ListTile(
                       onTap: () => setState(() {
-                        selectedGender = "Женский";
+                        gender.text = "Женский";
+                        selectedGender = "female";
+                        Navigator.pop(context);
                       }),
-                      title: Text("Женский"),
+                      title: const Text("Женский"),
                     ),
                   ],
                 ),

@@ -8,7 +8,7 @@ class SearchRides extends StatelessWidget {
   Widget build(BuildContext context) {
     return KScaffoldScreen(
       title: "Поиск поездок",
-      body: Container(child: Text("Поиск поездок")),
+      body: Center(child: Container(child: Text("Поиск поездок"))),
     );
   }
 }

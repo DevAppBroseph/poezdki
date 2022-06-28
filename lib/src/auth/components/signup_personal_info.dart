@@ -42,7 +42,6 @@ class SignUpPersonalInfo extends StatelessWidget {
             KFormField(
               hintText: 'Ваша Фамилия',
               textEditingController: surname,
-              validateFunction: Validations.validateName,
             ),
             KFormField(
               onTap: onPickGender,
@@ -72,7 +71,6 @@ class SignUpPersonalInfo extends StatelessWidget {
                   ),
                 ],
               ),
-              validateFunction: Validations.validateName,
             ),
             KFormField(
               onTap: onPickDob,

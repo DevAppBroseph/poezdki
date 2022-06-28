@@ -7,7 +7,14 @@ class AppStarted extends AuthEvent {}
 
 class AppInit extends AuthEvent {}
 
-class SignUp extends AuthEvent {}
+class SignUp extends AuthEvent {
+  final String login;
+  final String password;
+  final UserModel userModel;
+
+  SignUp(
+      {required this.login, required this.password, required this.userModel});
+}
 
 class LoggedIn extends AuthEvent {
   final String email;
@@ -19,3 +26,11 @@ class LoggedIn extends AuthEvent {
 class LoggedOut extends AuthEvent {}
 
 class OnBoardComplete extends AuthEvent {}
+
+class AuthError extends AuthEvent {
+  final String? error;
+
+  AuthError(this.error);
+}
+
+class OnDevLogIn extends AuthEvent {}

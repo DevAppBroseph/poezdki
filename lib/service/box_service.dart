@@ -22,7 +22,7 @@ class HiveBoxService {
   bool? firstLaunch() {
     var box = Hive.box(instance.boxName);
     bool? firstLaunch = box.get(_isFirstLaunch);
-    return firstLaunch != null;
+    return firstLaunch;
   }
 
   void setFirstLaunch(bool set) {

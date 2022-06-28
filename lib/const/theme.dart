@@ -8,5 +8,11 @@ ThemeData appTheme = ThemeData(
     elevation: 0,
     centerTitle: false,
   ),
+  cardTheme: CardTheme(
+     shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            
+          ),
+  ),
   primarySwatch: MaterialColor(0xFF22bb9c, kPrimaryMaterialColor),
 );

@@ -39,6 +39,9 @@ dependencies:
   modal_bottom_sheet: ^2.0.1
   smooth_page_indicator: ^1.0.0+2
   persistent_bottom_nav_bar_v2: ^4.2.3
+  flutter_smart_dialog: ^4.5.3+2
+
+  http: ^0.13.4
 
   bloc: ^8.0.3
   flutter_bloc: ^8.0.1

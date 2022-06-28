@@ -1,5 +1,6 @@
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
+import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/intro_slider/slider_page.dart';
@@ -30,6 +31,7 @@ class IntroScreenDefaultState extends State<IntroScreenDefault> {
   int currentPage = 0;
   @override
   Widget build(BuildContext context) {
+    final authBloc = BlocProvider.of<AuthBloc>(context);
     return Scaffold(
       body: SizedBox(
         child: Stack(children: <Widget>[
@@ -43,7 +45,6 @@ class IntroScreenDefaultState extends State<IntroScreenDefault> {
             },
             itemCount: numberOfPages,
             itemBuilder: (BuildContext context, int index) {
-      
               return SliderPage(messages[index], images[index]);
             },
           ),
@@ -82,10 +83,7 @@ class IntroScreenDefaultState extends State<IntroScreenDefault> {
                             curve: Curves.fastLinearToSlowEaseIn);
                       });
                     } else {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => const SignInScreen())));
+                      authBloc.add(OnBoardComplete());
                     }
                   },
                 ),

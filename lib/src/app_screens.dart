@@ -35,7 +35,7 @@ class AppScreens extends StatelessWidget {
                 inactiveColorPrimary: CupertinoColors.systemGrey,
             ),
             PersistentBottomNavBarItem(
-                icon: const Icon(CupertinoIcons.plus),
+                icon: const Icon(CupertinoIcons.plus_circle),
                 title: ("Создать"),
                 activeColorPrimary: kPrimaryColor,
                 inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -84,7 +84,7 @@ class AppScreens extends StatelessWidget {
         // Screen transition animation on change of selected tab.
         animateTabTransition: true,
         curve: Curves.ease,
-        duration: const Duration(milliseconds: 200),
+        duration: Duration(milliseconds: 200),
       ),
       navBarStyle:
           NavBarStyle.style8, // Choose the nav bar style with this property.
