@@ -1,8 +1,7 @@
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
-
+import 'package:intl/date_symbol_data_local.dart';
 import 'create_ride_driver.dart';
 
 class CreateRide extends StatefulWidget {
@@ -14,7 +13,7 @@ class CreateRide extends StatefulWidget {
 
 class _CreateRideState extends State<CreateRide>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<FormState> _mainInfo = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _mainInfo = GlobalKey<FormState>();
   final GlobalKey<FormState> additionalInfo = GlobalKey<FormState>();
   final PageController controller = PageController();
 
@@ -28,66 +27,38 @@ class _CreateRideState extends State<CreateRide>
 
   @override
   Widget build(BuildContext context) {
+     initializeDateFormatting('ru', null);
     return KScaffoldScreen(
-        title: "Создание поездки",
-        body: Stack(
-          children: [
-            Container(
-               padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
-              
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _tabbar(),
-                  Expanded(
-                    child: TabBarView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      controller: _tabController,
-                      children: const [
-                        // first tab bar view widget
-                        Expanded(child: CreateRideDriver()),
-                  
-                        // second tab bar view widget
-                        Center(
-                          child: Text(
-                            'Coming soon...',
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+      resizeToAvoidBottomInset: false,
+      title: "Создание поездки",
+      bottom: _tabbar(),
+      body: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _tabController,
+        children: const [
+          // first tab bar view widget
+          CreateRideDriver(),
+
+          // second tab bar view widget
+          Center(
+            child: Text(
+              'Coming soon...',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: FullWidthElevButton(
-                    title: "Далее",
-                    onPressed: () {},
-                  )),
-            )
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget _tabbar() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      height: 45,
-      decoration: BoxDecoration(
-        color: kPrimaryWhite,
-        borderRadius: BorderRadius.circular(
-          25.0,
-        ),
-      ),
+  PreferredSizeWidget _tabbar() {
+    return PreferredSize(
+      preferredSize: const Size(100, 80),
       child: TabBar(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         onTap: (value) => setState(() {}),
         controller: _tabController,
         splashBorderRadius: BorderRadius.circular(25),
@@ -109,7 +80,7 @@ class _CreateRideState extends State<CreateRide>
               ),
         labelColor: Colors.white,
         unselectedLabelColor: Colors.black,
-        tabs: const[
+        tabs: const [
           // first tab [you can add an icon using the icon property]
           Tab(
             text: 'Пассажир',

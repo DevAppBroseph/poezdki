@@ -13,13 +13,18 @@ class WayPoints extends StatelessWidget {
   final List<TextEditingController> midWays;
   final List<TextEditingController> midwayControllers;
   final Function onAdd;
+  final Function onDelete;
+  final int? midWayIndex;
 
-   WayPoints(
+  const WayPoints(
       {Key? key,
       required this.startWay,
       required this.endWay,
       required this.midWays,
-      required this.onAdd, required this.midwayControllers})
+      required this.onAdd,
+      required this.onDelete,
+      this.midWayIndex,
+      required this.midwayControllers})
       : super(key: key);
 
   @override
@@ -36,62 +41,63 @@ class WayPoints extends StatelessWidget {
           textField: KFormField(
             hintText: "Откуда",
             textEditingController: startWay,
-            suffixIcon: const Icon(
-              Ionicons.locate,
-              color: kPrimaryColor,
-            ),
+            suffixIcon: Image.asset('assets/img/gps.png'),
           ),
         ),
         ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: midWays.length,
             itemBuilder: (context, int index) => _wayPoint(
+                  onDelete: () {},
                   type: WaypointType.middle,
                   textField: KFormField(
                     hintText: "Куда",
                     textEditingController: midwayControllers[index],
-                    suffixIcon: const Icon(
-                      Ionicons.locate,
-                      color: kPrimaryColor,
-                    ),
+                    suffixIcon: Image.asset('assets/img/gps.png'),
                   ),
                 )),
-        _wayPoint(
-          type: WaypointType.empty,
-          textField: Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-                onPressed: onAdd as void Function(),
-                icon: const Icon(
-                  Icons.add_circle_outline,
-                  color: kPrimaryWhite,
+        midWays.length < 3
+            ? _wayPoint(
+                type: WaypointType.empty,
+                textField: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton.icon(
+                      onPressed: onAdd as void Function(),
+                      icon: const Icon(
+                        Icons.add_circle_outline,
+                        color: kPrimaryWhite,
+                      ),
+                      label: const Text(
+                        "Промежуточное место",
+                        style: TextStyle(
+                            color: kPrimaryDarkGrey,
+                            fontWeight: FontWeight.w300),
+                      )),
                 ),
-                label: const Text(
-                  "Промежуточное место",
-                  style: TextStyle(
-                      color: kPrimaryDarkGrey, fontWeight: FontWeight.w300),
-                )),
-          ),
-        ),
+              )
+            : const SizedBox(
+                height: 10,
+              ),
         _wayPoint(
           type: WaypointType.end,
           textField: KFormField(
             hintText: "Куда",
             textEditingController: endWay,
-            suffixIcon: const Icon(
-              Ionicons.locate,
-              color: kPrimaryColor,
-            ),
+            suffixIcon: Image.asset('assets/img/gps.png'),
           ),
         ),
       ],
     );
   }
 
-  Widget _wayPoint({required WaypointType type, required Widget textField}) {
+  Widget _wayPoint(
+      {required WaypointType type,
+      required Widget textField,
+      Function? onDelete}) {
     return Container(
-        margin: type == WaypointType.middle ? EdgeInsets.only(top: 10) : null,
+        margin:
+            type == WaypointType.middle ? const EdgeInsets.only(top: 10) : null,
         height: 60,
         alignment: Alignment.center,
         child: Row(
@@ -103,7 +109,7 @@ class WayPoints extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   // color: Colors.grey,
                   width: 60,
                   height: 55,
@@ -117,7 +123,15 @@ class WayPoints extends StatelessWidget {
                 child: Padding(
               padding: const EdgeInsets.only(left: 20),
               child: textField,
-            ))
+            )),
+            // type == WaypointType.middle
+            //     ? IconButton(
+            //         onPressed: onDelete as void Function()?,
+            //         icon: Icon(
+            //           Icons.cancel,
+            //           color: Colors.red,
+            //         ))
+            //     : const SizedBox()
           ],
         ));
   }
@@ -131,12 +145,8 @@ class WayPoints extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            const Icon(
-              FontAwesome5Regular.dot_circle,
-              size: 35,
-              color: kPrimaryColor,
-            ),
-            DivEnd()
+            Image.asset('assets/img/way_from.png'),
+            const DivEnd()
           ],
         );
 
@@ -144,11 +154,9 @@ class WayPoints extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            DivStart(),
-            const Icon(
-              Ionicons.md_location_sharp,
-              size: 40,
-              color: kPrimaryColor,
+            const DivStart(),
+            Image.asset(
+              'assets/img/location.png',
             ),
             const SizedBox(
               height: 5,
@@ -157,19 +165,18 @@ class WayPoints extends StatelessWidget {
         );
 
       case WaypointType.empty:
-        return DivMiddle();
+        return const DivMiddle();
 
       case WaypointType.middle:
         return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            DivStart(),
-            const Icon(
-              Ionicons.md_location_sharp,
-              size: 30,
-              color: kPrimaryColor,
+            const DivStart(),
+            Image.asset(
+              'assets/img/location.png',
+              scale: 1.2,
             ),
-            DivEnd(),
+            const DivEnd(),
           ],
         );
 
@@ -181,6 +188,4 @@ class WayPoints extends StatelessWidget {
         );
     }
   }
-
-  
 }

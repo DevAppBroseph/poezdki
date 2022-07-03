@@ -13,13 +13,20 @@ class AppInitBuilder extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthInitial) {
         return const Scaffold(body: CircularProgressIndicator());
-      } else if (state is AuthLoading) {
-        return const Scaffold(body:  CircularProgressIndicator());
-      } else if (state is AuthOnboardingIncomplete) {
+      }
+      if (state is AuthLoading) {
+        return const Scaffold(body: CircularProgressIndicator());
+      }
+      if (state is AuthLoading) {
+        return const Scaffold(body: CircularProgressIndicator());
+      }
+      if (state is AuthOnboardingIncomplete) {
         return const IntroScreenDefault();
-      } else if (state is AuthAuthenticated) {
+      }
+      if (state is AuthSuccess) {
         return const AppScreens();
-      } else if (state is AuthUnauthenticated) {
+      }
+      if (state is AuthUnauthenticated) {
         return const SignInScreen();
       }
 

@@ -1,9 +1,10 @@
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/src/rides/components/ride_list.dart';
+import 'package:app_poezdka/database/database.dart';
+import 'package:app_poezdka/export/services.dart';
+import 'package:app_poezdka/src/rides/components/ride_tile.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
-
-import 'components/ride_tile.dart';
+import 'package:provider/provider.dart';
 
 class RidesScreen extends StatefulWidget {
   const RidesScreen({Key? key}) : super(key: key);
@@ -14,67 +15,128 @@ class RidesScreen extends StatefulWidget {
 
 class _RidesScreenState extends State<RidesScreen>
     with SingleTickerProviderStateMixin {
+  final userRepo = SecureStorage.instance;
+
   TabController? _tabController;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
+        resizeToAvoidBottomInset: false,
         title: "Мои поездки",
+        bottom: _tabbar(),
         body: Container(
-          color: kPrimaryWhite,
-          child: Column(
-            children: [
-              Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
-                  child: _tabbar()),
-               Expanded(
-                 child: TabBarView(
-                  controller: _tabController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      Container(child: SingleChildScrollView(
-                        child: Column(
-                         children: [
-                           RideList(title: "Предстоящие поездки"),
-                            RideList(title: "Предыдущие поездки", count: 5,),
-                         ],
-                                           ),
-                      )),
-                     const Center(
-                        child: Text(
-                          'Coming soon...',
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+            color: kPrimaryWhite,
+            child: TabBarView(
+                controller: _tabController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        futureRides(),
+                        pastRides()
+                      ],
+                    ),
+                  ),
+                  const Center(
+                    child: Text(
+                      'Coming soon...',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.w600,
                       ),
-                    ]),
-               )
-
-            ],
-          ),
-        ));
+                    ),
+                  ),
+                ])));
   }
 
-  Widget _tabbar() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 10),
-      height: 45,
-      decoration: BoxDecoration(
-        color: kPrimaryWhite,
-        borderRadius: BorderRadius.circular(
-          25.0,
+  Widget futureRides() {
+    final rideDb = Provider.of<MyDatabase>(context).rideDao;
+    final dbUser = Provider.of<MyDatabase>(context, listen: false).userDao;
+    return Column(
+      children: [
+        const ListTile(
+          title: Text(
+            "Предстоящие поездки",
+            style:  TextStyle(color: Colors.grey),
+          ),
         ),
-      ),
+        FutureBuilder<UserData?>(
+          future: dbUser.getUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return StreamBuilder<List<RideData>>(
+                  stream: rideDb.streamMyUpcominRides(snapshot.data!.id!),
+                  builder: (context, snap) {
+                    if (snap.connectionState == ConnectionState.active) {
+                      final rides = snap.data ?? [];
+                      return ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: rides.length,
+                          itemBuilder: (context, int index) =>
+                              RideTile(rideData: rides[index], isUpcoming: true,));
+                    }
+                    return const CircularProgressIndicator();
+                  });
+            }
+            return const CircularProgressIndicator();
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget pastRides() {
+    final rideDb = Provider.of<MyDatabase>(context).rideDao;
+    final dbUser = Provider.of<MyDatabase>(context, listen: false).userDao;
+    return Column(
+      children: [
+        const ListTile(
+          title: Text(
+            "Прошедшие поездки",
+            style:  TextStyle(color: Colors.grey),
+          ),
+        ),
+        FutureBuilder<UserData?>(
+          future: dbUser.getUserData(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return StreamBuilder<List<RideData>>(
+                  stream: rideDb.streamMyPastRides(snapshot.data!.id!),
+                  builder: (context, snap) {
+                    if (snap.connectionState == ConnectionState.active) {
+                      final rides = snap.data ?? [];
+                      return ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: rides.length,
+                          itemBuilder: (context, int index) =>
+                              RideTile(rideData: rides[index]));
+                    }
+                    return const CircularProgressIndicator();
+                  });
+            }
+            return const CircularProgressIndicator();
+          },
+        ),
+      ],
+    );
+  }
+
+  PreferredSizeWidget _tabbar() {
+    return PreferredSize(
+      preferredSize: const Size(100, 80),
       child: TabBar(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
         onTap: (value) => setState(() {}),
         controller: _tabController,
         splashBorderRadius: BorderRadius.circular(25),
@@ -96,7 +158,7 @@ class _RidesScreenState extends State<RidesScreen>
               ),
         labelColor: Colors.white,
         unselectedLabelColor: Colors.black,
-        tabs: const[
+        tabs: const [
           // first tab [you can add an icon using the icon property]
           Tab(
             text: 'Пассажир',

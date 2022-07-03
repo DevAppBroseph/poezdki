@@ -1,6 +1,5 @@
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/export/blocs.dart';
-import 'package:app_poezdka/model/user_model.dart';
+import 'package:app_poezdka/service/db_service/auth_db.dart';
 import 'package:app_poezdka/src/auth/components/signup_account_info.dart';
 import 'package:app_poezdka/src/auth/components/signup_personal_info.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
@@ -22,12 +21,12 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
   final GlobalKey<FormState> _regFormPersonal = GlobalKey<FormState>();
 
   final PageController controller = PageController();
-  final TextEditingController email = TextEditingController();
-  final TextEditingController pw = TextEditingController();
-  final TextEditingController pwConfirm = TextEditingController();
+  final TextEditingController email = TextEditingController(text: "email@mail.ru");
+  final TextEditingController pw = TextEditingController(text:"123456");
+  final TextEditingController pwConfirm = TextEditingController(text:"123456");
 
-  final TextEditingController name = TextEditingController();
-  final TextEditingController surname = TextEditingController();
+  final TextEditingController name = TextEditingController(text:"Name");
+  final TextEditingController surname = TextEditingController(text:"Surname");
   final TextEditingController gender = TextEditingController();
   final TextEditingController dob = TextEditingController();
 
@@ -38,9 +37,11 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
 
   @override
   Widget build(BuildContext context) {
-    final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
+    // final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
+     final dbAuth = AuthDB();
     initializeDateFormatting('ru', null);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leadingWidth: 30,
         leading: IconButton(
@@ -125,30 +126,44 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                       });
                     } else if (currentPage == 1 &&
                         _regFormPersonal.currentState!.validate()) {
-                      print("start sign up");
-                      authBloc.add(SignUp(
+                     
+                      dbAuth.signUp(context,
                           login: email.text,
                           password: pw.text,
-                          userModel: UserModel(
-                              firstName: name.text,
-                              lastName: surname.text,
-                              gender: selectedGender!,
-                              birth: selectedDate.millisecondsSinceEpoch)));
+                          firstName: name.text,
+                          lastName: surname.text,
+                          gender: selectedGender!,
+                          birth: selectedDate.millisecondsSinceEpoch);
+
+                      /// Local auth db
+
+                      /// Server auth
+                      //   authBloc.add(SignUp(
+                      //       login: email.text,
+                      //       password: pw.text,
+                      //       userModel: UserModel(
+                      //           firstName: name.text,
+                      //           lastName: surname.text,
+                      //           gender: selectedGender!,
+                      //           birth: selectedDate.millisecondsSinceEpoch)));
+                      // }
+
+                      //Dev login
+                      // setState(() {
+                      //   currentPage++;
+                      //   controller.animateToPage(currentPage++,
+                      //       duration: const Duration(seconds: 1),
+                      //       curve: Curves.fastLinearToSlowEaseIn);
+                      // });
+                      // final auth = AuthService();
+                      // auth.signUp(
+                      //     login: "login@mail.ru",
+                      //     password: "123456",
+                      //     firstName: "John",
+                      //     lastName: "Doe",
+                      //     gender: "male",
+                      //     birth: DateTime.now().millisecondsSinceEpoch);
                     }
-                    // setState(() {
-                    //   currentPage++;
-                    //   controller.animateToPage(currentPage++,
-                    //       duration: const Duration(seconds: 1),
-                    //       curve: Curves.fastLinearToSlowEaseIn);
-                    // });
-                    // final auth = AuthService();
-                    // auth.signUp(
-                    //     login: "login@mail.ru",
-                    //     password: "123456",
-                    //     firstName: "John",
-                    //     lastName: "Doe",
-                    //     gender: "male",
-                    //     birth: DateTime.now().millisecondsSinceEpoch);
                   },
                 ),
                 InkWell(

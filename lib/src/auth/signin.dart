@@ -1,4 +1,4 @@
-import 'package:app_poezdka/export/blocs.dart';
+import 'package:app_poezdka/service/db_service/auth_db.dart';
 import 'package:app_poezdka/src/auth/components/social_buttons.dart';
 import 'package:app_poezdka/src/auth/signup.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
@@ -63,15 +63,15 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  
-
   Widget _singInButton(context) {
-    final authBloc = BlocProvider.of<AuthBloc>(context);
+    final dbAuth = AuthDB();
+    // final authBloc = BlocProvider.of<AuthBloc>(context);
     return FullWidthElevButton(
       margin: const EdgeInsets.fromLTRB(10, 60, 10, 5),
       title: "Войти",
       onPressed: () {
-        authBloc.add(OnDevLogIn());
+        dbAuth.signIn(context, login: email.text, password: pw.text);
+        // authBloc.add(OnDevLogIn());
       },
     );
   }

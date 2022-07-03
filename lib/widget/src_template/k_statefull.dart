@@ -6,19 +6,21 @@ class KScaffoldScreen extends StatelessWidget {
   final bool? isLeading;
   final List<Widget>? actions;
   final Widget body;
+  final PreferredSizeWidget? bottom;
   const KScaffoldScreen(
       {Key? key,
       this.resizeToAvoidBottomInset,
       required this.title,
       this.isLeading,
       this.actions,
+      this.bottom,
       required this.body})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? false,
       appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -29,8 +31,11 @@ class KScaffoldScreen extends StatelessWidget {
         ),
         automaticallyImplyLeading: isLeading ?? false,
         actions: actions,
+        bottom: bottom,
       ),
+      
       body: body,
+    
     );
   }
 }

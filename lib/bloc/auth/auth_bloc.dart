@@ -42,11 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     final hasToken = await userRepository.hasToken();
 
-    if (!hasToken) {
-      emit(AuthUnauthenticated());
-    } else {
-      emit(AuthAuthenticated());
-    }
+    hasToken == true ? emit(AuthSuccess()) : emit(AuthUnauthenticated());
   }
 
   void _onSignUp(SignUp event, Emitter<AuthState> emit) async {
@@ -71,9 +67,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onLoggedIn(LoggedIn event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
 
-    await userRepository.persistEmailAndToken(event.email, event.token);
-
-    add(AppInit());
+    await userRepository
+        .persistEmailAndToken(event.email, event.token)
+        .then((_) => add(AppStarted()));
   }
 
   void _onLoggedOut(LoggedOut event, Emitter<AuthState> emit) async {

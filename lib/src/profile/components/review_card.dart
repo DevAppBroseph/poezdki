@@ -37,7 +37,7 @@ class ReviewCard extends StatelessWidget {
               TextButton.icon(
                   onPressed: null,
                   icon: const Icon(Icons.star_outline, size: 18),
-                  label: Text(
+                  label: const Text(
                     "5/5",
                     style: boldText,
                   )),
@@ -47,7 +47,7 @@ class ReviewCard extends StatelessWidget {
                     Ionicons.share_outline,
                     size: 18,
                   ),
-                  label: Text(
+                  label: const Text(
                     "Пост",
                     style: boldText,
                   ))

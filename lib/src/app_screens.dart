@@ -1,7 +1,9 @@
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/src/aaa_dev/main_dev.dart';
 import 'package:app_poezdka/src/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 import 'profile/profile_screen.dart';
@@ -18,43 +20,54 @@ class AppScreens extends StatelessWidget {
     _controller = PersistentTabController(initialIndex: 3);
 
     List<Widget> _buildScreens() {
-        return [
-         const SearchRides(),
-         const CreateRide(),
-         const RidesScreen(),
-         const ProfileScreen()
-        ];
+      return [
+        const SearchRides(),
+        const CreateRide(),
+        const RidesScreen(),
+        const ProfileScreen(),
+        const MainDev()
+      ];
     }
 
     List<PersistentBottomNavBarItem> _navBarsItems() {
-        return [
-            PersistentBottomNavBarItem(
-                icon: const Icon(CupertinoIcons.search),
-                title: ("Поиск"),
-                activeColorPrimary: kPrimaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-            PersistentBottomNavBarItem(
-                icon: const Icon(CupertinoIcons.plus_circle),
-                title: ("Создать"),
-                activeColorPrimary: kPrimaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-             PersistentBottomNavBarItem(
-                icon: const Icon(CupertinoIcons.car),
-                title: ("Поездки"),
-                activeColorPrimary: kPrimaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-            PersistentBottomNavBarItem(
-                icon: const Icon(CupertinoIcons.person),
-                title: ("Профиль"),
-                activeColorPrimary: kPrimaryColor,
-                inactiveColorPrimary: CupertinoColors.systemGrey,
-            ),
-        ];
+      return [
+        PersistentBottomNavBarItem(
+          inactiveIcon: Image.asset('assets/img/search_normal.png'), 
+          icon: Image.asset('assets/img/search_active.png'),
+          title: ("Поиск"),
+          activeColorPrimary: kPrimaryColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+        ),
+        PersistentBottomNavBarItem(
+          inactiveIcon: Image.asset('assets/img/add_circle.png'),
+          icon: SvgPicture.asset('assets/img/add_circle_active.svg'),
+          title: ("Создать"),
+          activeColorPrimary: kPrimaryColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+        ),
+        PersistentBottomNavBarItem(
+          icon: Image.asset('assets/img/car_active.png'),
+          inactiveIcon: Image.asset('assets/img/car.png'),
+          title: ("Поездки"),
+          activeColorPrimary: kPrimaryColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+        ),
+        PersistentBottomNavBarItem(
+          icon: Image.asset('assets/img/user.png'),
+          inactiveIcon: SvgPicture.asset("assets/img/user.svg",
+              semanticsLabel: 'A red up arrow'),
+          title: ("Профиль"),
+          activeColorPrimary: kPrimaryColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+        ),
+        PersistentBottomNavBarItem(
+          icon: const Icon(CupertinoIcons.lock_fill),
+          title: ("Dev"),
+          activeColorPrimary: kPrimaryColor,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+        ),
+      ];
     }
-
 
     return PersistentTabView(
       context,

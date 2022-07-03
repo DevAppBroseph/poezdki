@@ -1,5 +1,4 @@
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'sign_out.dart';
@@ -7,19 +6,20 @@ import 'sign_out.dart';
 class ProfileBtn extends StatelessWidget {
   final Function? onPressed;
   final String title;
-  final IconData icon;
+  final String icon;
+  // final IconData icon;
   const ProfileBtn(
       {Key? key, required this.title, required this.icon, this.onPressed})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    const path = "assets/img";
     return ListTile(
       onTap: onPressed as void Function()?,
       minLeadingWidth: 5,
-      leading: Icon(
-        icon,
-        size: 30,
+      leading: Image.asset(
+        "$path/$icon.png",
       ),
       title: Text(
         title,
@@ -36,6 +36,7 @@ class SignOutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final btm = BottomSheetCall();
+    const path = "assets/img";
     return ListTile(
       onTap: () {
         btm.show(context,
@@ -44,10 +45,7 @@ class SignOutButton extends StatelessWidget {
             child: const SignOutSheet());
       },
       minLeadingWidth: 10,
-      leading: const Icon(
-        Icons.exit_to_app,
-        color: Colors.red,
-      ),
+      leading: Image.asset("$path/logoutlogout.png"),
       title: const Text(
         "Выход",
         style: TextStyle(

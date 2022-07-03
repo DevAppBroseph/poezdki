@@ -1,7 +1,6 @@
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/export/blocs.dart';
-import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/intro_slider/slider_page.dart';
 import 'package:flutter/material.dart';

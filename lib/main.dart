@@ -1,10 +1,12 @@
 import 'package:app_poezdka/const/theme.dart';
+import 'package:app_poezdka/database/database.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'bloc/auth/auth_builder.dart';
 import 'export/blocs.dart';
@@ -21,13 +23,17 @@ void main() async {
   final userRepository = SecureStorage.instance;
   final appRepository = HiveBoxService.instance;
   runApp(
-    BlocProvider<AuthBloc>(
-        create: (context) {
-          return AuthBloc(
-              userRepository: userRepository, appRepository: appRepository)
-            ..add(AppStarted());
-        },
-        child: const App()),
+    Provider<MyDatabase>(
+       create: (context) => MyDatabase(),
+       dispose: (context, db) => db.close(),
+      child: BlocProvider<AuthBloc>(
+          create: (context) {
+            return AuthBloc(
+                userRepository: userRepository, appRepository: appRepository)
+              ..add(AppStarted());
+          },
+          child: const App()),
+    ),
   );
 }
 

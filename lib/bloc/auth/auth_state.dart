@@ -9,6 +9,6 @@ class AuthLoading extends AuthState {}
 
 class AuthUnauthenticated extends AuthState {}
 
-class AuthAuthenticated extends AuthState {}
+class AuthSuccess extends AuthState {}
 
 class AuthOnboardingIncomplete extends AuthState {}
