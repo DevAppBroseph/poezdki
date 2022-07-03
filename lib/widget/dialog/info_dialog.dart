@@ -9,9 +9,9 @@ class InfoDialog {
       String? img,
       Widget? customIcon,
       required String title,
-       String? description,
-       List<Widget>? children
-       }) {
+      String? description,
+      List<Widget>? children,
+      Function? onPressed}) {
     SmartDialog.show(
       builder: (context) => Align(
         alignment: Alignment.center,
@@ -19,7 +19,8 @@ class InfoDialog {
           child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                constraints: const BoxConstraints(minHeight: 351, maxHeight: 700),
+                constraints:
+                    const BoxConstraints(minHeight: 351, maxHeight: 700),
                 // height: height ?? 351,
                 width: width ?? 600,
                 padding: const EdgeInsets.all(10),
@@ -31,6 +32,7 @@ class InfoDialog {
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       img != null ? Image.asset(img) : const SizedBox(),
                       customIcon ?? const SizedBox(),
@@ -45,16 +47,24 @@ class InfoDialog {
                       const SizedBox(
                         height: 30,
                       ),
-                     description != null ? Text(
-                        description,
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
-                      ) : Column(children: children ?? [],),
+                      description != null
+                          ? Text(
+                              description,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.grey),
+                            )
+                          : Column(
+                              children: children ?? [],
+                            ),
                       const SizedBox(
                         height: 10,
                       ),
                       FullWidthElevButton(
                         title: "Хоршо",
-                        onPressed: () => SmartDialog.dismiss(),
+                        onPressed: onPressed != null
+                            ? onPressed as void Function()?
+                            : () => SmartDialog.dismiss(),
                       )
                     ],
                   ),

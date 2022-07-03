@@ -20,15 +20,6 @@ class FilterSheet extends StatelessWidget {
   Widget build(BuildContext cxt) {
     return BottomSheetChildren(
       children: [
-        Container(
-          width: 100,
-          height: 4,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50), color: Colors.grey),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
         const ListTile(
           title: Text(
             "Фильтр поиска",
@@ -67,7 +58,7 @@ class FilterSheet extends StatelessWidget {
             onChanged: (value) => null),
         const ListTile(
           title: Text("Забираю от дома"),
-          trailing:  Text("Мужской"),
+          trailing: Text("Мужской"),
         ),
         FullWidthElevButton(
           title: "Применить",

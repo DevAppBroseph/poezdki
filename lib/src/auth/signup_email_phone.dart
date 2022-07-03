@@ -1,13 +1,17 @@
+import 'package:app_poezdka/bloc/auth/auth_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/service/db_service/auth_db.dart';
 import 'package:app_poezdka/src/auth/components/signup_account_info.dart';
 import 'package:app_poezdka/src/auth/components/signup_personal_info.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
+import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+import '../../export/blocs.dart';
 
 class SignUpWithEmailPhone extends StatefulWidget {
   const SignUpWithEmailPhone({Key? key}) : super(key: key);
@@ -21,12 +25,13 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
   final GlobalKey<FormState> _regFormPersonal = GlobalKey<FormState>();
 
   final PageController controller = PageController();
-  final TextEditingController email = TextEditingController(text: "email@mail.ru");
-  final TextEditingController pw = TextEditingController(text:"123456");
-  final TextEditingController pwConfirm = TextEditingController(text:"123456");
+  final TextEditingController email =
+      TextEditingController(text: "email@mail.ru");
+  final TextEditingController pw = TextEditingController(text: "123456");
+  final TextEditingController pwConfirm = TextEditingController(text: "123456");
 
-  final TextEditingController name = TextEditingController(text:"Name");
-  final TextEditingController surname = TextEditingController(text:"Surname");
+  final TextEditingController name = TextEditingController(text: "Name");
+  final TextEditingController surname = TextEditingController(text: "Surname");
   final TextEditingController gender = TextEditingController();
   final TextEditingController dob = TextEditingController();
 
@@ -37,8 +42,8 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
 
   @override
   Widget build(BuildContext context) {
-    // final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
-     final dbAuth = AuthDB();
+    final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
+    final dbAuth = AuthDB();
     initializeDateFormatting('ru', null);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -115,7 +120,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                 ),
                 FullWidthElevButton(
                   title: currentPage == 1 ? "Зарегистрироваться" : "Далее",
-                  onPressed: () {
+                  onPressed: () async {
                     if (currentPage == 0 &&
                         _regFormAccount.currentState!.validate()) {
                       setState(() {
@@ -126,14 +131,18 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                       });
                     } else if (currentPage == 1 &&
                         _regFormPersonal.currentState!.validate()) {
-                     
-                      dbAuth.signUp(context,
-                          login: email.text,
-                          password: pw.text,
-                          firstName: name.text,
-                          lastName: surname.text,
-                          gender: selectedGender!,
-                          birth: selectedDate.millisecondsSinceEpoch);
+                      await dbAuth
+                          .signUp(context,
+                              login: email.text,
+                              password: pw.text,
+                              firstName: name.text,
+                              lastName: surname.text,
+                              gender: selectedGender!,
+                              birth: selectedDate.millisecondsSinceEpoch)
+                          .onError((error, stackTrace) =>
+                              ErrorDialogs().showError(error.toString()));
+
+                      // authBloc.add(LoggedIn(email, token))
 
                       /// Local auth db
 

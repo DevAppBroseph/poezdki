@@ -11,12 +11,7 @@ class SignOutSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final authBloc = BlocProvider.of<AuthBloc>(context);
     return BottomSheetChildren(children: [
-      Container(
-        width: 100,
-        height: 4,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50), color: Colors.grey),
-      ),
+     
       const Padding(
         padding: EdgeInsets.symmetric(vertical: 20),
         child: Text(
@@ -47,6 +42,7 @@ class SignOutSheet extends StatelessWidget {
             Flexible(
               child: FullWidthElevButton(
                 onPressed: () {
+                  
                   Navigator.pop(context);
                   authBloc.add(LoggedOut());
                 },

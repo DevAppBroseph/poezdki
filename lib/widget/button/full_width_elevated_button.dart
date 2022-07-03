@@ -38,7 +38,7 @@ class FullWidthElevButton extends StatelessWidget {
         ),
         onPressed: onPressed as void Function()?,
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(5.0),
           child: Text(
             title,
             style: titleStyle ?? const TextStyle(color: Colors.white),

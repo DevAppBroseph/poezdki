@@ -1,47 +1,62 @@
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/database/database.dart';
+import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/divider/verical_dividers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
 
+import '../ride_details.dart';
+
 class RideTile extends StatelessWidget {
   final RideData rideData;
   final bool? isUpcoming;
-  const RideTile({Key? key, required this.rideData, this.isUpcoming = false})
+  final String? distance;
+  final Function? onTap;
+  const RideTile(
+      {Key? key,
+      required this.rideData,
+      this.isUpcoming = false,
+      this.distance,
+      this.onTap})
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          ListTile(
-            leading: const CircleAvatar(
-              child:  FlutterLogo(),
-              backgroundColor: kPrimaryWhite,
-            ),
-            title: Text(rideData.ownerName ?? ""),
-            subtitle: Text(
-                "${rideData.car} - ${rideData.price!.toStringAsFixed(0)} рублей"),
+  Widget build(BuildContext ctx) {
+    return InkWell(
+      onTap: (() => BottomSheetCall()
+          .show(ctx, 
+          useRootNavigator: true,
+          child: RideDetails(rideData: rideData))),
+      child: Container(
+          margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
           ),
-          _trip(rideData),
-          isUpcoming!
-              ? FullWidthElevButton(
-                  title: "Отменить поездку",
-                  onPressed: () {},
-                )
-              : const SizedBox()
-        ],
-      )
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ListTile(
+                leading: const CircleAvatar(
+                  child: FlutterLogo(),
+                  backgroundColor: kPrimaryWhite,
+                ),
+                title: Text(rideData.ownerName ?? ""),
+                subtitle: Text(
+                    "${rideData.car} - ${rideData.price!.toStringAsFixed(0)} рублей"),
+              ),
+              _trip(rideData),
+              isUpcoming!
+                  ? FullWidthElevButton(
+                      title: "Отменить поездку",
+                      onPressed: () {},
+                    )
+                  : const SizedBox()
+            ],
+          )),
     );
   }
 
@@ -69,6 +84,11 @@ class RideTile extends StatelessWidget {
                   maxLines: 1,
                 ),
               ),
+              distance != null
+                  ? ListTile(
+                      subtitle: Text(distance!),
+                    )
+                  : const SizedBox(),
               ListTile(
                 minVerticalPadding: 0,
                 minLeadingWidth: 30,

@@ -10,7 +10,6 @@ class BottomSheetCall {
           Radius? topRadius,
           required Widget child}) =>
       showCupertinoModalBottomSheet(
-        
           bounce: false,
           enableDrag: enableDrag ?? true,
           isDismissible: dismissible ?? true,
@@ -38,19 +37,34 @@ class BottomSheetChildren extends StatelessWidget {
       borderRadius: BorderRadius.circular(40),
       child: SafeArea(
         bottom: false,
-        child: SingleChildScrollView(
-          child: Column(
+        child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 10),
+                      width: 100,
+                      height: 4,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.grey),
+                    ),
+                    
+            Flexible(
+              child: SingleChildScrollView(
                 child: Column(
-                  children: children,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      child: Column(
+                        children: [...children],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-             
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

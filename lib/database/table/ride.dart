@@ -64,7 +64,7 @@ class RideDao extends DatabaseAccessor<MyDatabase> with _$RideDaoMixin {
                     ? tbl.from.contains(from)
                     : tbl.to.contains(to);
           })
-        // ..where((tbl) => tbl.isPackageTransfer.equals(isPackageTransfer))
+        ..where((tbl) => tbl.isPackageTransfer.equals(isPackageTransfer))
         )
         .watch();
   }

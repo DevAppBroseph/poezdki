@@ -2,11 +2,12 @@ import 'package:app_poezdka/database/database.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:provider/provider.dart';
 
 class AuthDB {
-  Future signUp(context,
+  Future signUp(BuildContext context,
       {required String login,
       required String password,
       required String firstName,
@@ -33,6 +34,8 @@ class AuthDB {
       });
 
       blocAuth.add(LoggedIn(login, token));
+      Navigator.pop(context);
+      Navigator.pop(context);
     } catch (e) {
       ErrorDialogs().showError(e.toString());
     }

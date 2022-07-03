@@ -4,6 +4,7 @@ import 'package:app_poezdka/database/table/ride.dart';
 import 'package:app_poezdka/src/rides/components/ride_tile.dart';
 import 'package:app_poezdka/src/rides/components/waypoint.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
+import 'package:app_poezdka/src/rides/ride_details.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +26,13 @@ class _SearchRidesState extends State<SearchRides> {
   final TextEditingController endWay = TextEditingController();
 
   bool _isPackageTransfer = false;
-  // bool _isTwoBackSeat = false;
-  // bool _isBagadgeTransfer = false;
-  // bool _isChildSeat = false;
-  // bool _isCondition = false;
-  // bool _isSmoking = false;
-  // bool _isPetTransfer = false;
-  // bool _isPickUpFromHome = false;
+  bool _isTwoBackSeat = false;
+  bool _isBagadgeTransfer = false;
+  bool _isChildSeat = false;
+  bool _isCondition = false;
+  bool _isSmoking = false;
+  bool _isPetTransfer = false;
+  bool _isPickUpFromHome = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,17 +48,40 @@ class _SearchRidesState extends State<SearchRides> {
                 child: const FilterSheet()),
             icon: const Icon(MaterialCommunityIcons.filter_outline))
       ],
-      bottom: _bottomFilter(),
       body: Container(
-        height: MediaQuery.of(context).size.height,
-        color: kPrimaryWhite,
-        child: startWay.text.isNotEmpty ||
-                endWay.text.isNotEmpty ||
-                _isPackageTransfer == true
-            ? filteredRides(
-                rideDb, startWay.text, endWay.text, _isPackageTransfer)
-            : allRides(rideDb),
-      ),
+          height: MediaQuery.of(context).size.height,
+          color: kPrimaryWhite,
+          child: NestedScrollView(
+              headerSliverBuilder: (context, bool inner) {
+                return [
+                  SliverAppBar(
+                    // collapsedHeight: 80,
+                    // expandedHeight: 100.0,
+                    //forceElevated: innerBoxIsScrolled,
+                    //floating: true,
+                    bottom: _bottomFilter(),
+                  )
+                ];
+              },
+              body: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: startWay.text.isNotEmpty ||
+                            endWay.text.isNotEmpty ||
+                            _isPackageTransfer == true ||
+                            _isTwoBackSeat == true ||
+                            _isBagadgeTransfer == true ||
+                            _isChildSeat == true ||
+                            _isCondition == true ||
+                            _isSmoking == true ||
+                            _isPetTransfer == true ||
+                            _isPickUpFromHome == true
+                        ? filteredRides(rideDb, startWay.text, endWay.text,
+                            _isPackageTransfer)
+                        : allRides(rideDb),
+                  )
+                ],
+              ))),
     );
   }
 
@@ -71,6 +95,7 @@ class _SearchRidesState extends State<SearchRides> {
             final rides = snapshot.data ?? [];
             return rides.isNotEmpty
                 ? ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: rides.length,
                     itemBuilder: (context, int index) => RideTile(
@@ -93,6 +118,7 @@ class _SearchRidesState extends State<SearchRides> {
           if (snapshot.connectionState == ConnectionState.active) {
             final rides = snapshot.data ?? [];
             return ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: rides.length,
                 itemBuilder: (context, int index) => RideTile(
@@ -108,6 +134,7 @@ class _SearchRidesState extends State<SearchRides> {
   PreferredSize _bottomFilter() {
     return PreferredSize(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
@@ -158,8 +185,6 @@ class _SearchRidesState extends State<SearchRides> {
             )
           ],
         ),
-        preferredSize: const Size(200, 260));
+        preferredSize: const Size(200, 230));
   }
-
-
 }
