@@ -35,11 +35,13 @@ class RideDetails extends StatelessWidget {
             child: FullWidthElevButton(
           onPressed: () {},
           title: "Передать посылку",
+          titleStyle: TextStyle(fontSize: 13, color: Colors.white),
         )),
         Expanded(
             child: FullWidthElevButton(
           onPressed: () => pushNewScreen(context, screen: const BookingRidePlace()),
           title: "Забронировать",
+          titleStyle: TextStyle(fontSize: 13, color: Colors.white),
         ))
       ],
     );

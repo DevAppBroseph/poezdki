@@ -41,7 +41,7 @@ class BottomSheetChildren extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              margin: EdgeInsets.symmetric(vertical: 10),
+              margin: const EdgeInsets.symmetric(vertical: 10),
                       width: 100,
                       height: 4,
                       decoration: BoxDecoration(

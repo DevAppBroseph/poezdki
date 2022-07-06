@@ -5,7 +5,7 @@ import '../database.dart';
 part 'cars.g.dart';
 
 class Car extends Table {
-  IntColumn? get id => integer().autoIncrement()();
+  IntColumn? get id => integer().autoIncrement().nullable()();
   IntColumn? get ownerId => integer().nullable()();
   TextColumn? get mark => text().nullable()();
 }
@@ -14,7 +14,7 @@ class Car extends Table {
 class CarDao extends DatabaseAccessor<MyDatabase> with _$CarDaoMixin {
   CarDao(MyDatabase db) : super(db);
   Future<List<CarData>> getUserCars(int owner) {
-    return ((select(car)..where((f) => f.ownerId.equals(owner)))).get();
+    return ((select(car)..where((tbl) => tbl.ownerId.equals(owner)))).get();
   }
   // Stream<UserSetting> streamSettings() {
   //   return ((select(userSettings)
@@ -23,8 +23,8 @@ class CarDao extends DatabaseAccessor<MyDatabase> with _$CarDaoMixin {
   //       .watchSingle();
   // }
 
-  Future createSettings(Insertable<CarData> carData) =>
+  Future addCar(Insertable<CarData> carData) =>
       into(car).insert(carData);
-  Future updateSettings(Insertable<CarData> carData) =>
+  Future updateCar(Insertable<CarData> carData) =>
       update(car).replace(carData);
 }
