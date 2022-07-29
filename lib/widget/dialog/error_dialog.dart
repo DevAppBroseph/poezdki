@@ -15,7 +15,7 @@ class ErrorDialogs {
                   leading: const Icon(
                     MaterialCommunityIcons.information,
                     color: kPrimaryColor,
-                    size: 25,
+                    size: 30,
                   ),
                   title: Text(msg ?? "Возникла ошибка. Пропробуйте еще раз."),
                 ),

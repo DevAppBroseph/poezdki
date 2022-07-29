@@ -1,6 +1,8 @@
+import 'package:app_poezdka/src/aaa_dev/city_picker_dev.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 class MainDev extends StatelessWidget {
   const MainDev({Key? key}) : super(key: key);
@@ -19,6 +21,11 @@ class MainDev extends StatelessWidget {
             FullWidthElevButton(
               title: "RideCreated",
               onPressed: () => centeredDialog(),
+            ),
+
+            FullWidthElevButton(
+              title: "Pick City Widget",
+              onPressed: () => pushNewScreen(context, screen: const PickCityDev()),
             )
           ],
         )),

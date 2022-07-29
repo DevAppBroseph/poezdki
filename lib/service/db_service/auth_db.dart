@@ -16,7 +16,7 @@ class AuthDB {
       required int birth}) async {
     var uuid = const Uuid();
     final db = Provider.of<MyDatabase>(context, listen: false).userDao;
-    final blocAuth = BlocProvider.of<AuthBloc>(context, listen: false);
+    // final blocAuth = BlocProvider.of<AuthBloc>(context, listen: false);
     final token = uuid.v4();
     try {
       db
@@ -33,7 +33,7 @@ class AuthDB {
         throw (e) => (e.toString());
       });
 
-      blocAuth.add(LoggedIn(login, token));
+      // blocAuth.add(LoggedIn(login, token));
       Navigator.pop(context);
       Navigator.pop(context);
     } catch (e) {
@@ -47,11 +47,11 @@ class AuthDB {
     required String password,
   }) async {
     final db = Provider.of<MyDatabase>(context, listen: false).userDao;
-    final blocAuth = BlocProvider.of<AuthBloc>(context);
+    // final blocAuth = BlocProvider.of<AuthBloc>(context);
     try {
       final user = await db.getUserLogin(login: login, password: password);
       if (login == user!.login && password == user.password) {
-        blocAuth.add(LoggedIn(user.login!, user.token!));
+        // blocAuth.add(LoggedIn(user.login!, user.token!));
       }
     } catch (e) {
       ErrorDialogs().showError(e.toString());

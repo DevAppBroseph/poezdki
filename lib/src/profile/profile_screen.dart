@@ -1,8 +1,8 @@
+import 'package:app_poezdka/bloc/profile/profile_builder.dart';
 import 'package:app_poezdka/src/profile/balance.dart';
 import 'package:app_poezdka/src/profile/blog.dart';
 import 'package:app_poezdka/src/profile/components/profile_button.dart';
 import 'package:app_poezdka/src/profile/faq.dart';
-import 'package:app_poezdka/src/profile/personal_data.dart';
 import 'package:app_poezdka/src/profile/rating.dart';
 import 'package:app_poezdka/src/profile/referal.dart';
 import 'package:app_poezdka/src/profile/review.dart';
@@ -29,8 +29,8 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             children: [
               ProfileBtn(
-                  onPressed: () =>
-                      pushNewScreen(context, screen: const PersonalData()),
+                  onPressed: () => pushNewScreen(context,
+                      screen: const PersonalDataBuilder()),
                   title: "Личные данные",
                   icon: 'profilepersonal'),
               ProfileBtn(
@@ -62,9 +62,7 @@ class ProfileScreen extends StatelessWidget {
                   onPressed: () => pushNewScreen(context, screen: const Blog()),
                   title: "Блог",
                   icon: 'bookblog'),
-              const ProfileBtn(
-                  title: "О проекте",
-                  icon: 'mouseabout'),
+              const ProfileBtn(title: "О проекте", icon: 'mouseabout'),
               const ProfileBtn(
                   title: "Пользовательское соглашение",
                   icon: 'document-textp_agree'),
@@ -72,8 +70,7 @@ class ProfileScreen extends StatelessWidget {
                   title: "Политика конфиденциальности",
                   icon: 'document-favoritep_privacy'),
               const ProfileBtn(
-                  title: "Публичная оферта",
-                  icon: 'document-textpublic_of'),
+                  title: "Публичная оферта", icon: 'document-textpublic_of'),
               const SignOutButton(),
             ],
           ),

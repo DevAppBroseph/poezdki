@@ -1,7 +1,11 @@
-import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
+import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
+import 'package:app_poezdka/model/car_model.dart';
+import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
+import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddCarWidget extends StatefulWidget {
   const AddCarWidget({Key? key}) : super(key: key);
@@ -11,32 +15,111 @@ class AddCarWidget extends StatefulWidget {
 }
 
 class _AddCarWidgetState extends State<AddCarWidget> {
+  final GlobalKey<FormState> _carKeyForm = GlobalKey<FormState>();
+
+  TextEditingController carMade = TextEditingController();
   TextEditingController carModel = TextEditingController();
+  TextEditingController carColor = TextEditingController();
+  TextEditingController carNumber = TextEditingController();
+  TextEditingController carSeats = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return BottomSheetChildren(
-      children: [
-        KFormField(
-            hintText: 'Введите марку и модель автомобиля',
-            textEditingController: carModel),
-        Row(
+    final profileBloc = BlocProvider.of<ProfileBloc>(context, listen: false);
+    return KScaffoldScreen(
+        isLeading: true,
+        title: "Добавить авто",
+        body: Stack(
           children: [
-            Expanded(
-              child: FullWidthElevButton(
-                title: "Сохранить",
-                onPressed: () {},
+            SingleChildScrollView(
+              child: Column(
+                children: [
+                  Form(
+                      key: _carKeyForm,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 10),
+                        child: Column(
+                          children: [
+                            KFormField(
+                                validateFunction: Validations.validateTitle,
+                                hintText: 'Марка автомобиля',
+                                textEditingController: carMade),
+                            KFormField(
+                                validateFunction: Validations.validateTitle,
+                                hintText: 'Модель автомобиля',
+                                textEditingController: carModel),
+                            KFormField(
+                                hintText: 'Цвет', textEditingController: carColor),
+                            KFormField(
+                                hintText: 'Гос. номер',
+                                textEditingController: carNumber),
+                            KFormField(
+                              hintText: 'Количество мест',
+                              textInputType: TextInputType.number,
+                              textEditingController: carSeats,
+                              validateFunction: Validations.validateTitle,
+                            ),
+                          ],
+                        ),
+                      )),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  
+                ],
               ),
             ),
-            Expanded(
-                child: TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Отмена"))),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: FullWidthElevButton(
+                margin: const EdgeInsets.symmetric(vertical: 40),
+                      title: "Добавить",
+                      onPressed: () {
+                        if (
+                          // carMade.text.isEmpty &&
+                          //   carModel.text.isNotEmpty &&
+                          //   carSeats.text.isEmpty &&
+                            _carKeyForm.currentState!.validate()) {
+                          profileBloc.add(CreateCar(
+                              context,
+                              CarModel(
+                                  mark: carMade.text.trim(),
+                                  model: carModel.text.trim(),
+                                  color: carColor.text.trim(),
+                                  vehicleNumber: carNumber.text.trim(),
+                                  countOfPassengers:
+                                      int.parse(carSeats.text.trim()))));
+                        }
+                      },
+                    ),
+            )
           ],
-        ),
-        const SizedBox(
-          height: 20,
-        )
-      ],
-    );
+        ));
+    // return BottomSheetChildren(
+    //   children: [
+    //     KFormField(
+    //         hintText: 'Введите марку и модель автомобиля',
+    //         textEditingController: carModel),
+    //     Row(
+    //       children: [
+    //         Expanded(
+    //           child: FullWidthElevButton(
+    //             title: "Сохранить",
+    //             onPressed: () async {
+    //               // await dbCars.addCar(CarData(id: null));
+    //             },
+    //           ),
+    //         ),
+    //         Expanded(
+    //             child: TextButton(
+    //                 onPressed: () => Navigator.pop(context),
+    //                 child: const Text("Отмена"))),
+    //       ],
+    //     ),
+    //     const SizedBox(
+    //       height: 20,
+    //     )
+    //   ],
+    // );
   }
 }

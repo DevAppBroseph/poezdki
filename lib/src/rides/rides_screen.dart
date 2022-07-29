@@ -1,13 +1,17 @@
+import 'package:app_poezdka/bloc/my_rides/my_rides_bloc.dart';
+import 'package:app_poezdka/bloc/my_rides/my_rides_builder.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/database/database.dart';
+import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/export/services.dart';
-import 'package:app_poezdka/src/rides/components/ride_tile.dart';
+import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RidesScreen extends StatefulWidget {
-  const RidesScreen({Key? key}) : super(key: key);
+  final List? rides;
+  const RidesScreen({Key? key, this.rides}) : super(key: key);
 
   @override
   State<RidesScreen> createState() => _RidesScreenState();
@@ -28,6 +32,7 @@ class _RidesScreenState extends State<RidesScreen>
 
   @override
   Widget build(BuildContext context) {
+    final rideBloc = BlocProvider.of<MyRidesBloc>(context);
     return KScaffoldScreen(
         resizeToAvoidBottomInset: false,
         title: "Мои поездки",
@@ -40,57 +45,53 @@ class _RidesScreenState extends State<RidesScreen>
                 children: [
                   SingleChildScrollView(
                     child: Column(
-                      children: [
-                        futureRides(),
-                        pastRides()
-                      ],
+                      children: [],
+                      // children: [futureRides(), pastRides()],
                     ),
                   ),
-                  const Center(
-                    child: Text(
-                      'Coming soon...',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  Center(
+                    child: FullWidthElevButton(
+                      title: "Hi",
+                      onPressed: () => rideBloc
+                        ..add(AddMyRide(startWay: "start", endWay: "end", childSeat: true)),
                     ),
                   ),
                 ])));
   }
 
   Widget futureRides() {
-    final rideDb = Provider.of<MyDatabase>(context).rideDao;
-    final dbUser = Provider.of<MyDatabase>(context, listen: false).userDao;
+
     return Column(
-      children: [
-        const ListTile(
+      children: const[
+        ListTile(
           title: Text(
             "Предстоящие поездки",
-            style:  TextStyle(color: Colors.grey),
+            style: TextStyle(color: Colors.grey),
           ),
         ),
-        FutureBuilder<UserData?>(
-          future: dbUser.getUserData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return StreamBuilder<List<RideData>>(
-                  stream: rideDb.streamMyUpcominRides(snapshot.data!.id!),
-                  builder: (context, snap) {
-                    if (snap.connectionState == ConnectionState.active) {
-                      final rides = snap.data ?? [];
-                      return ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: rides.length,
-                          itemBuilder: (context, int index) =>
-                              RideTile(rideData: rides[index], isUpcoming: true,));
-                    }
-                    return const CircularProgressIndicator();
-                  });
-            }
-            return const CircularProgressIndicator();
-          },
-        ),
+        MyRidesBuilder()
+        // FutureBuilder<UserData?>(
+        //   future: dbUser.getUserData(),
+        //   builder: (context, snapshot) {
+        //     if (snapshot.connectionState == ConnectionState.done) {
+        //       return StreamBuilder<List<RideData>>(
+        //           stream: rideDb.streamMyUpcominRides(snapshot.data!.id!),
+        //           builder: (context, snap) {
+        //             if (snap.connectionState == ConnectionState.active) {
+        //               final rides = snap.data ?? [];
+        //               return ListView.builder(
+        //                   physics: const NeverScrollableScrollPhysics(),
+        //                   shrinkWrap: true,
+        //                   itemCount: rides.length,
+        //                   itemBuilder: (context, int index) =>
+        //                       RideTile(rideData: rides[index], isUpcoming: true,));
+        //             }
+        //             return const CircularProgressIndicator();
+        //           });
+        //     }
+        //     return const CircularProgressIndicator();
+        //   },
+        // ),
       ],
     );
   }
@@ -99,35 +100,36 @@ class _RidesScreenState extends State<RidesScreen>
     final rideDb = Provider.of<MyDatabase>(context).rideDao;
     final dbUser = Provider.of<MyDatabase>(context, listen: false).userDao;
     return Column(
-      children: [
-        const ListTile(
+      children: const[
+         ListTile(
           title: Text(
             "Прошедшие поездки",
-            style:  TextStyle(color: Colors.grey),
+            style: TextStyle(color: Colors.grey),
           ),
         ),
-        FutureBuilder<UserData?>(
-          future: dbUser.getUserData(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return StreamBuilder<List<RideData>>(
-                  stream: rideDb.streamMyPastRides(snapshot.data!.id!),
-                  builder: (context, snap) {
-                    if (snap.connectionState == ConnectionState.active) {
-                      final rides = snap.data ?? [];
-                      return ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: rides.length,
-                          itemBuilder: (context, int index) =>
-                              RideTile(rideData: rides[index]));
-                    }
-                    return const CircularProgressIndicator();
-                  });
-            }
-            return const CircularProgressIndicator();
-          },
-        ),
+         MyRidesBuilder()
+        // FutureBuilder<UserData?>(
+        //   future: dbUser.getUserData(),
+        //   builder: (context, snapshot) {
+        //     if (snapshot.connectionState == ConnectionState.done) {
+        //       return StreamBuilder<List<RideData>>(
+        //           stream: rideDb.streamMyPastRides(snapshot.data!.id!),
+        //           builder: (context, snap) {
+        //             if (snap.connectionState == ConnectionState.active) {
+        //               final rides = snap.data ?? [];
+        //               return ListView.builder(
+        //                   physics: const NeverScrollableScrollPhysics(),
+        //                   shrinkWrap: true,
+        //                   itemCount: rides.length,
+        //                   itemBuilder: (context, int index) =>
+        //                       RideTile(rideData: rides[index]));
+        //             }
+        //             return const CircularProgressIndicator();
+        //           });
+        //     }
+        //     return const CircularProgressIndicator();
+        //   },
+        // ),
       ],
     );
   }

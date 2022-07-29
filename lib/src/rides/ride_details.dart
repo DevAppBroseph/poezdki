@@ -1,6 +1,7 @@
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/lorem_ipsum.dart';
 import 'package:app_poezdka/database/database.dart';
+import 'package:app_poezdka/src/chat/chat_screen.dart';
 import 'package:app_poezdka/src/rides/components/book_place.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
@@ -16,7 +17,7 @@ class RideDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomSheetChildren(children: [
-      _ownerInfo(),
+      _ownerInfo(context),
       _price(),
       _tripData(),
       _div(),
@@ -35,13 +36,13 @@ class RideDetails extends StatelessWidget {
             child: FullWidthElevButton(
           onPressed: () {},
           title: "Передать посылку",
-          titleStyle: TextStyle(fontSize: 13, color: Colors.white),
+          titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
         )),
         Expanded(
             child: FullWidthElevButton(
           onPressed: () => pushNewScreen(context, screen: const BookingRidePlace()),
           title: "Забронировать",
-          titleStyle: TextStyle(fontSize: 13, color: Colors.white),
+          titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
         ))
       ],
     );
@@ -83,8 +84,8 @@ class RideDetails extends StatelessWidget {
     return Column(
       children: [
         ListTile(
-          title: Text("Автомобиль"),
-          trailing: Text(rideData.car!),
+          title: const Text("Автомобиль"),
+          trailing: Text(rideData.car?? " "),
         ),
         ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
@@ -99,7 +100,7 @@ class RideDetails extends StatelessWidget {
               return ListTile(
                 title: Text(
                   key,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: '.SF Pro Display',
                   ),
                 ),
@@ -113,7 +114,7 @@ class RideDetails extends StatelessWidget {
     );
   }
 
-  Widget _ownerInfo() {
+  Widget _ownerInfo(context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
@@ -133,7 +134,7 @@ class RideDetails extends StatelessWidget {
                   color: kPrimaryColor,
                 )),
             IconButton(
-                onPressed: () {},
+                onPressed: () => pushNewScreen(context, withNavBar: false, screen: const ChatScreen()),
                 icon: const Icon(
                   Icons.chat_bubble,
                   color: kPrimaryColor,

@@ -1,8 +1,9 @@
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/src/rides/create_ride_passenger_1.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'create_ride_driver.dart';
+import 'create_ride_driver_1.dart';
 
 class CreateRide extends StatefulWidget {
   const CreateRide({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _CreateRideState extends State<CreateRide>
 
   @override
   Widget build(BuildContext context) {
-     initializeDateFormatting('ru', null);
+    initializeDateFormatting('ru', null);
     return KScaffoldScreen(
       resizeToAvoidBottomInset: false,
       title: "Создание поездки",
@@ -37,18 +38,10 @@ class _CreateRideState extends State<CreateRide>
         controller: _tabController,
         children: const [
           // first tab bar view widget
-          CreateRideDriver(),
 
+          CreateRidePassenger(),
           // second tab bar view widget
-          Center(
-            child: Text(
-              'Coming soon...',
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+          CreateRideDriver(),
         ],
       ),
     );
@@ -83,12 +76,12 @@ class _CreateRideState extends State<CreateRide>
         tabs: const [
           // first tab [you can add an icon using the icon property]
           Tab(
-            text: 'Пассажир',
+            text: 'Я Пассажир',
           ),
 
           // second tab [you can add an icon using the icon property]
           Tab(
-            text: 'Водитель',
+            text: 'Я Водитель',
           ),
         ],
       ),

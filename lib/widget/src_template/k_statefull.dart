@@ -7,6 +7,8 @@ class KScaffoldScreen extends StatelessWidget {
   final List<Widget>? actions;
   final Widget body;
   final PreferredSizeWidget? bottom;
+  final Widget? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
   const KScaffoldScreen(
       {Key? key,
       this.resizeToAvoidBottomInset,
@@ -14,7 +16,8 @@ class KScaffoldScreen extends StatelessWidget {
       this.isLeading,
       this.actions,
       this.bottom,
-      required this.body})
+      required this.body,
+      this.floatingActionButton, this.floatingActionButtonLocation})
       : super(key: key);
 
   @override
@@ -33,9 +36,9 @@ class KScaffoldScreen extends StatelessWidget {
         actions: actions,
         bottom: bottom,
       ),
-      
       body: body,
-    
+      floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: floatingActionButtonLocation ?? FloatingActionButtonLocation.centerDocked,
     );
   }
 }

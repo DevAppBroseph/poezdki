@@ -1,10 +1,10 @@
-import 'package:app_poezdka/model/user_model.dart';
-import 'package:app_poezdka/service/auth_service.dart';
-import 'package:app_poezdka/service/box_service.dart';
-import 'package:app_poezdka/service/secure_storage.dart';
+import 'package:app_poezdka/service/server/auth_service.dart';
+
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/material.dart';
+
+import '../../export/services.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -51,25 +51,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final String? token = await authService.signUp(
         login: event.login,
         password: event.password,
-        firstName: event.userModel.firstName,
-        lastName: event.userModel.lastName,
-        gender: event.userModel.gender,
-        birth: event.userModel.birth);
+        firstName: event.firstName,
+        lastName: event.lastName,
+        gender: event.gender,
+        birth: event.birth);
 
     if (token != null) {
       await userRepository.persistEmailAndToken(event.login, token);
       add(AppInit());
+      Navigator.pop(event.context);
+      Navigator.pop(event.context);
+      Navigator.pop(event.context);
     } else {
       add(AuthError("Ошибка регистрации."));
     }
   }
 
   void _onLoggedIn(LoggedIn event, Emitter<AuthState> emit) async {
+    final authService = AuthService();
     emit(AuthLoading());
+    final token =
+        await authService.signIn(login: event.email, password: event.password);
 
-    await userRepository
-        .persistEmailAndToken(event.email, event.token)
-        .then((_) => add(AppStarted()));
+    if (token != null) {
+      await userRepository
+          .persistEmailAndToken(event.email, token);
+          add(AppStarted());
+          Navigator.pop(event.context);
+    }
   }
 
   void _onLoggedOut(LoggedOut event, Emitter<AuthState> emit) async {

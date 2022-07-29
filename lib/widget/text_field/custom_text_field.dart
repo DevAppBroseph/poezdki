@@ -53,6 +53,7 @@ class KFormField extends StatelessWidget {
       child: TextFormField(
         onTap: onTap as void Function()?,
         
+        
         validator: validateFunction,
         readOnly: readOnly ?? false,
         textInputAction: inputAction,
@@ -67,6 +68,7 @@ class KFormField extends StatelessWidget {
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           suffixText: suffixText,
+          
           
           suffix: suffix,
           suffixIcon: suffixIcon,

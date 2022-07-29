@@ -5,6 +5,7 @@ class SecureStorage {
   static final instance = SecureStorage._(const FlutterSecureStorage());
 
   final FlutterSecureStorage _storage;
+
   static const _tokenKey = 'TOKEN';
   static const _emailKey = 'EMAIL';
 

@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+class BottomSheetCallAwait {
+  Future wait(BuildContext context, {bool? expand,bool? dismissible, bool? bounce , bool? enableDrag, bool? useRootNavigator,  required Widget child}) =>
+      showCupertinoModalBottomSheet(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          isDismissible: dismissible,
+          bounce: bounce ?? true,
+          expand: expand ?? false,
+          useRootNavigator: useRootNavigator ?? false,
+          enableDrag: enableDrag ?? true,
+          context: context,
+          builder: (context) => child);
+}
+
 class BottomSheetCall {
   void show(BuildContext context,
           {bool? expand,

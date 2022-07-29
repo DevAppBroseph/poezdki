@@ -10,8 +10,10 @@ enum WaypointType { start, empty, middle, end }
 class WayPoints extends StatelessWidget {
   final TextEditingController startWay;
   final TextEditingController endWay;
-  final List<TextEditingController> midWays;
+  final List<TextEditingController>? midWays;
   final List<TextEditingController> midwayControllers;
+  final Function pickDestinitionFrom;
+  final Function pickDestinitionTo;
   final Function onAdd;
   final Function onDelete;
   final int? midWayIndex;
@@ -24,7 +26,7 @@ class WayPoints extends StatelessWidget {
       required this.onAdd,
       required this.onDelete,
       this.midWayIndex,
-      required this.midwayControllers})
+      required this.midwayControllers, required this.pickDestinitionFrom, required this.pickDestinitionTo})
       : super(key: key);
 
   @override
@@ -39,15 +41,17 @@ class WayPoints extends StatelessWidget {
         _wayPoint(
           type: WaypointType.start,
           textField: KFormField(
+            readOnly: true,
+            onTap: pickDestinitionFrom,
             hintText: "Откуда",
             textEditingController: startWay,
             suffixIcon: Image.asset('assets/img/gps.png'),
           ),
         ),
-        ListView.builder(
+        midWays != null ? ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: midWays.length,
+            itemCount: midWays!.length,
             itemBuilder: (context, int index) => _wayPoint(
                   onDelete: () {},
                   type: WaypointType.middle,
@@ -56,8 +60,8 @@ class WayPoints extends StatelessWidget {
                     textEditingController: midwayControllers[index],
                     suffixIcon: Image.asset('assets/img/gps.png'),
                   ),
-                )),
-        midWays.length < 3
+                )): const SizedBox(),
+       midWays != null ? midWays!.length < 3
             ? _wayPoint(
                 type: WaypointType.empty,
                 textField: Align(
@@ -78,10 +82,18 @@ class WayPoints extends StatelessWidget {
               )
             : const SizedBox(
                 height: 10,
+              ) : _wayPoint(
+                type: WaypointType.empty,
+                textField: const Align(
+                  alignment: Alignment.centerLeft,
+                  child:  SizedBox(),
+                ),
               ),
         _wayPoint(
           type: WaypointType.end,
           textField: KFormField(
+            readOnly: true,
+            onTap: pickDestinitionTo,
             hintText: "Куда",
             textEditingController: endWay,
             suffixIcon: Image.asset('assets/img/gps.png'),

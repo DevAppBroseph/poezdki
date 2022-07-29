@@ -48,7 +48,11 @@ class RideDao extends DatabaseAccessor<MyDatabase> with _$RideDaoMixin {
   //       .watchSingle();
   // }
 
-  Stream<List<RideData>> getAllRides() {
+  Future<List<RideData>> getAllRidesAsFututre() {
+    return ((select(ride))).get();
+  }
+
+  Stream<List<RideData>> getAllRidesAsStream() {
     return ((select(ride))).watch();
   }
 
@@ -64,8 +68,7 @@ class RideDao extends DatabaseAccessor<MyDatabase> with _$RideDaoMixin {
                     ? tbl.from.contains(from)
                     : tbl.to.contains(to);
           })
-        ..where((tbl) => tbl.isPackageTransfer.equals(isPackageTransfer))
-        )
+          ..where((tbl) => tbl.isPackageTransfer.equals(isPackageTransfer)))
         .watch();
   }
 

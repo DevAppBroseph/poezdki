@@ -1,12 +1,13 @@
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/src/aaa_dev/main_dev.dart';
-import 'package:app_poezdka/src/search.dart';
+import 'package:app_poezdka/src/profile/profile_screen.dart';
+import 'package:app_poezdka/widget/src_template/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
-import 'profile/profile_screen.dart';
 import 'rides/create_ride.dart';
 import 'rides/rides_screen.dart';
 
@@ -17,14 +18,14 @@ class AppScreens extends StatelessWidget {
   Widget build(BuildContext context) {
     PersistentTabController _controller;
 
-    _controller = PersistentTabController(initialIndex: 3);
+    _controller = PersistentTabController(initialIndex: 0);
 
     List<Widget> _buildScreens() {
       return [
         const SearchRides(),
         const CreateRide(),
-        const RidesScreen(),
-        const ProfileScreen(),
+       const RidesScreen() ,
+         const ProfileScreen() ,
         const MainDev()
       ];
     }
@@ -32,29 +33,29 @@ class AppScreens extends StatelessWidget {
     List<PersistentBottomNavBarItem> _navBarsItems() {
       return [
         PersistentBottomNavBarItem(
-          inactiveIcon: Image.asset('assets/img/search_normal.png'), 
-          icon: Image.asset('assets/img/search_active.png'),
+          inactiveIcon: SvgPicture.asset("$svgPath/search_inactive.svg"),
+          icon: SvgPicture.asset('$svgPath/search_active.svg'),
           title: ("Поиск"),
           activeColorPrimary: kPrimaryColor,
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
         PersistentBottomNavBarItem(
-          inactiveIcon: Image.asset('assets/img/add_circle.png'),
-          icon: SvgPicture.asset('assets/img/add_circle_active.svg'),
+          inactiveIcon: SvgPicture.asset('$svgPath/add_inactive.svg'),
+          icon: SvgPicture.asset('$svgPath/add_active.svg'),
           title: ("Создать"),
           activeColorPrimary: kPrimaryColor,
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
         PersistentBottomNavBarItem(
-          icon: Image.asset('assets/img/car_active.png'),
-          inactiveIcon: Image.asset('assets/img/car.png'),
+          icon: SvgPicture.asset('$svgPath/car_active.svg'),
+          inactiveIcon: SvgPicture.asset('$svgPath/car_inactive.svg'),
           title: ("Поездки"),
           activeColorPrimary: kPrimaryColor,
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
         PersistentBottomNavBarItem(
-          icon: Image.asset('assets/img/user.png'),
-          inactiveIcon: SvgPicture.asset("assets/img/user.svg",
+          icon: SvgPicture.asset('$svgPath/user_active.svg'),
+          inactiveIcon: SvgPicture.asset("$svgPath/user_inactive.svg",
               semanticsLabel: 'A red up arrow'),
           title: ("Профиль"),
           activeColorPrimary: kPrimaryColor,

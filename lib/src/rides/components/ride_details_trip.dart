@@ -38,12 +38,12 @@ class RideDetailsTrip extends StatelessWidget {
                   maxLines: 1,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0, top: 15, bottom: 15),
-                child: Text(
+              const Padding(
+                padding: EdgeInsets.only(left: 15.0, top: 15, bottom: 15),
+                child:  Text(
                   "200 km",
                   textAlign: TextAlign.start,
-                  style: TextStyle(color: Colors.grey, fontFamily: '.SF Pro Display',),
+                  style:  TextStyle(color: Colors.grey, fontFamily: '.SF Pro Display',),
                   
                 ),
               ),

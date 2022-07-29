@@ -8,19 +8,31 @@ class AppStarted extends AuthEvent {}
 class AppInit extends AuthEvent {}
 
 class SignUp extends AuthEvent {
+  final BuildContext context;
   final String login;
   final String password;
-  final UserModel userModel;
+  final String firstName;
+  final String lastName;
+  final String gender;
+  final int birth;
 
-  SignUp(
-      {required this.login, required this.password, required this.userModel});
+  SignUp({
+    required this.context,
+    required this.login,
+    required this.password,
+    required this.firstName,
+    required this.lastName,
+    required this.gender,
+    required this.birth,
+  });
 }
 
 class LoggedIn extends AuthEvent {
+  final BuildContext context;
   final String email;
-  final String token;
+  final String password;
 
-  LoggedIn(this.email, this.token);
+  LoggedIn(this.context, this.email, this.password);
 }
 
 class LoggedOut extends AuthEvent {}

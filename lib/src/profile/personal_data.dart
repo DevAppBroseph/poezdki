@@ -1,68 +1,56 @@
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/database/database.dart';
+import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/profile/cars_data/add_car.dart';
-import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+
+import '../../bloc/profile/profile_bloc.dart';
+import '../../export/blocs.dart';
 
 class PersonalData extends StatelessWidget {
-  const PersonalData({Key? key}) : super(key: key);
+  final UserModel user;
+  const PersonalData({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context).userDao;
     const profileImg =
         "https://images.unsplash.com/photo-1519011985187-444d62641929?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80";
     return KScaffoldScreen(
-      isLeading: true,
-      title: "Личные данные",
-      actions: [
-        IconButton(
-            onPressed: () {},
-            icon: const Icon(
-                MaterialCommunityIcons.dots_horizontal_circle_outline))
-      ],
-      body: FutureBuilder<UserData?>(
-          future: db.getUserData(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: Text("Ooops! Возникла ошибка."),
-              );
-            }
-            if (snapshot.connectionState == ConnectionState.done) {
-              final user = snapshot.data!;
-              return ListView(
+        isLeading: true,
+        title: "Личные данные",
+        actions: [
+          IconButton(
+              onPressed: () {},
+              icon: const Icon(
+                  MaterialCommunityIcons.dots_horizontal_circle_outline))
+        ],
+        body: ListView(
+          children: [
+            ProfileInfo(
+              name: "${user.firstname} ${user.lastname}",
+              imageUrl: profileImg,
+            ),
+            Container(
+              color: kPrimaryWhite,
+              child: Column(
                 children: [
-                  ProfileInfo(
-                    name: "${user.name} ${user.surname}",
-                    imageUrl: profileImg,
+                  ProfileDataCard(
+                    user: user,
                   ),
-                  Container(
-                    color: kPrimaryWhite,
-                    child: Column(
-                      children: [
-                        ProfileDataCard(
-                          user: user,
-                        ),
-                        ProfileCarsData(
-                          user: user,
-                        ),
-                        const SizedBox(
-                          height: 60,
-                        )
-                      ],
-                    ),
+                  ProfileCarsData(
+                    user: user,
+                  ),
+                  const SizedBox(
+                    height: 60,
                   )
                 ],
-              );
-            }
-            return const CircularProgressIndicator();
-          }),
-    );
+              ),
+            )
+          ],
+        ));
   }
 }
 
@@ -74,6 +62,7 @@ class ProfileInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  
     return Center(
       child: SizedBox(
         height: 230,
@@ -105,7 +94,7 @@ class ProfileInfo extends StatelessWidget {
 }
 
 class ProfileDataCard extends StatelessWidget {
-  final UserData user;
+  final UserModel user;
   const ProfileDataCard({Key? key, required this.user}) : super(key: key);
 
   @override
@@ -127,15 +116,16 @@ class ProfileDataCard extends StatelessWidget {
                 "Дата рождения",
               ),
               trailing: Text(DateFormat("dd.MM.yyyy")
-                  .format(DateTime.fromMillisecondsSinceEpoch(user.dob!))),
+                  .format(DateTime.fromMillisecondsSinceEpoch(user.birth!))),
             ),
             ListTile(
               title: const Text("Пол"),
-              trailing: Text("${user.gender}"),
+              trailing:
+                  Text(user.gender!.contains("male") ? "Мужской" : "Женский"),
             ),
             ListTile(
               title: const Text("E-mail"),
-              trailing: Text("${user.login!.contains("@") ? user.login : ""}"),
+              trailing: Text(user.login!.contains("@") ? user.login! : ""),
             ),
             ListTile(
               title: const Text("Телефон"),
@@ -149,12 +139,11 @@ class ProfileDataCard extends StatelessWidget {
 }
 
 class ProfileCarsData extends StatelessWidget {
-  final UserData user;
+  final UserModel user;
   const ProfileCarsData({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final btmCall = BottomSheetCall();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Card(
@@ -170,13 +159,13 @@ class ProfileCarsData extends StatelessWidget {
               ),
             ),
             MyCarList(
-              userId: user.id!,
+              cars: user.cars ?? [],
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: TextButton(
-                  onPressed: () => btmCall.show(context,
-                   child: const AddCarWidget()),
+                  onPressed: () =>
+                      pushNewScreen(context, screen: const AddCarWidget()),
                   child: const Text(
                     "Добавить автомобиль",
                     style: TextStyle(color: kPrimaryColor),
@@ -190,50 +179,28 @@ class ProfileCarsData extends StatelessWidget {
 }
 
 class MyCarList extends StatelessWidget {
-  final int userId;
-  const MyCarList({Key? key, required this.userId}) : super(key: key);
+  final List<Cars> cars;
+  const MyCarList({Key? key, required this.cars}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final carsDB = Provider.of<MyDatabase>(context).carDao;
-    return FutureBuilder<List<CarData>>(
-        future: carsDB.getUserCars(userId),
-        builder: (context, snapshot) {
-          final cars = snapshot.data ?? [];
-          return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: cars.length,
-              itemBuilder: (context, int index) => ListTile(
-                    title: Text(
-                      "${cars[index].mark}",
-                    ),
-                    trailing: TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "Удалить",
-                          style: TextStyle(color: Colors.red),
-                        )),
-                  ));
-          // if (snapshot.connectionState == ConnectionState.done) {
-          //   final cars = snapshot.data ?? [];
-          //   return ListView.builder(
-          //       physics: const NeverScrollableScrollPhysics(),
-          //       shrinkWrap: true,
-          //       itemCount: cars.length,
-          //       itemBuilder: (context, int index) => ListTile(
-          //             title: Text(
-          //               "${cars[index].mark}",
-          //             ),
-          //             trailing: TextButton(
-          //                 onPressed: () {},
-          //                 child: const Text(
-          //                   "Удалить",
-          //                   style: TextStyle(color: Colors.red),
-          //                 )),
-          //           ));
-          // }
-          // return const CircularProgressIndicator();
-        });
+    final profileBloc = BlocProvider.of<ProfileBloc>(context, listen: false);
+
+    return ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: cars.length,
+        itemBuilder: (context, int index) => ListTile(
+              title: Text(
+                "${cars[index].mark!} ${cars[index].model?? ""} ${cars[index].color ?? ""}" ,
+              ),
+              // subtitle: Text(cars[index].vehicleNumber ?? "" ),
+              trailing: TextButton(
+                  onPressed: () => profileBloc.add(DeleteCar(cars[index].pk!)),
+                  child: const Text(
+                    "Удалить",
+                    style: TextStyle(color: Colors.red),
+                  )),
+            ));
   }
 }

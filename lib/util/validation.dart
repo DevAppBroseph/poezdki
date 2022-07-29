@@ -18,8 +18,8 @@ class Validations {
   }
 
   static String? validatePassword(String? value) {
-    if (value!.isEmpty || value.length < 6) {
-      return 'Слабый пароль.';
+    if (value!.isEmpty || value.length < 7) {
+      return 'Слабый пароль. Необходимо указать минимум 8 символов.';
     }
     return null;
   }

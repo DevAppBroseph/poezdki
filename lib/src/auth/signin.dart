@@ -1,4 +1,4 @@
-import 'package:app_poezdka/service/db_service/auth_db.dart';
+import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/src/auth/components/social_buttons.dart';
 import 'package:app_poezdka/src/auth/signup.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
@@ -22,14 +22,12 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Text(
-            "Вход",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+        leadingWidth: 60,
+        title: const Text(
+          "Вход",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: true,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -64,14 +62,12 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Widget _singInButton(context) {
-    final dbAuth = AuthDB();
-    // final authBloc = BlocProvider.of<AuthBloc>(context);
+    final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
     return FullWidthElevButton(
       margin: const EdgeInsets.fromLTRB(10, 60, 10, 5),
       title: "Войти",
       onPressed: () {
-        dbAuth.signIn(context, login: email.text, password: pw.text);
-        // authBloc.add(OnDevLogIn());
+        authBloc.add(LoggedIn(context,email.text, pw.text));
       },
     );
   }

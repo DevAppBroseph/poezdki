@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:drift/drift.dart';
@@ -24,21 +23,9 @@ LazyDatabase _openConnection() {
   });
 }
 
-
-@DriftDatabase(tables: [
-  User,
-  Car,
-  Balance,
-  Ride
-
-
-], daos: [
-  UserDao,
-  CarDao,
-  BalanceDao,
-  RideDao
-
-])
+@DriftDatabase(
+    tables: [User, Car, Balance, Ride],
+    daos: [UserDao, CarDao, BalanceDao, RideDao])
 class MyDatabase extends _$MyDatabase {
   // we tell the database where to storel the data with this constructor
   MyDatabase() : super(_openConnection());

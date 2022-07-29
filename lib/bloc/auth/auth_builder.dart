@@ -1,6 +1,6 @@
 import 'package:app_poezdka/src/app_screens.dart';
-import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/src/onboarding/on_board.dart';
+import 'package:app_poezdka/widget/src_template/search.dart';
 import 'package:flutter/material.dart';
 
 import '../../export/blocs.dart';
@@ -27,7 +27,7 @@ class AppInitBuilder extends StatelessWidget {
         return const AppScreens();
       }
       if (state is AuthUnauthenticated) {
-        return const SignInScreen();
+        return const SearchRides(isAuthorized: false,);
       }
 
       // Default screen

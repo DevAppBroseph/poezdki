@@ -23,6 +23,7 @@ class RideTile extends StatelessWidget {
       : super(key: key);
 
   @override
+  // ignore: avoid_renaming_method_parameters
   Widget build(BuildContext ctx) {
     return InkWell(
       onTap: (() => BottomSheetCall()

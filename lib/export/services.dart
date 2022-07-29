@@ -1,2 +1,2 @@
-export 'package:app_poezdka/service/box_service.dart';
-export 'package:app_poezdka/service/secure_storage.dart';
+export 'package:app_poezdka/service/local/box_service.dart';
+export 'package:app_poezdka/service/local/secure_storage.dart';

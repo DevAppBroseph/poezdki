@@ -1,10 +1,8 @@
-import 'package:app_poezdka/bloc/auth/auth_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/service/db_service/auth_db.dart';
 import 'package:app_poezdka/src/auth/components/signup_account_info.dart';
 import 'package:app_poezdka/src/auth/components/signup_personal_info.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
-import 'package:app_poezdka/widget/dialog/error_dialog.dart';
+import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -27,8 +25,9 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
   final PageController controller = PageController();
   final TextEditingController email =
       TextEditingController(text: "email@mail.ru");
-  final TextEditingController pw = TextEditingController(text: "123456");
-  final TextEditingController pwConfirm = TextEditingController(text: "123456");
+  final TextEditingController pw = TextEditingController(text: "12345678");
+  final TextEditingController pwConfirm =
+      TextEditingController(text: "12345678");
 
   final TextEditingController name = TextEditingController(text: "Name");
   final TextEditingController surname = TextEditingController(text: "Surname");
@@ -42,8 +41,8 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
 
   @override
   Widget build(BuildContext context) {
+    final infoDialog = InfoDialog();
     final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
-    final dbAuth = AuthDB();
     initializeDateFormatting('ru', null);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -121,7 +120,27 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                 FullWidthElevButton(
                   title: currentPage == 1 ? "Зарегистрироваться" : "Далее",
                   onPressed: () async {
-                    if (currentPage == 0 &&
+                    if (currentPage == 0 && _regFormAccount.currentState!.validate() == false) {
+                      infoDialog.show(
+                        title: "Что то не так:",
+                        children: const [
+                          ListTile(
+                            title: Text(
+                                "1) Убедить что вы корректно ввели E-mail",
+                                style: TextStyle(fontSize: 14)),
+                          ),
+                          ListTile(
+                              title: Text(
+                                  "2) Пароль должен содержать минимум 8 символов",
+                                  style: TextStyle(fontSize: 14))),
+                          ListTile(
+                              title: Text(
+                            "3) Убедитесь что введенные пароли совпадают",
+                            style: TextStyle(fontSize: 14),
+                          )),
+                        ],
+                      );
+                    } else if (currentPage == 0 &&
                         _regFormAccount.currentState!.validate()) {
                       setState(() {
                         currentPage++;
@@ -131,16 +150,14 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                       });
                     } else if (currentPage == 1 &&
                         _regFormPersonal.currentState!.validate()) {
-                      await dbAuth
-                          .signUp(context,
-                              login: email.text,
-                              password: pw.text,
-                              firstName: name.text,
-                              lastName: surname.text,
-                              gender: selectedGender!,
-                              birth: selectedDate.millisecondsSinceEpoch)
-                          .onError((error, stackTrace) =>
-                              ErrorDialogs().showError(error.toString()));
+                      authBloc.add(SignUp(
+                        context: context,
+                          login: email.text,
+                          password: pw.text,
+                          firstName: name.text,
+                          lastName: surname.text,
+                          gender: selectedGender!,
+                          birth: selectedDate.millisecondsSinceEpoch));
 
                       // authBloc.add(LoggedIn(email, token))
 

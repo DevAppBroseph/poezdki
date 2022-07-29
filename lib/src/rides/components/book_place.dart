@@ -49,7 +49,7 @@ class _BookingRidePlaceState extends State<BookingRidePlace> {
 
   Widget _submit() {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: FullWidthElevButton(
         title: "Забронировать",
         onPressed: () => InfoDialog().show(
