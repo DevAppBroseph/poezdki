@@ -6,6 +6,7 @@ class InitMyRides extends MyRidesEvent {}
 
 class LoadMyRides extends MyRidesEvent {}
 
+
 class AddMyRide extends MyRidesEvent {
   final String startWay;
   final String endWay;

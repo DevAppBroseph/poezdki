@@ -20,7 +20,7 @@ class UserService {
         final UserModel user = UserModel.fromJson(body);
         return user;
       } else {
-        return throw Exception(
+         throw Exception(
             'Ошибка авторизации, попробуйте еще раз, позже.');
       }
     } catch (e) {

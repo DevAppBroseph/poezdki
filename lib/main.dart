@@ -1,5 +1,6 @@
 import 'package:app_poezdka/bloc/my_rides/my_rides_bloc.dart';
 import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
+import 'package:app_poezdka/bloc/trips/trips_bloc.dart';
 import 'package:app_poezdka/const/theme.dart';
 import 'package:app_poezdka/database/database.dart';
 
@@ -39,14 +40,12 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final db = Provider.of<MyDatabase>(context);
     final userRepository = SecureStorage.instance;
     final appRepository = HiveBoxService.instance;
     return MultiBlocProvider(
         providers: [
-          BlocProvider<MyRidesBloc>(
-            create: (context) =>
-                MyRidesBloc(db.rideDao)..add(LoadMyRides()),
+          BlocProvider<TripsBloc>(
+            create: (context) => TripsBloc()..add(LoadTipsList()),
           ),
           BlocProvider<ProfileBloc>(
             create: (context) =>
@@ -58,7 +57,7 @@ class App extends StatelessWidget {
                   userRepository: userRepository, appRepository: appRepository)
                 ..add(AppStarted());
             },
-          )
+          ),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -74,6 +73,5 @@ class App extends StatelessWidget {
           // home: MultiBlocProvider(providers: [], child: const AppInitBuilder()),
           home: const AppInitBuilder(),
         ));
-
   }
 }

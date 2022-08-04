@@ -1,3 +1,4 @@
+import 'package:app_poezdka/bloc/trips/trips_builder.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/database/database.dart';
 import 'package:app_poezdka/database/table/ride.dart';
@@ -54,7 +55,6 @@ class _SearchRidesState extends State<SearchRides>
 
   @override
   Widget build(BuildContext context) {
-    final rideDb = Provider.of<MyDatabase>(context).rideDao;
 
     return KScaffoldScreen(
       title: "Поиск поездок",
@@ -83,42 +83,18 @@ class _SearchRidesState extends State<SearchRides>
           },
           body: TabBarView(
             controller: _tabController,
-            children: [
+            children: const[
               CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
-                    child: startWay.text.isNotEmpty ||
-                            endWay.text.isNotEmpty ||
-                            _isPackageTransfer == true ||
-                            _isTwoBackSeat == true ||
-                            _isBagadgeTransfer == true ||
-                            _isChildSeat == true ||
-                            _isCondition == true ||
-                            _isSmoking == true ||
-                            _isPetTransfer == true ||
-                            _isPickUpFromHome == true
-                        ? filteredRides(rideDb, startWay.text, endWay.text,
-                            _isPackageTransfer)
-                        : allRides(rideDb),
+                    child: TripsBuilder(),
                   )
                 ],
               ),
               CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
-                    child: startWay.text.isNotEmpty ||
-                            endWay.text.isNotEmpty ||
-                            _isPackageTransfer == true ||
-                            _isTwoBackSeat == true ||
-                            _isBagadgeTransfer == true ||
-                            _isChildSeat == true ||
-                            _isCondition == true ||
-                            _isSmoking == true ||
-                            _isPetTransfer == true ||
-                            _isPickUpFromHome == true
-                        ? filteredRides(rideDb, startWay.text, endWay.text,
-                            _isPackageTransfer)
-                        : allRides(rideDb),
+                    child: Text("Rides"),
                   )
                 ],
               ),
@@ -140,31 +116,31 @@ class _SearchRidesState extends State<SearchRides>
     );
   }
 
-  Widget filteredRides(
-      RideDao rideDb, String startWay, String endWay, bool _isPackageTransfer) {
-    return StreamBuilder<List<RideData>>(
-        stream: rideDb.getFilteredRides(
-            from: startWay, to: endWay, isPackageTransfer: _isPackageTransfer),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            final rides = snapshot.data ?? [];
-            return rides.isNotEmpty
-                ? ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: rides.length,
-                    itemBuilder: (context, int index) => RideTile(
-                          rideData: rides[index],
-                        ))
-                : const Center(
-                    child: Text("Поездок по вашему фильтру не найдено"),
-                  );
-          }
-          return const Center(
-            child: Text("Поездок еще нет"),
-          );
-        });
-  }
+  // Widget filteredRides(
+  //     RideDao rideDb, String startWay, String endWay, bool _isPackageTransfer) {
+  //   return StreamBuilder<List<RideData>>(
+  //       stream: rideDb.getFilteredRides(
+  //           from: startWay, to: endWay, isPackageTransfer: _isPackageTransfer),
+  //       builder: (context, snapshot) {
+  //         if (snapshot.connectionState == ConnectionState.active) {
+  //           final rides = snapshot.data ?? [];
+  //           return rides.isNotEmpty
+  //               ? ListView.builder(
+  //                   physics: const NeverScrollableScrollPhysics(),
+  //                   shrinkWrap: true,
+  //                   itemCount: rides.length,
+  //                   itemBuilder: (context, int index) => RideTile(
+  //                         tripData: rides[index],
+  //                       ))
+  //               : const Center(
+  //                   child: Text("Поездок по вашему фильтру не найдено"),
+  //                 );
+  //         }
+  //         return const Center(
+  //           child: Text("Поездок еще нет"),
+  //         );
+  //       });
+  // }
 
   Widget allRides(RideDao rideDb) {
     return StreamBuilder<List<RideData>>(
@@ -176,9 +152,7 @@ class _SearchRidesState extends State<SearchRides>
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: rides.length,
-                itemBuilder: (context, int index) => RideTile(
-                      rideData: rides[index],
-                    ));
+                itemBuilder: (context, int index) => Container());
           }
           return const Center(
             child: Text("Поездок еще нет"),
@@ -238,9 +212,11 @@ class _SearchRidesState extends State<SearchRides>
                             context, startWay, from, "Откуда едем?"),
                         hintText: "Откуда",
                         textEditingController: startWay,
-                        suffix: startWay.text.isNotEmpty ?   IconButton(
-                          padding: const EdgeInsets.only(right: 0, top: 5),
-                          alignment: Alignment.centerRight,
+                        suffix: startWay.text.isNotEmpty
+                            ? IconButton(
+                                padding:
+                                    const EdgeInsets.only(right: 0, top: 5),
+                                alignment: Alignment.centerRight,
                                 onPressed: () {
                                   setState(() {
                                     from == null;
@@ -251,7 +227,8 @@ class _SearchRidesState extends State<SearchRides>
                                   CupertinoIcons.clear_circled,
                                   size: 18,
                                   color: kPrimaryDarkGrey,
-                                )) : const SizedBox(),
+                                ))
+                            : const SizedBox(),
                         suffixIcon: Image.asset('assets/img/gps.png'),
                         onChanged: (value) {
                           setState(() {});
@@ -270,9 +247,11 @@ class _SearchRidesState extends State<SearchRides>
                         readOnly: true,
                         hintText: "Куда",
                         textEditingController: endWay,
-                        suffix: endWay.text.isNotEmpty ?   IconButton(
-                          padding: const EdgeInsets.only(right: 0, top: 5),
-                          alignment: Alignment.centerRight,
+                        suffix: endWay.text.isNotEmpty
+                            ? IconButton(
+                                padding:
+                                    const EdgeInsets.only(right: 0, top: 5),
+                                alignment: Alignment.centerRight,
                                 onPressed: () {
                                   setState(() {
                                     to == null;
@@ -283,7 +262,8 @@ class _SearchRidesState extends State<SearchRides>
                                   CupertinoIcons.clear_circled,
                                   size: 18,
                                   color: kPrimaryDarkGrey,
-                                )) : const SizedBox(),
+                                ))
+                            : const SizedBox(),
                         suffixIcon: Image.asset('assets/img/gps.png'),
                         onChanged: (value) {
                           setState(() {});

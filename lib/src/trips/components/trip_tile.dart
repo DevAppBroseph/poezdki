@@ -1,33 +1,28 @@
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/model/trip_model.dart';
+import 'package:app_poezdka/src/trips/components/trip_details_sheet.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
-import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/divider/verical_dividers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
 
-import '../../trips/components/trip_details_sheet.dart';
-
-class RideTile extends StatelessWidget {
-  final TripModel tripData;
-  final bool? isUpcoming;
-  final String? distance;
-  final Function? onTap;
-  const RideTile(
-      {Key? key,
-      required this.tripData,
-      this.isUpcoming = false,
-      this.distance,
-      this.onTap})
-      : super(key: key);
+class TripTile extends StatelessWidget {
+  final TripModel trip;
+  const TripTile({Key? key, required this.trip}) : super(key: key);
 
   @override
-  // ignore: avoid_renaming_method_parameters
   Widget build(BuildContext ctx) {
+    final btmSheet = BottomSheetCall();
     return InkWell(
-      onTap: (() => BottomSheetCall().show(ctx,
-          useRootNavigator: true, child: TripDetailsSheet(trip: tripData))),
+      onTap: (() => btmSheet.show(ctx,
+          useRootNavigator: true,
+          topRadius: const Radius.circular(50),
+          child: TripDetailsSheet(
+            trip: trip,
+          ))),
       child: Container(
           margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           decoration: BoxDecoration(
@@ -43,17 +38,25 @@ class RideTile extends StatelessWidget {
                   child: FlutterLogo(),
                   backgroundColor: kPrimaryWhite,
                 ),
-                title: Text(tripData.owner.toString()),
+                title: Text(
+                  trip.owner?.firstname ?? " Пользователь не найден",
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                ),
                 subtitle: Text(
-                    "${tripData.car} - ${tripData.price!.toStringAsFixed(0)} рублей"),
+                  "${trip.car?.color ?? ""} ${trip.car?.mark ?? ""} ${trip.car?.model ?? ""} - ${trip.price} ₽",
+                  maxLines: 1,
+                  overflow: TextOverflow.clip,
+                ),
+                trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
               ),
-              _trip(tripData),
-              isUpcoming!
-                  ? FullWidthElevButton(
-                      title: "Отменить поездку",
-                      onPressed: () {},
-                    )
-                  : const SizedBox()
+              _trip(trip),
+              // isUpcoming!
+              //     ? FullWidthElevButton(
+              //         title: "Отменить поездку",
+              //         onPressed: () {},
+              //       )
+              //     : const SizedBox()
             ],
           )),
     );
@@ -79,19 +82,19 @@ class RideTile extends StatelessWidget {
               ListTile(
                 minLeadingWidth: 30,
                 title: Text(
-                  tripData!.departure?.name ?? "Казань",
+                  tripData!.departure?.name ?? " ",
                   maxLines: 1,
                 ),
                 subtitle: Text(
-                  "${DateFormat("dd MMMM").format(startTime)},  - Автовокзал",
+                  DateFormat("dd MMMM").format(startTime),
                   maxLines: 1,
                 ),
               ),
-              distance != null
-                  ? ListTile(
-                      subtitle: Text(distance!),
-                    )
-                  : const SizedBox(),
+              // trip.stops?.last.distanceToPrevious != null
+              //     ? ListTile(
+              //         subtitle: Text(trip.stops!.last.distanceToPrevious.toString()),
+              //       )
+              //     : const SizedBox(),
               ListTile(
                 minVerticalPadding: 0,
                 minLeadingWidth: 30,
@@ -99,7 +102,7 @@ class RideTile extends StatelessWidget {
                   tripData.stops?.last.name ?? "Казань",
                   maxLines: 1,
                 ),
-                subtitle: const Text(" "),
+                subtitle: Text(DateFormat("dd MMMM").format(endTime)),
               ),
             ],
           ),

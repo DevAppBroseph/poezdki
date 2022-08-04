@@ -1,13 +1,13 @@
-part of 'my_rides_bloc.dart';
+// part of 'my_rides_bloc.dart';
 
-class MyRidesState {}
+// class MyRidesState {}
 
-class MyRidesInitial extends MyRidesState {}
+// class MyRidesInitial extends MyRidesState {}
 
-class MyRidesLoading extends MyRidesState {}
+// class MyRidesLoading extends MyRidesState {}
 
-class MyRidesLoaded extends MyRidesState {
-  final List<RideData> rides;
+// class MyRidesLoaded extends MyRidesState {
+//   final List<TripModel>? rides;
 
-  MyRidesLoaded(this.rides);
-}
+//   MyRidesLoaded(this.rides);
+// }

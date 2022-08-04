@@ -1,18 +1,21 @@
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/const/lorem_ipsum.dart';
-import 'package:app_poezdka/database/database.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/chat/chat_screen.dart';
 import 'package:app_poezdka/src/rides/components/book_place.dart';
+import 'package:app_poezdka/src/trips/components/book_trip.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
-import 'components/ride_details_trip.dart';
+import 'trip_details_info.dart';
 
-class RideDetails extends StatelessWidget {
-  final RideData rideData;
-  const RideDetails({Key? key, required this.rideData}) : super(key: key);
+class TripDetailsSheet extends StatelessWidget {
+  final TripModel trip;
+  const TripDetailsSheet({Key? key, required this.trip}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +27,11 @@ class RideDetails extends StatelessWidget {
       _rideInfo(),
       _div(),
       _rideComment(),
-      _rideButtons(context),
-      
+      _tripButtons(context),
     ]);
   }
 
-  Widget _rideButtons(context) {
+  Widget _tripButtons(context) {
     return Row(
       children: [
         Expanded(
@@ -40,7 +42,8 @@ class RideDetails extends StatelessWidget {
         )),
         Expanded(
             child: FullWidthElevButton(
-          onPressed: () => pushNewScreen(context, screen: const BookingRidePlace()),
+          onPressed: () =>
+              pushNewScreen(context, screen:  BookTrip(tripData: trip,)),
           title: "Забронировать",
           titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
         ))
@@ -56,7 +59,7 @@ class RideDetails extends StatelessWidget {
 
   Widget _tripData() {
     return RideDetailsTrip(
-      rideData: rideData,
+      tripData: trip,
     );
   }
 
@@ -64,9 +67,20 @@ class RideDetails extends StatelessWidget {
     return ListTile(
       title: Padding(
         padding: const EdgeInsets.only(left: 20.0),
-        child: Text(
-          rideData.price.toString() + " ₽",
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        child: RichText(
+          text: TextSpan(
+              text: trip.price.toString(),
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+              children: const <TextSpan>[
+                TextSpan(
+                  text: ' ₽',
+                  style: TextStyle(color: Colors.grey, fontSize: 18),
+                )
+              ]),
         ),
       ),
     );
@@ -74,41 +88,50 @@ class RideDetails extends StatelessWidget {
 
   Widget _rideInfo() {
     final mapInfo = {
-      'Перевозка багажа': rideData.isBagadgeTransfer,
-      '2 места на заднем сиденье': rideData.isTwoBackSeat,
-      'Есть детское кресло': rideData.isChildSeat,
-      'Можно с животными': rideData.isPetTransfer,
-      'Кондиционер': rideData.isCondition,
-      'Можно курить': rideData.isSmoking
+      'Перевозка багажа': trip.package,
+      '2 места на заднем сиденье': trip.twoPlacesInBehind,
+      'Есть детское кресло': trip.babyChair,
+      'Можно с животными': trip.animals,
+      'Кондиционер': trip.conditioner,
+      'Можно курить': trip.smoke
     };
+
     return Column(
       children: [
         ListTile(
           title: const Text("Автомобиль"),
-          trailing: Text(rideData.car?? " "),
+          trailing: Text(
+            "${trip.car?.mark ?? ""} ${trip.car?.model ?? ""} ${trip.car?.color ?? ""} ",
+            maxLines: 1,
+            overflow: TextOverflow.clip,
+          ),
         ),
         ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
+            padding: EdgeInsets.zero,
             itemCount: mapInfo.length,
             itemBuilder: (context, int index) {
               String key = mapInfo.keys.elementAt(index);
               bool? value = mapInfo.values.elementAt(index);
-              if (value == false) {
-                return const Padding(padding: EdgeInsets.zero,);
-              }
-              return ListTile(
-                title: Text(
-                  key,
-                  style: const TextStyle(
-                    fontFamily: '.SF Pro Display',
+              if (value == false || value == null) {
+                return const Padding(
+                  padding: EdgeInsets.zero,
+                );
+              } else {
+                return ListTile(
+                  title: Text(
+                    key,
+                    style: const TextStyle(
+                      fontFamily: '.SF Pro Display',
+                    ),
                   ),
-                ),
-                trailing: const Icon(
-                  Icons.check,
-                  color: kPrimaryColor,
-                ),
-              );
+                  trailing: const Icon(
+                    Icons.check,
+                    color: kPrimaryColor,
+                  ),
+                );
+              }
             }),
       ],
     );
@@ -123,22 +146,17 @@ class RideDetails extends StatelessWidget {
         leading: const CircleAvatar(
           child: FlutterLogo(),
         ),
-        title: Text(rideData.ownerName ?? ""),
+        title: Text(trip.owner?.firstname ?? "Пользователь не найден"),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
                 onPressed: () {},
-                icon: const Icon(
-                  Icons.call,
-                  color: kPrimaryColor,
-                )),
+                icon: SvgPicture.asset("$svgPath/call-calling.svg")),
             IconButton(
-                onPressed: () => pushNewScreen(context, withNavBar: false, screen: const ChatScreen()),
-                icon: const Icon(
-                  Icons.chat_bubble,
-                  color: kPrimaryColor,
-                ))
+                onPressed: () => pushNewScreen(context,
+                    withNavBar: false, screen: const ChatScreen()),
+                icon: SvgPicture.asset("$svgPath/messages-2.svg"))
           ],
         ),
       ),

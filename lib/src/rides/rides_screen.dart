@@ -1,17 +1,16 @@
 import 'package:app_poezdka/bloc/my_rides/my_rides_bloc.dart';
-import 'package:app_poezdka/bloc/my_rides/my_rides_builder.dart';
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/database/database.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/export/services.dart';
+import 'package:app_poezdka/model/trip_model.dart';
+import 'package:app_poezdka/src/rides/components/ride_tile.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class RidesScreen extends StatefulWidget {
-  final List? rides;
-  const RidesScreen({Key? key, this.rides}) : super(key: key);
+  final List<TripModel>? pastRidesDriver;
+  const RidesScreen({Key? key, this.pastRidesDriver}) : super(key: key);
 
   @override
   State<RidesScreen> createState() => _RidesScreenState();
@@ -32,7 +31,6 @@ class _RidesScreenState extends State<RidesScreen>
 
   @override
   Widget build(BuildContext context) {
-    final rideBloc = BlocProvider.of<MyRidesBloc>(context);
     return KScaffoldScreen(
         resizeToAvoidBottomInset: false,
         title: "Мои поездки",
@@ -45,31 +43,27 @@ class _RidesScreenState extends State<RidesScreen>
                 children: [
                   SingleChildScrollView(
                     child: Column(
-                      children: [],
-                      // children: [futureRides(), pastRides()],
+                      // children: [],
+                      children: [
+                        futureRides(),
+                        pastRides(context, widget.pastRidesDriver)
+                      ],
                     ),
                   ),
-                  Center(
-                    child: FullWidthElevButton(
-                      title: "Hi",
-                      onPressed: () => rideBloc
-                        ..add(AddMyRide(startWay: "start", endWay: "end", childSeat: true)),
-                    ),
-                  ),
+                  Center(child: Container()),
                 ])));
   }
 
   Widget futureRides() {
-
     return Column(
-      children: const[
+      children: const [
         ListTile(
           title: Text(
             "Предстоящие поездки",
             style: TextStyle(color: Colors.grey),
           ),
         ),
-        MyRidesBuilder()
+
         // FutureBuilder<UserData?>(
         //   future: dbUser.getUserData(),
         //   builder: (context, snapshot) {
@@ -96,42 +90,24 @@ class _RidesScreenState extends State<RidesScreen>
     );
   }
 
-  Widget pastRides() {
-    final rideDb = Provider.of<MyDatabase>(context).rideDao;
-    final dbUser = Provider.of<MyDatabase>(context, listen: false).userDao;
-    return Column(
-      children: const[
-         ListTile(
-          title: Text(
-            "Прошедшие поездки",
-            style: TextStyle(color: Colors.grey),
+  Widget pastRides(context, List<TripModel>? pastRidesDriver) {
+    if (pastRidesDriver != null && pastRidesDriver.length > 0) {
+      return Column(
+        children: [
+          const ListTile(
+            title: Text(
+              "Прошедшие поездки",
+              style: TextStyle(color: Colors.grey),
+            ),
           ),
-        ),
-         MyRidesBuilder()
-        // FutureBuilder<UserData?>(
-        //   future: dbUser.getUserData(),
-        //   builder: (context, snapshot) {
-        //     if (snapshot.connectionState == ConnectionState.done) {
-        //       return StreamBuilder<List<RideData>>(
-        //           stream: rideDb.streamMyPastRides(snapshot.data!.id!),
-        //           builder: (context, snap) {
-        //             if (snap.connectionState == ConnectionState.active) {
-        //               final rides = snap.data ?? [];
-        //               return ListView.builder(
-        //                   physics: const NeverScrollableScrollPhysics(),
-        //                   shrinkWrap: true,
-        //                   itemCount: rides.length,
-        //                   itemBuilder: (context, int index) =>
-        //                       RideTile(rideData: rides[index]));
-        //             }
-        //             return const CircularProgressIndicator();
-        //           });
-        //     }
-        //     return const CircularProgressIndicator();
-        //   },
-        // ),
-      ],
-    );
+          ListView.builder(
+              itemCount: pastRidesDriver.length,
+              itemBuilder: (context, index) =>
+                  RideTile(tripData: pastRidesDriver[index]))
+        ],
+      );
+    }
+    return const SizedBox();
   }
 
   PreferredSizeWidget _tabbar() {
