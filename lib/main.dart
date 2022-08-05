@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive/hive.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -19,13 +18,11 @@ import 'export/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  const keyApplicationId = 'JLzG0AEUIb6TYdDmKtAjdnX9LTJoiM2BMOxsXkAX';
-  const keyClientKey = '2xbiWrZ4S0HxZswBlW02pd82BkI1cYmvV6mqPRtL';
-  const keyParseServerUrl = 'https://parseapi.back4app.com';
-  await Parse().initialize(keyApplicationId, keyParseServerUrl,
-      clientKey: keyClientKey,
-      autoSendSessionId: true,
-      coreStore: await CoreStoreSembastImp.getInstance());
+
+  // await Parse().initialize(keyApplicationId, keyParseServerUrl,
+  //     clientKey: keyClientKey,
+  //     autoSendSessionId: true,
+  //     coreStore: await CoreStoreSembastImp.getInstance());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
