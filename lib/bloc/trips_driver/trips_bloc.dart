@@ -22,7 +22,7 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
         animals: event.animals,
         package: event.package,
         baggage: event.baggage,
-        babyChair: true,
+        babyChair: event.babyChair,
         smoke: event.smoke,
         twoPlacesInBehind: event.twoPlacesInBehind,
         conditioner: event.conditioner);
