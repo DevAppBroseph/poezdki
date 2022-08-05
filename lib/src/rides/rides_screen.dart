@@ -1,10 +1,7 @@
-import 'package:app_poezdka/bloc/my_rides/my_rides_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/export/services.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/rides/components/ride_tile.dart';
-import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 
@@ -91,7 +88,7 @@ class _RidesScreenState extends State<RidesScreen>
   }
 
   Widget pastRides(context, List<TripModel>? pastRidesDriver) {
-    if (pastRidesDriver != null && pastRidesDriver.length > 0) {
+    if (pastRidesDriver != null && pastRidesDriver.isNotEmpty) {
       return Column(
         children: [
           const ListTile(

@@ -14,6 +14,7 @@ class TripTile extends StatelessWidget {
   const TripTile({Key? key, required this.trip}) : super(key: key);
 
   @override
+  // ignore: avoid_renaming_method_parameters
   Widget build(BuildContext ctx) {
     final btmSheet = BottomSheetCall();
     return InkWell(
@@ -39,7 +40,7 @@ class TripTile extends StatelessWidget {
                   backgroundColor: kPrimaryWhite,
                 ),
                 title: Text(
-                  trip.owner?.firstname ?? " Пользователь не найден",
+                  "${trip.owner?.firstname ?? " Пользователь не найден"} ${trip.tripId.toString() }",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
@@ -66,7 +67,7 @@ class TripTile extends StatelessWidget {
     final startTime =
         DateTime.fromMicrosecondsSinceEpoch(tripData?.timeStart ?? 0 * 1000);
     final endTime = DateTime.fromMicrosecondsSinceEpoch(
-        tripData?.stops?.last.approachTime ?? 0 * 1000);
+        tripData?.stops?.last.approachTime ?? 0);
     return Row(
       children: [
         Container(

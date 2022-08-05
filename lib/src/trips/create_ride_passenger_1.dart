@@ -1,7 +1,6 @@
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/model/city_model.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
-import 'package:app_poezdka/src/rides/create_ride_passenger_2.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import '../../widget/bottom_sheet/btm_builder.dart';
 import '../../widget/button/full_width_elevated_button.dart';
 import 'components/pick_city.dart';
+import 'create_ride_passenger_2.dart';
 
 class CreateRidePassenger extends StatefulWidget {
   const CreateRidePassenger({

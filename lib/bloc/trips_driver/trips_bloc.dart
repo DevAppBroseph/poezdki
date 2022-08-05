@@ -9,26 +9,20 @@ part 'trips_state.dart';
 class TripsBloc extends Bloc<TripsEvent, TripsState> {
   final tripService = TripService();
   TripsBloc() : super(TripsInitial()) {
-    on<InitTrips>(_initTripsList);
-    on<LoadTipsList>(_loadTripsList);
+    on<LoadAllTripsList>(_loadTripsList);
     on<UpdateTripsList>(_updateTripsList);
     on<ThrowTipsError>(_throwTripsError);
   }
 
-  void _initTripsList(InitTrips event, Emitter<TripsState> emit) {
+  void _loadTripsList(LoadAllTripsList event, Emitter<TripsState> emit) async {
     emit(TripsLoading());
-    add(LoadTipsList());
-  }
-
-  void _loadTripsList(LoadTipsList event, Emitter<TripsState> emit) async {
-    emit(TripsLoading());
-    final trips = await tripService.getAllDriverTrips(
+    final trips = await tripService.getAllTrips(
         departure: event.departure,
         destination: event.destination,
         animals: event.animals,
         package: event.package,
         baggage: event.baggage,
-        babyChair: event.babyChair,
+        babyChair: true,
         smoke: event.smoke,
         twoPlacesInBehind: event.twoPlacesInBehind,
         conditioner: event.conditioner);

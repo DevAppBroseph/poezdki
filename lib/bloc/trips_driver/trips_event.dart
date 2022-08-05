@@ -3,9 +3,7 @@ part of 'trips_bloc.dart';
 @immutable
 abstract class TripsEvent {}
 
-class InitTrips extends TripsEvent {}
-
-class LoadTipsList extends TripsEvent {
+class LoadAllTripsList extends TripsEvent {
   final String? departure;
   final String? destination;
   final bool? animals;
@@ -16,7 +14,7 @@ class LoadTipsList extends TripsEvent {
   final bool? twoPlacesInBehind;
   final bool? conditioner;
 
-  LoadTipsList(
+  LoadAllTripsList(
       {this.departure,
       this.destination,
       this.animals,

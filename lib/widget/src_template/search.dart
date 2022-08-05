@@ -1,10 +1,12 @@
-import 'package:app_poezdka/bloc/trips/trips_builder.dart';
+// ignore_for_file: unused_field
+
+import 'package:app_poezdka/bloc/trips_driver/trips_builder.dart';
+import 'package:app_poezdka/bloc/trips_passenger/trips_p_builder.dart';
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/database/database.dart';
-import 'package:app_poezdka/database/table/ride.dart';
+import 'package:app_poezdka/const/images.dart';
+
 import 'package:app_poezdka/src/auth/signin.dart';
-import 'package:app_poezdka/src/rides/components/pick_city.dart';
-import 'package:app_poezdka/src/rides/components/ride_tile.dart';
+import 'package:app_poezdka/src/trips/components/pick_city.dart';
 import 'package:app_poezdka/src/rides/components/waypoint.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
@@ -14,11 +16,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
-import 'package:provider/provider.dart';
 
 import '../../model/city_model.dart';
 import '../text_field/custom_text_field.dart';
-import '../../src/rides/components/filter_sheet.dart';
 
 class SearchRides extends StatefulWidget {
   final bool? isAuthorized;
@@ -38,6 +38,14 @@ class _SearchRidesState extends State<SearchRides>
   final TextEditingController startWay = TextEditingController();
   final TextEditingController endWay = TextEditingController();
 
+  final bool _tempIsPackageTransfer = false;
+  final bool _tempIsTwoBackSeat = false;
+  final bool _tempIsBagadgeTransfer = false;
+  final bool _tempIsChildSeat = false;
+  final bool _tempIsCondition = false;
+  final bool _tempIsSmoking = false;
+  final bool _tempIsPetTransfer = false;
+
   bool _isPackageTransfer = false;
   final bool _isTwoBackSeat = false;
   final bool _isBagadgeTransfer = false;
@@ -45,7 +53,6 @@ class _SearchRidesState extends State<SearchRides>
   final bool _isCondition = false;
   final bool _isSmoking = false;
   final bool _isPetTransfer = false;
-  final bool _isPickUpFromHome = false;
 
   @override
   void initState() {
@@ -55,7 +62,6 @@ class _SearchRidesState extends State<SearchRides>
 
   @override
   Widget build(BuildContext context) {
-
     return KScaffoldScreen(
       title: "Поиск поездок",
       actions: [
@@ -63,7 +69,7 @@ class _SearchRidesState extends State<SearchRides>
             onPressed: () => BottomSheetCall().show(context,
                 topRadius: const Radius.circular(50),
                 useRootNavigator: true,
-                child: const FilterSheet()),
+                child: bottomSheetFilter()),
             icon: const Icon(MaterialCommunityIcons.filter_outline))
       ],
       body: Container(
@@ -73,17 +79,13 @@ class _SearchRidesState extends State<SearchRides>
           headerSliverBuilder: (context, bool inner) {
             return [
               SliverAppBar(
-                // collapsedHeight: 80,
-                // expandedHeight: 100.0,
-                //forceElevated: innerBoxIsScrolled,
-                //floating: true,
                 bottom: _bottomFilter(),
               )
             ];
           },
           body: TabBarView(
             controller: _tabController,
-            children: const[
+            children: const [
               CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
@@ -94,7 +96,7 @@ class _SearchRidesState extends State<SearchRides>
               CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
-                    child: Text("Rides"),
+                    child: TripsPassengerBuilder(),
                   )
                 ],
               ),
@@ -114,50 +116,6 @@ class _SearchRidesState extends State<SearchRides>
             )
           : null,
     );
-  }
-
-  // Widget filteredRides(
-  //     RideDao rideDb, String startWay, String endWay, bool _isPackageTransfer) {
-  //   return StreamBuilder<List<RideData>>(
-  //       stream: rideDb.getFilteredRides(
-  //           from: startWay, to: endWay, isPackageTransfer: _isPackageTransfer),
-  //       builder: (context, snapshot) {
-  //         if (snapshot.connectionState == ConnectionState.active) {
-  //           final rides = snapshot.data ?? [];
-  //           return rides.isNotEmpty
-  //               ? ListView.builder(
-  //                   physics: const NeverScrollableScrollPhysics(),
-  //                   shrinkWrap: true,
-  //                   itemCount: rides.length,
-  //                   itemBuilder: (context, int index) => RideTile(
-  //                         tripData: rides[index],
-  //                       ))
-  //               : const Center(
-  //                   child: Text("Поездок по вашему фильтру не найдено"),
-  //                 );
-  //         }
-  //         return const Center(
-  //           child: Text("Поездок еще нет"),
-  //         );
-  //       });
-  // }
-
-  Widget allRides(RideDao rideDb) {
-    return StreamBuilder<List<RideData>>(
-        stream: rideDb.getAllRidesAsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            final rides = snapshot.data ?? [];
-            return ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: rides.length,
-                itemBuilder: (context, int index) => Container());
-          }
-          return const Center(
-            child: Text("Поездок еще нет"),
-          );
-        });
   }
 
   PreferredSize _bottomFilter() {
@@ -290,6 +248,132 @@ class _SearchRidesState extends State<SearchRides>
           ],
         ),
         preferredSize: const Size(200, 308));
+  }
+
+  Widget bottomSheetFilter() {
+    return BottomSheetChildren(
+      children: [
+        const ListTile(
+          title: Text(
+            "Фильтр поиска",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        _switchTile(
+            img: 'box.png',
+            title: "Перевозка посылок",
+            filter: _tempIsPackageTransfer,
+            onChanged: (value) {
+              setState(() {
+                value == !value;
+              });
+            }),
+        _switchTile(
+            img: 'sofa.png',
+            title: "2 места на заднем сиденье",
+            filter: _tempIsTwoBackSeat,
+            onChanged: (value) {
+              setState(() {
+                value == !value;
+              });
+            }),
+        _switchTile(
+            img: '3d-cube-scan.png',
+            title: "Перевозка багажа",
+            filter: _tempIsBagadgeTransfer,
+            onChanged: (value) {
+              setState(() {
+                value == !value;
+              });
+            }),
+        _switchTile(
+            img: 'person-standing.png',
+            title: "Детское кресло",
+            filter: _tempIsChildSeat,
+            onChanged: (value) {
+              setState(() {
+                value == !value;
+              });
+            }),
+        _switchTile(
+            img: 'cigarette.png',
+            title: "Курение в салоне",
+            filter: _tempIsSmoking,
+            onChanged: (value) {
+              setState(() {
+                value == !value;
+              });
+            }),
+        _switchTile(
+            img: 'github.png',
+            title: "Перевозка животных",
+            filter: _tempIsPetTransfer,
+            onChanged: (value) {
+              setState(() {
+                value == !value;
+              });
+            }),
+        _switchTile(
+            img: 'sun.png',
+            title: "Кондиционер",
+            filter: _tempIsCondition,
+            onChanged: (value) {
+              setState(() {
+                value == !value;
+              });
+            }),
+        ListTile(
+          minLeadingWidth: 3,
+          leading: Image.asset("$iconPath/man.png"),
+          title: const Text("Пол водителя"),
+          trailing: const Text("Мужской"),
+        ),
+        FullWidthElevButton(
+          title: "Применить",
+          onPressed: () => Navigator.pop(context),
+        ),
+        const SizedBox(
+          height: 30,
+        )
+      ],
+    );
+  }
+
+  Widget _switchTile(
+      {required String img,
+      required String title,
+      required bool filter,
+      Function(bool)? onChanged}) {
+    return SwitchListTile(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("$iconPath$img"),
+          const SizedBox(
+            width: 14,
+          ),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16),
+          )
+        ],
+      ),
+      value: filter,
+      onChanged: (bool value) {
+        setState(() {
+          _onSwitchChanged(filter, value);
+        });
+      },
+    );
+  }
+
+  void _onSwitchChanged(bool fliter, bool value) {
+//    setState(() {
+    fliter = value;
+//    });
   }
 
   void pickDestinition(context, TextEditingController contoller, City? city,

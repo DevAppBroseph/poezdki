@@ -1,4 +1,4 @@
-import 'package:app_poezdka/bloc/trips/trips_bloc.dart';
+import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/src/trips/components/trips_list.dart';
 import 'package:flutter/material.dart';
 
@@ -14,8 +14,11 @@ class TripsBuilder extends StatelessWidget {
         bloc: tripsBloc,
         builder: ((context, state) {
           if (state is TripsLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const Padding(
+              padding:  EdgeInsets.all(20.0),
+              child:  Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           }
           if (state is TripsLoaded) {

@@ -16,9 +16,10 @@ class BookTrip extends StatefulWidget {
 }
 
 class _BookTripState extends State<BookTrip> {
-  bool seat1 = true;
-  bool seat2 = false;
-  bool seat3 = false;
+  CarPlace seat1 = CarPlace(seatNumber: 1, isEmpty: true, isSelected: false);
+  CarPlace seat2 = CarPlace(seatNumber: 2, isEmpty: true, isSelected: false);
+  CarPlace seat3 = CarPlace(seatNumber: 3, isEmpty: false, isSelected: false);
+  CarPlace seat4 = CarPlace(seatNumber: 4, isEmpty: false, isSelected: false);
   double _value = 1.0;
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class _BookTripState extends State<BookTrip> {
               const SizedBox(
                 height: 40,
               ),
-              _placePicker(),
+              _placePicker(context),
               _submit()
             ],
           ),
@@ -67,72 +68,42 @@ class _BookTripState extends State<BookTrip> {
     );
   }
 
-  Widget _placePicker() {
+  Widget _placePicker(context) {
     return Stack(
       children: [
         Image.asset(
           'assets/img/carbg.png',
           scale: 0.8,
         ),
-        Positioned(
-          top: 180,
-          left: 112,
-          child: Container(
-            color: seat1 ? kPrimaryColor : kPrimaryLightGrey,
-            child: seat1
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                  )
-                : null,
-            height: 30,
-            width: 30,
-          ),
-        ),
-        Positioned(
-          top: 215,
-          left: 112,
-          child: Container(
-            color: seat2 ? kPrimaryColor : kPrimaryLightGrey,
-            child: seat2
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                  )
-                : null,
-            height: 30,
-            width: 30,
-          ),
-        ),
-        Positioned(
-          top: 215,
-          left: 77,
-          child: Container(
-            color: seat3 ? kPrimaryColor : kPrimaryLightGrey,
-            child: seat3
-                ? const Icon(
-                    Icons.check,
-                    color: Colors.white,
-                  )
-                : null,
-            height: 30,
-            width: 30,
-          ),
-        ),
-        Positioned(
-          top: 215,
-          left: 42,
-          child: Container(
-            color: kPrimaryRed,
-            child: const Icon(
-              Icons.lock,
-              color: Colors.white,
-            ),
-            height: 30,
-            width: 30,
-          ),
-        ),
+        carPlace(context, positionTop: 180, positionLeft: 112, carPlace: seat1),
+        carPlace(context, positionTop: 215, positionLeft: 42, carPlace: seat2),
+        carPlace(context, positionTop: 215, positionLeft: 77, carPlace: seat3),
+        carPlace(context, positionTop: 215, positionLeft: 112, carPlace: seat4)
       ],
+    );
+  }
+
+  Widget carPlace(context,
+      {required double positionTop,
+      required double positionLeft,
+      required CarPlace carPlace}) {
+    return Positioned(
+      top: positionTop,
+      left: positionLeft,
+      child: InkWell(
+        onTap: () {
+          if (carPlace.isEmpty) {
+            carPlace.isSelected == true;
+
+            setState(() {});
+          }
+        },
+        child: carPlace.isEmpty == false
+            ? const BlockedSeat()
+            : carPlace.isSelected
+                ? const SelectedSeat()
+                : const EmptySeat(),
+      ),
     );
   }
 
@@ -155,24 +126,71 @@ class _BookTripState extends State<BookTrip> {
         onChanged: (dynamic value) {
           setState(() {
             _value = value;
-            if (_value == 1) {
-              seat1 = true;
-              seat2 = false;
-              seat3 = false;
-            }
-            if (_value == 2) {
-              seat1 = true;
-              seat2 = true;
-              seat3 = false;
-            }
-            if (_value == 3) {
-              seat1 = true;
-              seat2 = true;
-              seat3 = true;
-            }
           });
         },
       ),
     );
   }
+}
+
+class SelectedSeat extends StatelessWidget {
+  const SelectedSeat({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5), color: kPrimaryColor),
+      child: const Icon(
+        Icons.check,
+        color: Colors.white,
+      ),
+      height: 30,
+      width: 30,
+    );
+  }
+}
+
+class EmptySeat extends StatelessWidget {
+  const EmptySeat({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5), color: kPrimaryLightGrey),
+      child: null,
+      height: 30,
+      width: 30,
+    );
+  }
+}
+
+class BlockedSeat extends StatelessWidget {
+  const BlockedSeat({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5), color: kPrimaryRed),
+      child: const Icon(
+        Icons.lock,
+        color: Colors.white,
+      ),
+      height: 30,
+      width: 30,
+    );
+  }
+}
+
+class CarPlace {
+  final int seatNumber;
+  final bool isEmpty;
+  final bool isSelected;
+
+  CarPlace(
+      {required this.seatNumber,
+      required this.isEmpty,
+      required this.isSelected});
 }

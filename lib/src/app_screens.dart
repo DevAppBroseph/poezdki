@@ -2,13 +2,13 @@ import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/src/aaa_dev/main_dev.dart';
 import 'package:app_poezdka/src/profile/profile_screen.dart';
+import 'package:app_poezdka/src/trips/create_ride.dart';
 import 'package:app_poezdka/widget/src_template/search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
-import 'rides/create_ride.dart';
 import 'rides/rides_screen.dart';
 
 class AppScreens extends StatelessWidget {

@@ -10,8 +10,8 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 import '../../widget/bottom_sheet/btm_builder.dart';
 import '../../widget/button/full_width_elevated_button.dart';
-import 'create_ride_driver_2.dart';
 import 'components/pick_car.dart';
+import 'create_ride_driver_2.dart';
 import 'components/pick_city.dart';
 
 class CreateRideDriver extends StatefulWidget {

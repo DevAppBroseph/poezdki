@@ -1,9 +1,10 @@
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/src/rides/create_ride_passenger_1.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+
 import 'create_ride_driver_1.dart';
+import 'create_ride_passenger_1.dart';
 
 class CreateRide extends StatefulWidget {
   const CreateRide({Key? key}) : super(key: key);

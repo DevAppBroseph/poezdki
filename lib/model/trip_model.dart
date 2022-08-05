@@ -68,7 +68,7 @@ class TripModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['trip_id'] = tripId;
     if (owner != null) {
       data['owner'] = owner!.toJson();
@@ -100,20 +100,23 @@ class TripModel {
 }
 
 class Owner {
-  Null? phone;
+  int? id;
+  String? phone;
   String? firstname;
   String? lastname;
 
-  Owner({this.phone, this.firstname, this.lastname});
+  Owner({this.id, this.phone, this.firstname, this.lastname});
 
   Owner.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     phone = json['phone'];
     firstname = json['firstname'];
     lastname = json['lastname'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
     data['phone'] = phone;
     data['firstname'] = firstname;
     data['lastname'] = lastname;
@@ -150,7 +153,7 @@ class Car {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['pk'] = pk;
     data['owner'] = owner;
     data['mark'] = mark;
@@ -173,8 +176,7 @@ class Departure {
       {this.coords, this.district, this.name, this.population, this.subject});
 
   Departure.fromJson(Map<String, dynamic> json) {
-    coords =
-        json['coords'] != null ? Coords.fromJson(json['coords']) : null;
+    coords = json['coords'] != null ? Coords.fromJson(json['coords']) : null;
     district = json['district'];
     name = json['name'];
     population = json['population'];
@@ -182,7 +184,7 @@ class Departure {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (coords != null) {
       data['coords'] = coords!.toJson();
     }
@@ -206,7 +208,7 @@ class Coords {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['lat'] = lat;
     data['lon'] = lon;
     return data;
@@ -232,8 +234,7 @@ class Stops {
       this.distanceToPrevious});
 
   Stops.fromJson(Map<String, dynamic> json) {
-    coords =
-        json['coords'] != null ? Coords.fromJson(json['coords']) : null;
+    coords = json['coords'] != null ? Coords.fromJson(json['coords']) : null;
     district = json['district'];
     name = json['name'];
     population = json['population'];
@@ -243,7 +244,7 @@ class Stops {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (coords != null) {
       data['coords'] = coords!.toJson();
     }

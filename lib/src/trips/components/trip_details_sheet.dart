@@ -3,7 +3,6 @@ import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/const/lorem_ipsum.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/chat/chat_screen.dart';
-import 'package:app_poezdka/src/rides/components/book_place.dart';
 import 'package:app_poezdka/src/trips/components/book_trip.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
