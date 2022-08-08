@@ -1,6 +1,7 @@
 import 'package:app_poezdka/model/passenger_model.dart';
 
 class TripModel {
+  bool? isPremium;
   int? tripId;
   Owner? owner;
   Car? car;
@@ -19,7 +20,8 @@ class TripModel {
   String? ownerGender;
 
   TripModel(
-      {this.tripId,
+      {this.isPremium,
+      this.tripId,
       this.owner,
       this.car,
       this.price,
@@ -37,6 +39,7 @@ class TripModel {
       this.ownerGender});
 
   TripModel.fromJson(Map<String, dynamic> json) {
+    isPremium = json['is_premium'];
     tripId = json['trip_id'];
     owner = json['owner'] != null ? Owner.fromJson(json['owner']) : null;
     car = json['car'] != null ? Car.fromJson(json['car']) : null;
@@ -104,14 +107,18 @@ class Owner {
   String? phone;
   String? firstname;
   String? lastname;
+  String? photo;
+  String? seat;
 
-  Owner({this.id, this.phone, this.firstname, this.lastname});
+  Owner({this.id, this.phone, this.firstname, this.lastname, this.photo, this.seat});
 
   Owner.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     phone = json['phone'];
     firstname = json['firstname'];
     lastname = json['lastname'];
+    photo = json['photo'];
+    seat = json['seat'];
   }
 
   Map<String, dynamic> toJson() {
@@ -194,17 +201,19 @@ class Departure {
     data['subject'] = subject;
     return data;
   }
+
+  
 }
 
 class Coords {
-  double? lat;
-  double? lon;
+  String? lat;
+  String? lon;
 
   Coords({this.lat, this.lon});
 
   Coords.fromJson(Map<String, dynamic> json) {
-    lat = json['lat'];
-    lon = json['lon'];
+    lat = json['lat'].toString();
+    lon = json['lon'].toString();
   }
 
   Map<String, dynamic> toJson() {
@@ -224,14 +233,8 @@ class Stops {
   int? approachTime;
   int? distanceToPrevious;
 
-  Stops(
-      {this.coords,
-      this.district,
-      this.name,
-      this.population,
-      this.subject,
-      this.approachTime,
-      this.distanceToPrevious});
+  Stops(this.coords, this.district, this.name, this.population, this.subject,
+      this.approachTime, this.distanceToPrevious);
 
   Stops.fromJson(Map<String, dynamic> json) {
     coords = json['coords'] != null ? Coords.fromJson(json['coords']) : null;
@@ -252,8 +255,28 @@ class Stops {
     data['name'] = name;
     data['population'] = population;
     data['subject'] = subject;
-    data['approach_time'] = approachTime;
+    data['time'] = approachTime;
     data['distance_to_previous'] = distanceToPrevious;
     return data;
+  }
+
+  Stops copyWith({
+    Coords? coords,
+    String? district,
+    String? name,
+    int? population,
+    String? subject,
+    int? approachTime,
+    int? distanceToPrevious,
+  }) {
+    return Stops(
+      coords ?? this.coords,
+      district ?? this.district,
+      name ?? this.name,
+      population ?? this.population,
+      subject ?? this.subject,
+      approachTime ?? this.approachTime,
+      distanceToPrevious ?? this.distanceToPrevious,
+    );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:app_poezdka/src/app_screens.dart';
 import 'package:app_poezdka/src/onboarding/on_board.dart';
-import 'package:app_poezdka/widget/src_template/search.dart';
+import 'package:app_poezdka/src/trips/search_trips.dart';
 import 'package:flutter/material.dart';
 
 import '../../export/blocs.dart';

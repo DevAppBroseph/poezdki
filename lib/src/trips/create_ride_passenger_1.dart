@@ -1,5 +1,5 @@
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/model/city_model.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,8 +27,8 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
   final TextEditingController endWay = TextEditingController();
   final List<TextEditingController> _midwayControllers = [];
   var midWays = <TextEditingController>[];
-  City? from;
-  City? to;
+  Departure? from;
+  Departure? to;
   DateTime? date;
   TimeOfDay? time;
 
@@ -36,7 +36,6 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
   Widget build(BuildContext context) {
     const TextStyle pickerStyle =
         TextStyle(color: Colors.grey, fontWeight: FontWeight.w300);
-
 
     return Stack(
       children: [
@@ -48,6 +47,7 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 WayPoints(
+                  pickDestinitionStops: () {},
                   pickDestinitionFrom: () =>
                       pickDestinition(startWay, true, "Откуда поедем?"),
                   pickDestinitionTo: () =>
@@ -103,17 +103,23 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
         margin: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
         title: "Далее",
         onPressed: () async {
-          if (from != null || to != null || date != null || time != null) {
-            final bool success = await pushNewScreen(context,
-                withNavBar: false,
-                screen: CreateRidePassenger2(
-                  from: from!,
-                  to: to!,
-                  date: date!,
-                  time: time!,
-                ));
-            if (success) {
-              cleanData();
+          if (from != null && to != null && date != null && time != null) {
+            // if
+            //  (from!.coords.toString() == to!.coords.toString()) {
+            //   ErrorDialogs().showError("Города не могут совпадать");
+            // } else
+             {
+              final bool success = await pushNewScreen(context,
+                  withNavBar: false,
+                  screen: CreateRidePassenger2(
+                    from: from!,
+                    to: to!,
+                    startTime: DateTime(date!.year, date!.month, date!.day,
+                        time!.hour, time!.minute),
+                  ));
+              if (success) {
+                cleanData();
+              }
             }
           } else {
             InfoDialog().show(
@@ -127,8 +133,8 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
                   const ListTile(
                     title: Text("Необходимо указать:"),
                   ),
-                  _infoChecker(title: "Откуда поедете", object: "startWay"),
-                  _infoChecker(title: "Куда держите путь", object: "endWay"),
+                  _infoChecker(title: "Откуда поедете", object: from),
+                  _infoChecker(title: "Куда держите путь", object: to),
                   _infoChecker(
                     title: "Дата поездки",
                     object: date,
@@ -206,7 +212,7 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
 
   void pickDestinition(
       TextEditingController contoller, bool isFrom, String title) async {
-    final City? destinition = await btmSheet.wait(context,
+    final Departure? destinition = await btmSheet.wait(context,
         useRootNavigator: true,
         child: PickCity(
           title: title,

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:app_poezdka/export/server_url.dart';
+import 'package:app_poezdka/model/server_responce.dart';
 
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +10,7 @@ class AuthService {
   static var signUpUrl = Uri.parse(regUrl);
   static var signInUrl = Uri.parse(authUrl);
 
-  Future<String?> signUp(
+  Future<ResponceAuth?> signUp(
       {required String login,
       required String password,
       required String firstName,
@@ -30,9 +31,9 @@ class AuthService {
       var response = await http.post(signUpUrl,
           headers: {"Accept": "application/json"}, body: body);
       if (response.statusCode == 200) {
-        Map<String, dynamic> body = json.decode(response.body);
-        final String token = body['token'];
-        return token;
+        final resp = ResponceAuth.fromJson(response.body);
+
+        return resp;
       } else {
         return throw Exception(
             'Ошибка авторизации, попробуйте еще раз, позже.');
@@ -43,7 +44,7 @@ class AuthService {
     }
   }
 
-  Future<String?> signIn({
+  Future<ResponceAuth?> signIn({
     required String login,
     required String password,
   }) async {
@@ -57,14 +58,9 @@ class AuthService {
       var response = await http.post(signInUrl,
           headers: {"Accept": "application/json"}, body: body);
       if (response.statusCode == 200) {
-        Map<String, dynamic> body = json.decode(response.body);
-        final String? token = body['token'];
-        final String? error = body['error'];
-        if (body.containsValue(token)) {
-          return token!;
-          
-        } else {
-          throw Exception(error);
+        final resp = ResponceAuth.fromJson(response.body);
+        if (resp.token.isNotEmpty) {
+          return resp;
         }
       } else {
         return throw Exception(
@@ -74,5 +70,6 @@ class AuthService {
       errorDialog.showError(e.toString());
       return null;
     }
+    return null;
   }
 }

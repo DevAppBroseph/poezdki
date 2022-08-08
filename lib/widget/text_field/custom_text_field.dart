@@ -65,6 +65,7 @@ class KFormField extends StatelessWidget {
         minLines: 1,
         inputFormatters: formatters,
         keyboardType: TextInputType.text,
+        
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           suffixText: suffixText,

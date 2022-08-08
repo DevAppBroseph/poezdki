@@ -15,8 +15,11 @@ class TripsPassengerBuilder extends StatelessWidget {
         bloc: tripsBloc,
         builder: ((context, state) {
           if (state is TripsLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
+            return const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           }
           if (state is TripsLoaded) {
@@ -24,9 +27,12 @@ class TripsPassengerBuilder extends StatelessWidget {
               trips: state.trips,
             );
           }
-          return const Center(
-            child: Text("No state detected"),
-          );
+          return const Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
         }));
   }
 }

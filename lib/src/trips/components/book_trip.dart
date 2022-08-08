@@ -1,10 +1,11 @@
+import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
-import 'package:app_poezdka/widget/dialog/info_dialog.dart';
+import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class BookTrip extends StatefulWidget {
@@ -18,11 +19,34 @@ class BookTrip extends StatefulWidget {
 class _BookTripState extends State<BookTrip> {
   CarPlace seat1 = CarPlace(seatNumber: 1, isEmpty: true, isSelected: false);
   CarPlace seat2 = CarPlace(seatNumber: 2, isEmpty: true, isSelected: false);
-  CarPlace seat3 = CarPlace(seatNumber: 3, isEmpty: false, isSelected: false);
-  CarPlace seat4 = CarPlace(seatNumber: 4, isEmpty: false, isSelected: false);
-  double _value = 1.0;
+  CarPlace seat3 = CarPlace(seatNumber: 3, isEmpty: true, isSelected: false);
+  CarPlace seat4 = CarPlace(seatNumber: 4, isEmpty: true, isSelected: false);
+  List<CarPlace> selectedSeats = [];
+  num maxSeats = 4;
+  List<int> bookedSeats = [];
+  num freeSeats = 4;
+
+  @override
+  void initState() {
+    widget.tripData.passengers?.forEach((element) {
+      final seatsElement = element.seat;
+      bookedSeats.addAll(seatsElement ?? []);
+    });
+
+    freeSeats = maxSeats - bookedSeats.length;
+
+    setState(() {});
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (bookedSeats.contains(1)) seat1.isEmpty = false;
+    if (bookedSeats.contains(2)) seat1.isEmpty = false;
+    if (bookedSeats.contains(3)) seat1.isEmpty = false;
+    if (bookedSeats.contains(4)) seat1.isEmpty = false;
+
     return KScaffoldScreen(
         isLeading: true,
         title: "Бронирование",
@@ -50,21 +74,23 @@ class _BookTripState extends State<BookTrip> {
   }
 
   Widget _submit() {
+    final tripBloc = BlocProvider.of<TripsBloc>(context, listen: false);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: FullWidthElevButton(
-        title: "Забронировать",
-        onPressed: () => InfoDialog().show(
-            title: "Ваше место забронировано!",
-            img: "assets/img/like.png",
-            description:
-                "Желаем вам хорошей поездки. Вы можете отменить свою поездку в разделе Профиль",
-            onPressed: () {
-              SmartDialog.dismiss();
-              Navigator.pop(context);
-              Navigator.pop(context);
-            }),
-      ),
+          title: "Забронировать",
+          onPressed: () async {
+            final List<int> seats = [];
+            if (selectedSeats.isEmpty) {
+              ErrorDialogs().showError("Необходимо выбрать место");
+            } else {
+              for (var element in selectedSeats) {
+                seats.add(element.seatNumber);
+              }
+              tripBloc
+                  .add(BookThisTrip(context, seats, widget.tripData.tripId!));
+            }
+          }),
     );
   }
 
@@ -72,7 +98,7 @@ class _BookTripState extends State<BookTrip> {
     return Stack(
       children: [
         Image.asset(
-          'assets/img/carbg.png',
+          'assets/img/car_book.png',
           scale: 0.8,
         ),
         carPlace(context, positionTop: 180, positionLeft: 112, carPlace: seat1),
@@ -93,9 +119,13 @@ class _BookTripState extends State<BookTrip> {
       child: InkWell(
         onTap: () {
           if (carPlace.isEmpty) {
-            carPlace.isSelected == true;
-
-            setState(() {});
+            setState(() {
+              carPlace.isSelected = !carPlace.isSelected;
+              selectedSeats.contains(carPlace)
+                  ? selectedSeats.remove(carPlace)
+                  : selectedSeats.add(carPlace);
+              freeSeats = maxSeats - selectedSeats.length - bookedSeats.length;
+            });
           }
         },
         child: carPlace.isEmpty == false
@@ -108,28 +138,34 @@ class _BookTripState extends State<BookTrip> {
   }
 
   Widget _rangeSlider() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
-      child: SfSlider(
-        min: 1.0,
-        max: 3.0,
-        value: _value,
-        activeColor: kPrimaryColor,
-        inactiveColor: kPrimaryWhite,
-        dividerShape: const SfDividerShape(),
-        stepSize: 1,
-        interval: 1,
-        showTicks: true,
-        showLabels: true,
-        enableTooltip: false,
-        minorTicksPerInterval: 0,
-        onChanged: (dynamic value) {
-          setState(() {
-            _value = value;
-          });
-        },
-      ),
-    );
+    return freeSeats >= 1
+        ? Padding(
+            padding: const EdgeInsets.only(top: 10.0),
+            child: SfSlider(
+              min: 0.0,
+              max: freeSeats,
+              value: freeSeats,
+              activeColor: kPrimaryColor,
+              inactiveColor: kPrimaryWhite,
+              dividerShape: const SfDividerShape(),
+              trackShape: const SfTrackShape(),
+              stepSize: 1,
+              interval: 1,
+              showTicks: true,
+              showLabels: true,
+              enableTooltip: false,
+              minorTicksPerInterval: 0,
+              onChanged: (dynamic value) {
+                // setState(() {
+                //   _sliderSwitchValue = value;
+                // });
+              },
+            ),
+          )
+        : const Padding(
+            padding: EdgeInsets.all(23.0),
+            child: Text("Свободных мест нет."),
+          );
   }
 }
 
@@ -186,8 +222,8 @@ class BlockedSeat extends StatelessWidget {
 
 class CarPlace {
   final int seatNumber;
-  final bool isEmpty;
-  final bool isSelected;
+  bool isEmpty;
+  bool isSelected;
 
   CarPlace(
       {required this.seatNumber,

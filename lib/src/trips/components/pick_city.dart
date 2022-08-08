@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app_poezdka/model/city_model.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -15,15 +15,15 @@ class PickCity extends StatefulWidget {
 }
 
 class _PickCityState extends State<PickCity> {
-  final List<City> citiesList = [];
-  final List<City> citySearchList = [];
+  final List<Departure> citiesList = [];
+  final List<Departure> citySearchList = [];
   final TextEditingController searchController = TextEditingController();
 
   loadJson() async {
     String data = await rootBundle.loadString('assets/city/ru_cities.json');
     var jsonlist = jsonDecode(data) as List;
     for (var e in jsonlist) {
-      final city = City.fromMap(e);
+      final city = Departure.fromJson(e);
       citiesList.add(city);
       citySearchList.add(city);
     }
@@ -40,7 +40,7 @@ class _PickCityState extends State<PickCity> {
 
   void filterSearchResults(String query) {
     if (query.isNotEmpty) {
-      List<City> dummyListData = [];
+      List<Departure> dummyListData = [];
       for (var item in citiesList) {
         if (item.name!.toLowerCase().contains(query.toLowerCase())) {
           dummyListData.add(item);
@@ -62,7 +62,9 @@ class _PickCityState extends State<PickCity> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(CupertinoIcons.chevron_down)),
+        leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(CupertinoIcons.chevron_down)),
         title: Text(widget.title),
       ),
       body: Padding(

@@ -1,3 +1,5 @@
+import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_builder.dart';
+import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_builder.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/export/services.dart';
 import 'package:app_poezdka/model/trip_model.dart';
@@ -5,15 +7,16 @@ import 'package:app_poezdka/src/rides/components/ride_tile.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 
-class RidesScreen extends StatefulWidget {
-  final List<TripModel>? pastRidesDriver;
-  const RidesScreen({Key? key, this.pastRidesDriver}) : super(key: key);
+class UserTripsScreen extends StatefulWidget {
+  const UserTripsScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  State<RidesScreen> createState() => _RidesScreenState();
+  State<UserTripsScreen> createState() => _UserTripsScreenState();
 }
 
-class _RidesScreenState extends State<RidesScreen>
+class _UserTripsScreenState extends State<UserTripsScreen>
     with SingleTickerProviderStateMixin {
   final userRepo = SecureStorage.instance;
 
@@ -41,13 +44,15 @@ class _RidesScreenState extends State<RidesScreen>
                   SingleChildScrollView(
                     child: Column(
                       // children: [],
-                      children: [
-                        futureRides(),
-                        pastRides(context, widget.pastRidesDriver)
-                      ],
+                      children: const [UserTripsPassengerBuilder()],
                     ),
                   ),
-                  Center(child: Container()),
+                  SingleChildScrollView(
+                    child: Column(
+                      // children: [],
+                      children: const [UserTripsDriverBuilder()],
+                    ),
+                  ),
                 ])));
   }
 
@@ -136,12 +141,12 @@ class _RidesScreenState extends State<RidesScreen>
         tabs: const [
           // first tab [you can add an icon using the icon property]
           Tab(
-            text: 'Пассажир',
+            text: 'Я пассажир',
           ),
 
           // second tab [you can add an icon using the icon property]
           Tab(
-            text: 'Водитель',
+            text: 'Я водитель',
           ),
         ],
       ),

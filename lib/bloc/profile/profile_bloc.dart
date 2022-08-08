@@ -1,4 +1,4 @@
-import 'package:app_poezdka/model/car_model.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
 import 'package:app_poezdka/service/server/car_service.dart';
@@ -30,7 +30,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     });
     on<DeleteCar>((event, emit) async {
       final token = await userRepository.getToken();
-      final responce = await carService.deleteCar(token: token!, carId: event.carId);
+      final responce =
+          await carService.deleteCar(token: token!, carId: event.carId);
       if (responce) {
         add(LoadProfile());
       }

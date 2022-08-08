@@ -1,8 +1,9 @@
 import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/trips_passenger/trips_passenger_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/const/theme.dart';
-import 'package:app_poezdka/database/database.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 
 import 'bloc/auth/auth_builder.dart';
 import 'export/blocs.dart';
@@ -31,13 +31,7 @@ void main() async {
   Hive.init(appDocumentDirectory.path);
   await Hive.openBox(HiveBox.appBox.box);
 
-  runApp(
-    Provider<MyDatabase>(
-      create: (context) => MyDatabase(),
-      dispose: (context, db) => db.close(),
-      child: const App(),
-    ),
-  );
+  runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -55,6 +49,14 @@ class App extends StatelessWidget {
           BlocProvider<TripsPassengerBloc>(
             create: (context) =>
                 TripsPassengerBloc()..add(LoadPassengerTripsList()),
+          ),
+          BlocProvider<UserTripsDriverBloc>(
+            create: (context) =>
+                UserTripsDriverBloc()..add(LoadUserTripsList()),
+          ),
+          BlocProvider<UserTripsPassengerBloc>(
+            create: (context) =>
+                UserTripsPassengerBloc()..add(LoadUserPassengerTripsList()),
           ),
           BlocProvider<ProfileBloc>(
             create: (context) =>

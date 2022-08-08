@@ -1,3 +1,4 @@
+import 'package:app_poezdka/model/server_responce.dart';
 import 'package:app_poezdka/service/server/auth_service.dart';
 
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
@@ -48,7 +49,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onSignUp(SignUp event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
 
-    final String? token = await authService.signUp(
+    final ResponceAuth? data = await authService.signUp(
         login: event.login,
         password: event.password,
         firstName: event.firstName,
@@ -56,8 +57,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         gender: event.gender,
         birth: event.birth);
 
-    if (token != null) {
-      await userRepository.persistEmailAndToken(event.login, token);
+    if (data != null) {
+      await userRepository.persistEmailAndToken(
+          event.login, data.token, data.id);
       add(AppInit());
       Navigator.pop(event.context);
       Navigator.pop(event.context);
@@ -70,20 +72,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onLoggedIn(LoggedIn event, Emitter<AuthState> emit) async {
     final authService = AuthService();
     emit(AuthLoading());
-    final token =
+    final ResponceAuth? responceSignIn =
         await authService.signIn(login: event.email, password: event.password);
 
-    if (token != null) {
-      await userRepository
-          .persistEmailAndToken(event.email, token);
-          add(AppStarted());
-          Navigator.pop(event.context);
+    if (responceSignIn != null) {
+      await userRepository.persistEmailAndToken(
+          event.email, responceSignIn.token, responceSignIn.id);
+      add(AppStarted());
+      Navigator.pop(event.context);
     }
   }
 
   void _onLoggedOut(LoggedOut event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    await userRepository.deleteToken();
+    await userRepository.deleteUserData();
     add(AppInit());
   }
 
@@ -96,7 +98,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onAuthError(AuthError event, Emitter<AuthState> emit) async {}
 
   void _devLogIn(OnDevLogIn event, Emitter<AuthState> emit) async {
-    await userRepository.persistEmailAndToken("email", "token");
+    await userRepository.persistEmailAndToken("email", "token", 1);
     add(AppInit());
   }
 }

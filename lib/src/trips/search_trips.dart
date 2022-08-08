@@ -1,14 +1,18 @@
 // ignore_for_file: unused_field
 
+import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_builder.dart';
 import 'package:app_poezdka/bloc/trips_passenger/trips_p_builder.dart';
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/const/images.dart';
+import 'package:app_poezdka/export/blocs.dart';
+import 'package:app_poezdka/model/filter_model.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 
 import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/src/trips/components/pick_city.dart';
 import 'package:app_poezdka/src/rides/components/waypoint.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
+import 'package:app_poezdka/src/trips/components/search_trip_filter.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
@@ -17,8 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
-import '../../model/city_model.dart';
-import '../text_field/custom_text_field.dart';
+import '../../widget/text_field/custom_text_field.dart';
 
 class SearchRides extends StatefulWidget {
   final bool? isAuthorized;
@@ -31,28 +34,26 @@ class SearchRides extends StatefulWidget {
 class _SearchRidesState extends State<SearchRides>
     with SingleTickerProviderStateMixin {
   final btmSheet = BottomSheetCallAwait();
-  City? from;
-  City? to;
+  int searchPageIndex = 1;
+  Departure? from;
+  Departure? to;
   TabController? _tabController;
 
   final TextEditingController startWay = TextEditingController();
   final TextEditingController endWay = TextEditingController();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+    GlobalKey<RefreshIndicatorState>();
 
-  final bool _tempIsPackageTransfer = false;
-  final bool _tempIsTwoBackSeat = false;
-  final bool _tempIsBagadgeTransfer = false;
-  final bool _tempIsChildSeat = false;
-  final bool _tempIsCondition = false;
-  final bool _tempIsSmoking = false;
-  final bool _tempIsPetTransfer = false;
-
-  bool _isPackageTransfer = false;
-  final bool _isTwoBackSeat = false;
-  final bool _isBagadgeTransfer = false;
-  final bool _isChildSeat = false;
-  final bool _isCondition = false;
-  final bool _isSmoking = false;
-  final bool _isPetTransfer = false;
+    
+  FilterModel filter = FilterModel(
+      isPackageTransfer: false,
+      isTwoBackSeat: false,
+      isBagadgeTransfer: false,
+      isChildSeat: false,
+      isConditioner: false,
+      isSmoking: false,
+      isPetTransfer: false,
+      gender: null);
 
   @override
   void initState() {
@@ -66,10 +67,7 @@ class _SearchRidesState extends State<SearchRides>
       title: "Поиск поездок",
       actions: [
         IconButton(
-            onPressed: () => BottomSheetCall().show(context,
-                topRadius: const Radius.circular(50),
-                useRootNavigator: true,
-                child: bottomSheetFilter()),
+            onPressed: () => applyFilters(),
             icon: const Icon(MaterialCommunityIcons.filter_outline))
       ],
       body: Container(
@@ -85,18 +83,24 @@ class _SearchRidesState extends State<SearchRides>
           },
           body: TabBarView(
             controller: _tabController,
-            children: const [
+            children:  [
               CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
-                    child: TripsBuilder(),
+                    child: RefreshIndicator(
+                      key: _refreshIndicatorKey,
+                      onRefresh: ()  => fetchTrips(context, page: searchPageIndex),
+                      child: const TripsBuilder()),
                   )
                 ],
               ),
               CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter(
-                    child: TripsPassengerBuilder(),
+                    child: RefreshIndicator(
+                      triggerMode: RefreshIndicatorTriggerMode.anywhere,
+                      onRefresh: ()  =>  fetchTrips(context, page: searchPageIndex),
+                      child: const TripsPassengerBuilder()),
                   )
                 ],
               ),
@@ -234,13 +238,14 @@ class _SearchRidesState extends State<SearchRides>
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
               child: ListTile(
                 onTap: () => setState(() {
-                  _isPackageTransfer = !_isPackageTransfer;
+                  filter.isPackageTransfer = !filter.isPackageTransfer;
+                  fetchTrips(context, page: searchPageIndex);
                 }),
                 leading: Icon(
-                  _isPackageTransfer
+                  filter.isPackageTransfer
                       ? MaterialIcons.radio_button_checked
                       : MaterialIcons.radio_button_unchecked,
-                  color: _isPackageTransfer ? kPrimaryColor : null,
+                  color: filter.isPackageTransfer ? kPrimaryColor : null,
                 ),
                 title: const Text("Передать посылку"),
               ),
@@ -250,135 +255,9 @@ class _SearchRidesState extends State<SearchRides>
         preferredSize: const Size(200, 308));
   }
 
-  Widget bottomSheetFilter() {
-    return BottomSheetChildren(
-      children: [
-        const ListTile(
-          title: Text(
-            "Фильтр поиска",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        _switchTile(
-            img: 'box.png',
-            title: "Перевозка посылок",
-            filter: _tempIsPackageTransfer,
-            onChanged: (value) {
-              setState(() {
-                value == !value;
-              });
-            }),
-        _switchTile(
-            img: 'sofa.png',
-            title: "2 места на заднем сиденье",
-            filter: _tempIsTwoBackSeat,
-            onChanged: (value) {
-              setState(() {
-                value == !value;
-              });
-            }),
-        _switchTile(
-            img: '3d-cube-scan.png',
-            title: "Перевозка багажа",
-            filter: _tempIsBagadgeTransfer,
-            onChanged: (value) {
-              setState(() {
-                value == !value;
-              });
-            }),
-        _switchTile(
-            img: 'person-standing.png',
-            title: "Детское кресло",
-            filter: _tempIsChildSeat,
-            onChanged: (value) {
-              setState(() {
-                value == !value;
-              });
-            }),
-        _switchTile(
-            img: 'cigarette.png',
-            title: "Курение в салоне",
-            filter: _tempIsSmoking,
-            onChanged: (value) {
-              setState(() {
-                value == !value;
-              });
-            }),
-        _switchTile(
-            img: 'github.png',
-            title: "Перевозка животных",
-            filter: _tempIsPetTransfer,
-            onChanged: (value) {
-              setState(() {
-                value == !value;
-              });
-            }),
-        _switchTile(
-            img: 'sun.png',
-            title: "Кондиционер",
-            filter: _tempIsCondition,
-            onChanged: (value) {
-              setState(() {
-                value == !value;
-              });
-            }),
-        ListTile(
-          minLeadingWidth: 3,
-          leading: Image.asset("$iconPath/man.png"),
-          title: const Text("Пол водителя"),
-          trailing: const Text("Мужской"),
-        ),
-        FullWidthElevButton(
-          title: "Применить",
-          onPressed: () => Navigator.pop(context),
-        ),
-        const SizedBox(
-          height: 30,
-        )
-      ],
-    );
-  }
-
-  Widget _switchTile(
-      {required String img,
-      required String title,
-      required bool filter,
-      Function(bool)? onChanged}) {
-    return SwitchListTile(
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset("$iconPath$img"),
-          const SizedBox(
-            width: 14,
-          ),
-          Text(
-            title,
-            style: const TextStyle(fontSize: 16),
-          )
-        ],
-      ),
-      value: filter,
-      onChanged: (bool value) {
-        setState(() {
-          _onSwitchChanged(filter, value);
-        });
-      },
-    );
-  }
-
-  void _onSwitchChanged(bool fliter, bool value) {
-//    setState(() {
-    fliter = value;
-//    });
-  }
-
-  void pickDestinition(context, TextEditingController contoller, City? city,
-      String title) async {
-    final City? destinition = await btmSheet.wait(context,
+  void pickDestinition(context, TextEditingController contoller,
+      Departure? city, String title) async {
+    final Departure? destinition = await btmSheet.wait(context,
         useRootNavigator: true,
         child: PickCity(
           title: title,
@@ -387,6 +266,40 @@ class _SearchRidesState extends State<SearchRides>
       setState(() {
         contoller.text = destinition.name!;
         city = destinition;
+      });
+    }
+  }
+
+  Future<void> fetchTrips(
+    context, {
+    int? page,
+  }) async {
+    final tripsBloc = BlocProvider.of<TripsBloc>(context);
+    tripsBloc.add(LoadAllTripsList(
+        page: page,
+        departure: from,
+        destination: to,
+        animals: filter.isPetTransfer,
+        package: filter.isPackageTransfer,
+        baggage: filter.isBagadgeTransfer,
+        babyChair: filter.isChildSeat,
+        smoke: filter.isSmoking,
+        twoPlacesInBehind: filter.isTwoBackSeat,
+        conditioner: filter.isConditioner,
+        gender: filter.gender?.apiTitle));
+      
+  }
+
+  void applyFilters() async {
+    final FilterModel? newFilter = await btmSheet.wait(context,
+        child: SearchTripBottomSheet(
+          initFilter: filter,
+        ));
+    if (newFilter != null) {
+      setState(() {
+        filter = newFilter;
+        searchPageIndex = 1;
+        fetchTrips(context, page: searchPageIndex);
       });
     }
   }

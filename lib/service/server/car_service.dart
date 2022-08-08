@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app_poezdka/model/car_model.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:app_poezdka/export/server_url.dart';
@@ -17,10 +17,10 @@ class CarService {
 
   Future<bool> addCar({
     required String token,
-    required CarModel car,
+    required Car car,
   }) async {
     try {
-      var body = json.encode(car.toMap());
+      var body = json.encode(car.toJson());
       var response = await http.post(uriAddCar,
           headers: {"Authorization": token}, body: body);
       if (response.statusCode == 200) {
@@ -56,7 +56,7 @@ class CarService {
     }
   }
 
-  Future<List<CarModel>> getUserCars() async {
+  Future<List<Car>> getUserCars() async {
     try {
       final token = await userRepo.getToken();
       var response = await http.get(
@@ -66,8 +66,8 @@ class CarService {
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         final list = data['cars'] as List;
-        List<CarModel> cars = [];
-        list.map((e) => cars.add(CarModel.fromMap(e))).toList();
+        List<Car> cars = [];
+        list.map((e) => cars.add(Car.fromJson(e))).toList();
 
         return cars;
       } else {

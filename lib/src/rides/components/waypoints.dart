@@ -14,6 +14,7 @@ class WayPoints extends StatelessWidget {
   final List<TextEditingController> midwayControllers;
   final Function pickDestinitionFrom;
   final Function pickDestinitionTo;
+  final Function pickDestinitionStops;
   final Function onAdd;
   final Function onDelete;
   final int? midWayIndex;
@@ -26,7 +27,10 @@ class WayPoints extends StatelessWidget {
       required this.onAdd,
       required this.onDelete,
       this.midWayIndex,
-      required this.midwayControllers, required this.pickDestinitionFrom, required this.pickDestinitionTo})
+      required this.midwayControllers,
+      required this.pickDestinitionFrom,
+      required this.pickDestinitionTo,
+      required this.pickDestinitionStops})
       : super(key: key);
 
   @override
@@ -48,45 +52,50 @@ class WayPoints extends StatelessWidget {
             suffixIcon: Image.asset('assets/img/gps.png'),
           ),
         ),
-        midWays != null ? ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: midWays!.length,
-            itemBuilder: (context, int index) => _wayPoint(
-                  onDelete: () {},
-                  type: WaypointType.middle,
-                  textField: KFormField(
-                    hintText: "Куда",
-                    textEditingController: midwayControllers[index],
-                    suffixIcon: Image.asset('assets/img/gps.png'),
-                  ),
-                )): const SizedBox(),
-       midWays != null ? midWays!.length < 3
-            ? _wayPoint(
-                type: WaypointType.empty,
-                textField: Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton.icon(
-                      onPressed: onAdd as void Function(),
-                      icon: const Icon(
-                        Icons.add_circle_outline,
-                        color: kPrimaryWhite,
+        midWays != null
+            ? ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: midWays!.length,
+                itemBuilder: (context, int index) => _wayPoint(
+                      onDelete: () {},
+                      type: WaypointType.middle,
+                      textField: KFormField(
+                        onTap: () {},
+                        hintText: "Куда",
+                        textEditingController: midwayControllers[index],
+                        suffixIcon: Image.asset('assets/img/gps.png'),
                       ),
-                      label: const Text(
-                        "Промежуточное место",
-                        style: TextStyle(
-                            color: kPrimaryDarkGrey,
-                            fontWeight: FontWeight.w300),
-                      )),
-                ),
-              )
-            : const SizedBox(
-                height: 10,
-              ) : _wayPoint(
+                    ))
+            : const SizedBox(),
+        midWays != null
+            ? midWays!.length < 3
+                ? _wayPoint(
+                    type: WaypointType.empty,
+                    textField: Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                          onPressed: onAdd as void Function(),
+                          icon: const Icon(
+                            Icons.add_circle_outline,
+                            color: kPrimaryWhite,
+                          ),
+                          label: const Text(
+                            "Промежуточное место",
+                            style: TextStyle(
+                                color: kPrimaryDarkGrey,
+                                fontWeight: FontWeight.w300),
+                          )),
+                    ),
+                  )
+                : const SizedBox(
+                    height: 10,
+                  )
+            : _wayPoint(
                 type: WaypointType.empty,
                 textField: const Align(
                   alignment: Alignment.centerLeft,
-                  child:  SizedBox(),
+                  child: SizedBox(),
                 ),
               ),
         _wayPoint(

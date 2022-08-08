@@ -1,14 +1,18 @@
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
-import 'package:app_poezdka/const/lorem_ipsum.dart';
+import 'package:app_poezdka/export/services.dart';
 import 'package:app_poezdka/model/trip_model.dart';
+import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/src/chat/chat_screen.dart';
 import 'package:app_poezdka/src/trips/components/book_trip.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
+import 'package:app_poezdka/widget/cached_image/user_image.dart';
+import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'trip_details_info.dart';
 
@@ -25,24 +29,26 @@ class TripDetailsSheet extends StatelessWidget {
       _div(),
       _rideInfo(),
       _div(),
-      _rideComment(),
+      // _rideComment(),
       _tripButtons(context),
+      const SizedBox(
+        height: 30,
+      )
     ]);
   }
 
   Widget _tripButtons(context) {
     return Row(
       children: [
-        Expanded(
+       trip.package! ? Expanded(
             child: FullWidthElevButton(
           onPressed: () {},
           title: "Передать посылку",
           titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
-        )),
+        )) : const SizedBox(),
         Expanded(
             child: FullWidthElevButton(
-          onPressed: () =>
-              pushNewScreen(context, screen:  BookTrip(tripData: trip,)),
+          onPressed: () => bookTrip(context),
           title: "Забронировать",
           titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
         ))
@@ -50,11 +56,11 @@ class TripDetailsSheet extends StatelessWidget {
     );
   }
 
-  Widget _rideComment() {
-    return const ListTile(
-      title: Text(loremIpsum),
-    );
-  }
+  // Widget _rideComment() {
+  //   return const ListTile(
+  //     title: Text(loremIpsum),
+  //   );
+  // }
 
   Widget _tripData() {
     return RideDetailsTrip(
@@ -142,19 +148,20 @@ class TripDetailsSheet extends StatelessWidget {
       decoration: BoxDecoration(
           color: kPrimaryWhite, borderRadius: BorderRadius.circular(10)),
       child: ListTile(
-        leading: const CircleAvatar(
-          child: FlutterLogo(),
+        leading: UserCachedImage(
+          img: trip.owner?.photo,
         ),
         title: Text(trip.owner?.firstname ?? "Пользователь не найден"),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            trip.owner?.phone != null
+                ? IconButton(
+                    onPressed: () => callToDriver(context),
+                    icon: SvgPicture.asset("$svgPath/call-calling.svg"))
+                : const SizedBox(),
             IconButton(
-                onPressed: () {},
-                icon: SvgPicture.asset("$svgPath/call-calling.svg")),
-            IconButton(
-                onPressed: () => pushNewScreen(context,
-                    withNavBar: false, screen: const ChatScreen()),
+                onPressed: () => chatToDriver(context),
                 icon: SvgPicture.asset("$svgPath/messages-2.svg"))
           ],
         ),
@@ -167,5 +174,58 @@ class TripDetailsSheet extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Divider(),
     );
+  }
+
+  void bookTrip(context) async {
+    final userRepo = SecureStorage.instance;
+    final token = await userRepo.getToken();
+    final userId = await userRepo.getUserId();
+    final passengers = trip.passengers;
+    if (token != null) {
+      if (passengers!.any((p) => p.id == int.parse(userId!))) {
+        null;
+      } else {
+        pushNewScreen(context,
+            screen: BookTrip(
+              tripData: trip,
+            ));
+      }
+    } else {
+      pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
+    }
+  }
+
+  void callToDriver(context) async {
+    final userRepo = SecureStorage.instance;
+    final token = await userRepo.getToken();
+    final userId = await userRepo.getUserId();
+    if (token != null) {
+      final passengers = trip.passengers;
+      if (passengers!.any((p) => p.id == int.parse(userId!))) {
+        launchUrl(Uri(scheme: 'tel', path: '${trip.owner?.phone}'));
+      } else {
+        ErrorDialogs()
+            .showError("Только пассажиры могут связаться с водителем.");
+      }
+    } else {
+      pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
+    }
+  }
+
+  void chatToDriver(context) async {
+    final userRepo = SecureStorage.instance;
+    final token = await userRepo.getToken();
+    final userId = await userRepo.getUserId();
+    if (token != null) {
+      final passengers = trip.passengers;
+      if (passengers!.any((p) => p.id == int.parse(userId!))) {
+        pushNewScreen(context, withNavBar: false, screen: const ChatScreen());
+      } else {
+        ErrorDialogs()
+            .showError("Только пассажиры могут связаться с водителем.");
+      }
+    } else {
+      pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
+    }
   }
 }

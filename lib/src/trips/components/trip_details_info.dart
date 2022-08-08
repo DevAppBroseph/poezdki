@@ -12,9 +12,9 @@ class RideDetailsTrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
      final startTime =
-        DateTime.fromMicrosecondsSinceEpoch(tripData.timeStart ?? 0 * 1000);
+        DateTime.fromMicrosecondsSinceEpoch(tripData.timeStart ?? 0 );
     final endTime = DateTime.fromMicrosecondsSinceEpoch(
-        tripData.stops?.last.approachTime ?? 0 * 1000);
+        tripData.stops?.last.approachTime ?? 0);
     return Row(
       children: [
         Align(
@@ -38,7 +38,7 @@ class RideDetailsTrip extends StatelessWidget {
                   maxLines: 1,
                 ),
                 subtitle: Text(
-                  DateFormat("dd MMMM").format(startTime),
+                  DateFormat("dd MMMM", ).format(startTime),
                   maxLines: 1,
                 ),
               ),

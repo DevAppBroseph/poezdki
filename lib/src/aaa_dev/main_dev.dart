@@ -1,5 +1,7 @@
+import 'package:app_poezdka/export/services.dart';
 import 'package:app_poezdka/src/aaa_dev/city_picker_dev.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
@@ -22,10 +24,30 @@ class MainDev extends StatelessWidget {
               title: "RideCreated",
               onPressed: () => centeredDialog(),
             ),
-
             FullWidthElevButton(
               title: "Pick City Widget",
-              onPressed: () => pushNewScreen(context, screen: const PickCityDev()),
+              onPressed: () =>
+                  pushNewScreen(context, screen: const PickCityDev()),
+            ),
+            FullWidthElevButton(
+              title: "Get Token",
+              onPressed: () async {
+                final user = SecureStorage.instance;
+                final token = await user.getToken();
+                if (kDebugMode) {
+                  print(token);
+                }
+              },
+            ),
+            FullWidthElevButton(
+              title: "Get Id",
+              onPressed: () async {
+                final user = SecureStorage.instance;
+                final id = await user.getUserId();
+                if (kDebugMode) {
+                  print(id);
+                }
+              },
             )
           ],
         )),
@@ -56,7 +78,7 @@ class MainDev extends StatelessWidget {
                       ),
                       const Text(
                         "Ваша поезка создана!",
-                        style:  TextStyle(
+                        style: TextStyle(
                             fontSize: 23, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(
@@ -64,8 +86,7 @@ class MainDev extends StatelessWidget {
                       ),
                       const Text(
                         "Ожидайте попутчиков.",
-                        style:
-                             TextStyle(fontSize: 14, color: Colors.grey),
+                        style: TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                       const SizedBox(
                         height: 10,

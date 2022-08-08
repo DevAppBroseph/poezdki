@@ -65,7 +65,7 @@ class _BalanceState extends State<Balance> {
                 mainAxisSize: MainAxisSize.min,
                 children: const [
                   Text(
-                    "700",
+                    "0",
                     style: boldText,
                   ),
                   Icon(
@@ -87,7 +87,7 @@ class _BalanceState extends State<Balance> {
               mainAxisSize: MainAxisSize.min,
               children: const [
                 Text(
-                  "1231",
+                  "0",
                   style: boldText,
                 ),
                 Icon(
@@ -125,6 +125,7 @@ class _BalanceState extends State<Balance> {
             child: Padding(
               padding: const EdgeInsets.only(right: 5),
               child: TextFormField(
+                scrollPadding: const EdgeInsets.only(bottom: 70),
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
                 inputFormatters: [
@@ -133,10 +134,8 @@ class _BalanceState extends State<Balance> {
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                   hintText: ' Сумма ',
-                
                   hintStyle: TextStyle(wordSpacing: 5),
                   contentPadding: EdgeInsets.only(right: 5.0),
-                  
                 ),
                 textAlign: TextAlign.end,
                 controller: paymentCtr,

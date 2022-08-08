@@ -1,6 +1,7 @@
-import 'package:app_poezdka/database/database.dart';
-import 'package:app_poezdka/model/car_model.dart';
-import 'package:app_poezdka/model/city_model.dart';
+import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
+import 'package:app_poezdka/export/blocs.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
@@ -8,21 +9,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-import 'package:provider/provider.dart';
 import '../../const/colors.dart';
 
 class CreateRideDriverInfo extends StatefulWidget {
-  final City from;
-  final City to;
-  final DateTime date;
-  final TimeOfDay time;
-  final CarModel car;
+  final Departure from;
+  final Departure to;
+  final DateTime startTime;
+  final Car car;
+
   const CreateRideDriverInfo(
       {Key? key,
       required this.from,
       required this.to,
-      required this.date,
-      required this.time,
+      required this.startTime,
       required this.car})
       : super(key: key);
 
@@ -46,66 +45,68 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
+      resizeToAvoidBottomInset: true,
       title: "Создание поездки",
       isLeading: true,
       body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SwitchListTile(
-                      title: const Text("Перевозка посылок"),
-                      value: _isPackageTransfer,
-                      onChanged: (value) => setState(() {
-                            _isPackageTransfer = value;
-                          })),
-                  SwitchListTile(
-                      title: const Text("2 места на заднем сиденье"),
-                      value: _isTwoBackSeat,
-                      onChanged: (value) => setState(() {
-                            _isTwoBackSeat = value;
-                          })),
-                  SwitchListTile(
-                      title: const Text("Перевозка багажа"),
-                      value: _isBagadgeTransfer,
-                      onChanged: (value) => setState(() {
-                            _isBagadgeTransfer = value;
-                          })),
-                  SwitchListTile(
-                      title: const Text("Детское кресло"),
-                      value: _isChildSeat,
-                      onChanged: (value) => setState(() {
-                            _isChildSeat = value;
-                          })),
-                  SwitchListTile(
-                      title: const Text("Кондиционер"),
-                      value: _isCondition,
-                      onChanged: (value) => setState(() {
-                            _isCondition = value;
-                          })),
-                  SwitchListTile(
-                      title: const Text("Курение в салоне"),
-                      value: _isSmoking,
-                      onChanged: (value) => setState(() {
-                            _isSmoking = value;
-                          })),
-                  SwitchListTile(
-                      title: const Text("Перевозка животных"),
-                      value: _isPetTransfer,
-                      onChanged: (value) => setState(() {
-                            _isPetTransfer = value;
-                          })),
-                  SwitchListTile(
-                      title: const Text("Забираю от дома"),
-                      value: _isPickUpFromHome,
-                      onChanged: (value) => setState(() {
-                            _isPickUpFromHome = value;
-                          })),
-                  _priceField(),
-                ],
-              ),
+          SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                SwitchListTile(
+                    title: const Text("Перевозка посылок"),
+                    value: _isPackageTransfer,
+                    onChanged: (value) => setState(() {
+                          _isPackageTransfer = value;
+                        })),
+                SwitchListTile(
+                    title: const Text("2 места на заднем сиденье"),
+                    value: _isTwoBackSeat,
+                    onChanged: (value) => setState(() {
+                          _isTwoBackSeat = value;
+                        })),
+                SwitchListTile(
+                    title: const Text("Перевозка багажа"),
+                    value: _isBagadgeTransfer,
+                    onChanged: (value) => setState(() {
+                          _isBagadgeTransfer = value;
+                        })),
+                SwitchListTile(
+                    title: const Text("Детское кресло"),
+                    value: _isChildSeat,
+                    onChanged: (value) => setState(() {
+                          _isChildSeat = value;
+                        })),
+                SwitchListTile(
+                    title: const Text("Кондиционер"),
+                    value: _isCondition,
+                    onChanged: (value) => setState(() {
+                          _isCondition = value;
+                        })),
+                SwitchListTile(
+                    title: const Text("Курение в салоне"),
+                    value: _isSmoking,
+                    onChanged: (value) => setState(() {
+                          _isSmoking = value;
+                        })),
+                SwitchListTile(
+                    title: const Text("Перевозка животных"),
+                    value: _isPetTransfer,
+                    onChanged: (value) => setState(() {
+                          _isPetTransfer = value;
+                        })),
+                SwitchListTile(
+                    title: const Text("Забираю от дома"),
+                    value: _isPickUpFromHome,
+                    onChanged: (value) => setState(() {
+                          _isPickUpFromHome = value;
+                        })),
+                _priceField(),
+                const SizedBox(
+                  height: 50,
+                )
+              ],
             ),
           ),
           _createRide()
@@ -142,6 +143,7 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                   ),
                 ]),
                 child: TextFormField(
+                  scrollPadding: const EdgeInsets.only(bottom: 100),
                   focusNode: _nodeText1,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
@@ -172,44 +174,45 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
   }
 
   Widget _createRide() {
-    final db = Provider.of<MyDatabase>(context, listen: false).rideDao;
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: FullWidthElevButton(
-        margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
-        title: "Опубликовать",
-        onPressed: () async {
-          final rideData = RideData(
-              id: null,
-              owner: 1,
-              ownerName: "John",
-              from: widget.from.name,
-              to: widget.to.name,
-              date: widget.date,
-              time: DateTime(widget.date.year, widget.date.month,
-                  widget.date.day, widget.date.hour, widget.date.minute),
-              car: "${widget.car.mark} ${widget.car.model} ${widget.car.color}",
-              isPackageTransfer: _isPackageTransfer,
-              isTwoBackSeat: _isTwoBackSeat,
-              isBagadgeTransfer: _isBagadgeTransfer,
-              isChildSeat: _isChildSeat,
-              isCondition: _isCondition,
-              isSmoking: _isSmoking,
-              isPetTransfer: _isPetTransfer,
-              isPickUpFromHome: _isPickUpFromHome,
-              price: double.parse(priceController.text.trim()));
+    final tripBloc = BlocProvider.of<TripsBloc>(context);
+    final tripDriverBloc = BlocProvider.of<UserTripsDriverBloc>(context);
+    return WidgetsBinding.instance.window.viewInsets.bottom > 0.0
+        ? const SizedBox()
+        : Align(
+            alignment: Alignment.bottomCenter,
+            child: FullWidthElevButton(
+              margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+              title: "Опубликовать",
+              onPressed: () async {
+                final TripModel trip = TripModel(
+                    car: widget.car,
+                    departure: widget.from,
+                    timeStart: widget.startTime.microsecondsSinceEpoch,
+                    stops: [
+                      Stops(
+                          widget.to.coords,
+                          widget.to.district,
+                          widget.to.name,
+                          widget.to.population,
+                          widget.to.subject,
+                          0,
+                          0)
+                    ],
+                    package: _isPackageTransfer,
+                    twoPlacesInBehind: _isTwoBackSeat,
+                    baggage: _isBagadgeTransfer,
+                    babyChair: _isChildSeat,
+                    conditioner: _isCondition,
+                    smoke: _isSmoking,
+                    animals: _isPetTransfer,
+                    price: int.parse(priceController.text.trim()));
 
-          if (priceController.text.isNotEmpty) {
-            await db.createRide(rideData);
-            InfoDialog().show(
-              img: "assets/img/like.png",
-              title: "Ваша поездка создана!",
-              description: "Ожидайте попутчиков.",
-            );
-            Navigator.pop(context, true);
-          }
-        },
-      ),
-    );
+                if (priceController.text.isNotEmpty)  {
+                  tripBloc.add(CreateUserTrip(context, trip));
+                  tripDriverBloc.add(LoadUserTripsList());
+                }
+              },
+            ),
+          );
   }
 }

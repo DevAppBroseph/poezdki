@@ -1,29 +1,60 @@
+import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
+import 'package:app_poezdka/export/blocs.dart';
+import 'package:app_poezdka/export/services.dart';
+import 'package:app_poezdka/model/passenger_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
-import 'package:app_poezdka/src/trips/components/trip_details_sheet.dart';
-import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
+import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
+import 'package:app_poezdka/widget/cached_image/user_image.dart';
 import 'package:app_poezdka/widget/divider/verical_dividers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
 
-class TripTile extends StatelessWidget {
+class TripTile extends StatefulWidget {
   final TripModel trip;
   const TripTile({Key? key, required this.trip}) : super(key: key);
 
   @override
+  State<TripTile> createState() => _TripTileState();
+}
+
+class _TripTileState extends State<TripTile> {
+  final userRepo = SecureStorage.instance;
+  List<PassengerModel> passengers = [];
+
+  int? userId;
+  void initUserId() async {
+    final id = await userRepo.getUserId();
+    if (id != null) {
+      setState(() {
+        userId = int.parse(id);
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    initUserId();
+    passengers = widget.trip.passengers ?? [];
+    super.initState();
+  }
+
+  @override
   // ignore: avoid_renaming_method_parameters
   Widget build(BuildContext ctx) {
-    final btmSheet = BottomSheetCall();
+    final tripsBloc = BlocProvider.of<TripsBloc>(ctx, listen: false);
+    final tripsDriverBloc =
+        BlocProvider.of<UserTripsDriverBloc>(ctx, listen: false);
+    final tripsPassangerBloc =
+        BlocProvider.of<UserTripsPassengerBloc>(ctx, listen: false);
+    final ownerImage = widget.trip.owner?.photo;
     return InkWell(
-      onTap: (() => btmSheet.show(ctx,
-          useRootNavigator: true,
-          topRadius: const Radius.circular(50),
-          child: TripDetailsSheet(
-            trip: trip,
-          ))),
+      onTap: () {},
       child: Container(
           margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           decoration: BoxDecoration(
@@ -35,23 +66,44 @@ class TripTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ListTile(
-                leading: const CircleAvatar(
-                  child: FlutterLogo(),
-                  backgroundColor: kPrimaryWhite,
+                leading: UserCachedImage(
+                  img: ownerImage,
                 ),
                 title: Text(
-                  "${trip.owner?.firstname ?? " Пользователь не найден"} ${trip.tripId.toString() }",
+                  "${widget.trip.owner?.firstname ?? " Пользователь не найден"} ${widget.trip.tripId.toString()}",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
                 subtitle: Text(
-                  "${trip.car?.color ?? ""} ${trip.car?.mark ?? ""} ${trip.car?.model ?? ""} - ${trip.price} ₽",
+                  "${widget.trip.car?.color ?? ""} ${widget.trip.car?.mark ?? ""} ${widget.trip.car?.model ?? ""} ${widget.trip.price} ₽",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
                 trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
               ),
-              _trip(trip),
+              _trip(widget.trip),
+              passengers.any((element) => element.id == userId)
+                  ? FullWidthElevButton(
+                      color: kPrimaryRed,
+                      title: "Отменить бронь",
+                      onPressed: () {
+                        tripsPassangerBloc
+                            .add(CancelBookTrip(widget.trip.tripId!));
+                        tripsBloc.add(LoadAllTripsList());
+                      },
+                    )
+                  : const SizedBox(),
+
+              widget.trip.owner!.id == userId
+                  ? FullWidthElevButton(
+                      title: "Отменить поездку",
+                      onPressed: () {
+                        tripsBloc.add(DeleteTrip(widget.trip.tripId!));
+                        tripsBloc.add(LoadAllTripsList());
+                        tripsDriverBloc.add(LoadUserTripsList());
+                      },
+                    )
+                  : const SizedBox()
               // isUpcoming!
               //     ? FullWidthElevButton(
               //         title: "Отменить поездку",
@@ -64,10 +116,9 @@ class TripTile extends StatelessWidget {
   }
 
   Widget _trip(TripModel? tripData) {
-    final startTime =
-        DateTime.fromMicrosecondsSinceEpoch(tripData?.timeStart ?? 0 * 1000);
-    final endTime = DateTime.fromMicrosecondsSinceEpoch(
-        tripData?.stops?.last.approachTime ?? 0);
+    final startTime = DateTime.fromMicrosecondsSinceEpoch(tripData!.timeStart!);
+    // final endTime = DateTime.fromMicrosecondsSinceEpoch(
+    //     tripData?.stops?.last.approachTime ?? 0);
     return Row(
       children: [
         Container(
@@ -83,11 +134,11 @@ class TripTile extends StatelessWidget {
               ListTile(
                 minLeadingWidth: 30,
                 title: Text(
-                  tripData!.departure?.name ?? " ",
+                  tripData.departure?.name ?? " ",
                   maxLines: 1,
                 ),
                 subtitle: Text(
-                  DateFormat("dd MMMM").format(startTime),
+                  DateFormat("dd MMMM").format(startTime).toString(),
                   maxLines: 1,
                 ),
               ),
@@ -100,10 +151,14 @@ class TripTile extends StatelessWidget {
                 minVerticalPadding: 0,
                 minLeadingWidth: 30,
                 title: Text(
-                  tripData.stops?.last.name ?? "Казань",
+                  tripData.stops != null && tripData.stops!.isNotEmpty
+                      ? tripData.stops?.last.name ?? ""
+                      : " ",
                   maxLines: 1,
                 ),
-                subtitle: Text(DateFormat("dd MMMM").format(endTime)),
+                subtitle: const Text(
+                    // DateFormat("dd MMMM").format(endTime).toString()
+                    ""),
               ),
             ],
           ),

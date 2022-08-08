@@ -2,7 +2,7 @@ part of 'trips_bloc.dart';
 
 @immutable
 abstract class TripsState {
-    List<Object> get props => [];
+  List<Object> get props => [];
 }
 
 class TripsInitial extends TripsState {}

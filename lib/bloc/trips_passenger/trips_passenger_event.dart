@@ -32,4 +32,11 @@ class UpdateTripsList extends TripsPassengerEvent {
   UpdateTripsList(this.trips);
 }
 
+class CreatePassangerTrip extends TripsPassengerEvent {
+  final BuildContext context;
+  final TripModel trip;
+
+  CreatePassangerTrip(this.context, this.trip);
+}
+
 class ThrowTipsError extends TripsPassengerEvent {}

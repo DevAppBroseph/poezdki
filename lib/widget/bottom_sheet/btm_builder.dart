@@ -2,8 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class BottomSheetCallAwait {
-  Future wait(BuildContext context, {bool? expand,bool? dismissible, bool? bounce , bool? enableDrag, bool? useRootNavigator,  required Widget child}) =>
+  Future wait(BuildContext context,
+          {
+          bool? expand,
+          bool? dismissible,
+          bool? bounce,
+          bool? enableDrag,
+          bool? useRootNavigator,
+          required Widget child}) =>
       showCupertinoModalBottomSheet(
+          topRadius: const Radius.circular(50),
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           isDismissible: dismissible,
           bounce: bounce ?? true,
@@ -51,17 +59,15 @@ class BottomSheetChildren extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Column(
-            mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
-                      width: 100,
-                      height: 4,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.grey),
-                    ),
-                    
+              width: 100,
+              height: 4,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50), color: Colors.grey),
+            ),
             Flexible(
               child: SingleChildScrollView(
                 child: Column(

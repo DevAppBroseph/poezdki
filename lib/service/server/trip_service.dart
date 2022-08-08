@@ -1,11 +1,13 @@
-import 'package:app_poezdka/model/city_model.dart';
 import 'package:app_poezdka/model/server_responce.dart';
+import 'package:app_poezdka/service/local/secure_storage.dart';
+import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:app_poezdka/export/server_url.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 class TripService {
   final errorDialog = ErrorDialogs();
@@ -19,10 +21,12 @@ class TripService {
       bool? babyChair,
       bool? smoke,
       bool? twoPlacesInBehind,
-      bool? conditioner}) async {
+      bool? conditioner,
+      String? gender}) async {
     Map<String, dynamic> filter = {
-      // if (departure != null) "departure": departure,
-      // if (destination != null) "destination": destination,
+      if (departure != null) "departure": departure,
+      if (destination != null) "destination": destination,
+      if (gender != null) "gender": gender,
       "animals": animals,
       "package": package,
       "baggage": baggage,
@@ -31,8 +35,8 @@ class TripService {
       "two_places_in_behind": twoPlacesInBehind,
       "conditioner": conditioner
     };
-    // Response response;
-    // var dio = Dio();
+    Response response;
+    var dio = Dio();
 
     try {
       // var response = await http.get(allTrips);
@@ -40,11 +44,11 @@ class TripService {
         "Content-type": "application/json",
         "Accept": "application/json"
       };
-      var response = await http.post(Uri.parse(getAllTripsUrl),
-          body: json.encode(filter), headers: userHeader);
+      response = await dio.post(getAllTripsUrl,
+          data: json.encode(filter), options: Options(headers: userHeader));
 
       if (response.statusCode == 200) {
-        final body = json.decode(response.body);
+        final body = response.data;
         final list = body['all_trips'] as List;
 
         List<TripModel> trips = [];
@@ -56,7 +60,7 @@ class TripService {
         throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
       }
     } catch (e) {
-      errorDialog.showError(e.toString());
+      // errorDialog.showError(e.toString());
       return null;
     }
   }
@@ -74,13 +78,13 @@ class TripService {
     final filter = {
       if (departure != null) "departure": departure,
       if (destination != null) "destination": destination,
-      "animals": "${animals ?? false}",
-      "package": "${package ?? false}",
-      "baggage": "${baggage ?? false}",
-      "baby_chair": "${babyChair ?? false}",
-      "two_places_in_behind": "${twoPlacesInBehind ?? false}",
-      "conditioner": "${conditioner ?? false}",
-      "owner_gender": "male"
+      "animals": animals,
+      "package": package,
+      "baggage": baggage,
+      "baby_chair": babyChair,
+      "smoke": smoke,
+      "two_places_in_behind": twoPlacesInBehind,
+      "conditioner": conditioner
     };
     Response response;
     var dio = Dio();
@@ -102,88 +106,220 @@ class TripService {
         throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
       }
     } catch (e) {
-      errorDialog.showError(e.toString());
+      // errorDialog.showError(e.toString());
       return null;
     }
   }
 
-  Future createTripPassanger(
-      {required int price,
-      required int startTime,
-      required City departure,
-      required List<Stops> stops,
-      required bool package,
-      required bool baggage,
-      required bool babyChair,
-      required bool smoke,
-      required bool animals,
-      required bool twoPlacesInBehind}) async {
+  Future<bool> createTripPassanger({required TripModel trip}) async {
     Response response;
     var dio = Dio();
+    final List stops = [];
+    trip.stops?.forEach((element) async {
+      stops.add(element.toJson());
+    });
     final data = {
-      "price": price,
-      "start": startTime,
-      "departure": departure.toMap(),
+      "price": trip.price,
+      "start": trip.timeStart,
+      "departure": trip.departure?.toJson(),
       "stops": stops,
-      "package": package,
-      "baggage": baggage,
-      "baby_chair": babyChair,
-      "smoke": smoke,
-      "animals": animals,
-      "two_places_in_behind": twoPlacesInBehind,
-      "owner_gender": 'male'
+      "package": trip.package,
+      "baggage": trip.baggage,
+      "baby_chair": trip.babyChair,
+      "smoke": trip.smoke,
+      "animals": trip.animals,
+      "two_places_in_behind": trip.twoPlacesInBehind,
+      "conditioner": trip.conditioner
     };
 
     try {
-      response = await dio.post(addTripUrl, data: json.encode(data));
-      final ResponceTripCreation responceData = response.data;
+      final token = await SecureStorage.instance.getToken();
+      response = await dio.post(addTripUrl,
+          data: json.encode(data),
+          options: Options(
+              headers: {"Authorization": token},
+              responseType: ResponseType.json));
+      final responceData = ResponceServerData.fromMap(response.data);
+
       if (responceData.success) {
         return responceData.success;
       } else {
-        errorDialog.showError(responceData.status);
+        errorDialog.showError(responceData.status.toString());
+
+        return responceData.success;
       }
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> createTripDriver(
+      {required BuildContext context, required TripModel trip}) async {
+    Response response;
+    var dio = Dio();
+
+    final List stops = [];
+    for (var item in trip.stops!) {
+      final stop = item.toJson();
+      stops.add(stop);
+    }
+
+    final data = {
+      "car": trip.car!.pk,
+      "price": trip.price,
+      "start": trip.timeStart,
+      "departure": trip.departure!.toJson(),
+      "stops": stops,
+      "package": trip.package,
+      "baggage": trip.baggage,
+      "baby_chair": trip.babyChair,
+      "smoke": trip.smoke,
+      "animals": trip.animals,
+      "two_places_in_behind": trip.twoPlacesInBehind,
+      "conditioner": trip.conditioner
+    };
+
+    try {
+      final token = await SecureStorage.instance.getToken();
+      response = await dio.post(addTripUrl,
+          data: json.encode(data),
+          options: Options(
+              headers: {"Authorization": token},
+              responseType: ResponseType.json));
+      final responceData = ResponceServerData.fromMap(response.data);
+      if (responceData.success == true) {
+        InfoDialog().show(
+          img: "assets/img/like.png",
+          title: "Ваша поездка создана!",
+          description: "Ожидайте попутчиков.",
+        );
+        Navigator.pop(context, true);
+        return responceData.success;
+      } else {
+        errorDialog.showError(responceData.status);
+        return false;
+      }
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> bookTrip(context,
+      {required int tripId, required List<int> seats}) async {
+    Response response;
+    var dio = Dio();
+    final data = {
+      "seats": seats,
+    };
+    try {
+      final token = await SecureStorage.instance.getToken();
+      response = await dio.post("$bookingTripUrl$tripId",
+          data: json.encode(data),
+          options: Options(
+              headers: {"Authorization": token},
+              responseType: ResponseType.json));
+      final responceData = ResponceServerData.fromMap(response.data);
+      if (responceData.success) {
+        InfoDialog().show(
+            title: "Ваше место забронировано!",
+            img: "assets/img/like.png",
+            description:
+                "Желаем вам хорошей поездки. Вы можете отменить свою поездку в разделе Профиль.",
+            onPressed: () {
+              SmartDialog.dismiss();
+              Navigator.pop(context);
+              Navigator.pop(context);
+            });
+        return responceData.success;
+      } else {
+        errorDialog.showError(responceData.status);
+        return responceData.success;
+      }
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      return false;
+    }
+  }
+
+  Future<void> cancelBookTrip({
+    required int tripId,
+  }) async {
+    Response res;
+    var dio = Dio();
+
+    try {
+      print(tripId);
+      final token = await SecureStorage.instance.getToken();
+      res = await dio.delete("$cancelBookingTripUrl$tripId",
+          options: Options(
+              headers: {"Authorization": token},
+              responseType: ResponseType.json));
+      print(res);
     } catch (e) {
       errorDialog.showError(e.toString());
     }
   }
 
-  Future createTripDriver(
-      {required int car,
-      required int price,
-      required int startTime,
-      required City departure,
-      required List<Stops> stops,
-      required bool package,
-      required bool baggage,
-      required bool babyChair,
-      required bool smoke,
-      required bool animals,
-      required bool twoPlacesInBehind}) async {
-    Response response;
+  Future<List<List<TripModel>>> loadUserDriverTrips() async {
+    List<Response> responses;
     var dio = Dio();
-    final data = {
-      "car": car,
-      "price": price,
-      "start": startTime,
-      "departure": departure.toMap(),
-      "stops": stops,
-      "package": package,
-      "baggage": baggage,
-      "baby_chair": babyChair,
-      "smoke": smoke,
-      "two_places_in_behind": twoPlacesInBehind,
-    };
 
     try {
-      response = await dio.post(addTripUrl, data: json.encode(data));
-      final ResponceTripCreation responceData = response.data;
-      if (responceData.success) {
-        return responceData.success;
-      } else {
-        errorDialog.showError(responceData.status);
-      }
+      final token = await SecureStorage.instance.getToken();
+      final options = Options(
+          headers: {"Authorization": token}, responseType: ResponseType.json);
+      responses = await Future.wait([
+        dio.get(getDriverTripsUrl, options: options),
+        dio.get(getDriverPastTripsUrl, options: options),
+      ]);
+      return [
+        _getTripsFromRequest(responses[0]),
+        _getTripsFromRequest(responses[1]),
+      ];
     } catch (e) {
-      errorDialog.showError(e.toString());
+      return [];
+    }
+  }
+
+  Future<List<List<TripModel>>> loadUserPassangerTrips() async {
+    List<Response> responses;
+    var dio = Dio();
+
+    try {
+      final token = await SecureStorage.instance.getToken();
+      final options = Options(
+          headers: {"Authorization": token}, responseType: ResponseType.json);
+      responses = await Future.wait([
+        dio.get(getPassengerTripsUrl, options: options),
+        dio.get(getPassPastTripsUrl, options: options),
+      ]);
+      return [
+        _getTripsFromRequest(responses[0]),
+        _getTripsFromRequest(responses[1]),
+      ];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  List<TripModel> _getTripsFromRequest(Response response) {
+    return [
+      if (response.statusCode == 200)
+        for (var i in response.data['trips']) TripModel.fromJson(i),
+    ];
+  }
+
+  Future<void> deleteTrip(int tripId) async {
+    final dio = Dio();
+    try {
+      final token = await SecureStorage.instance.getToken();
+      final options = Options(
+          headers: {"Authorization": token}, responseType: ResponseType.json);
+      await dio.delete("$deleteTripUrl$tripId", options: options);
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

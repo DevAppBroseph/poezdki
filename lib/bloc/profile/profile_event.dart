@@ -13,7 +13,7 @@ class UpdateProfile extends ProfileEvent {
 
 class CreateCar extends ProfileEvent {
   final BuildContext context;
-  final CarModel car;
+  final Car car;
 
   CreateCar(this.context, this.car);
 }

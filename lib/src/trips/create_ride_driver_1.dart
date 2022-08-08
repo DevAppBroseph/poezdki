@@ -1,6 +1,5 @@
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/model/car_model.dart';
-import 'package:app_poezdka/model/city_model.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,11 +28,12 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
   final TextEditingController endWay = TextEditingController();
   final List<TextEditingController> _midwayControllers = [];
   var midWays = <TextEditingController>[];
-  City? from;
-  City? to;
+  Departure? from;
+  Departure? to;
+  List<Departure> stopsList = [];
   DateTime? date;
   TimeOfDay? time;
-  CarModel? selectedCar;
+  Car? selectedCar;
 
   @override
   Widget build(BuildContext context) {
@@ -56,11 +56,17 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                       pickDestinition(startWay, true, "Откуда поедем?"),
                   pickDestinitionTo: () =>
                       pickDestinition(endWay, false, "Куда едем?"),
+                  pickDestinitionStops: () {},
                   startWay: startWay,
                   endWay: endWay,
                   midWays: midWays,
                   midwayControllers: _midwayControllers,
-                  onAdd: () {},
+                  onAdd: () {
+                    // setState(() {
+                    //   midWays.add(TextEditingController());
+                    //   _midwayControllers.add(TextEditingController());
+                    // });
+                  },
                   onDelete: () {},
                 ),
                 Padding(
@@ -129,7 +135,12 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
             final bool success = await pushNewScreen(context,
                 withNavBar: false,
                 screen: CreateRideDriverInfo(
-                    from: from!, to: to!, date: date!, time: time!, car: selectedCar!,));
+                  from: from!,
+                  to: to!,
+                  startTime: DateTime(date!.year, date!.month, date!.day,
+                        time!.hour, time!.minute),
+                        car: selectedCar!,
+                ));
             if (success) {
               cleanData();
             }
@@ -228,7 +239,7 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
 
   void pickDestinition(
       TextEditingController contoller, bool isFrom, String title) async {
-    final City? destinition = await btmSheet.wait(context,
+    final Departure? destinition = await btmSheet.wait(context,
         useRootNavigator: true,
         child: PickCity(
           title: title,
@@ -244,7 +255,7 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
   void pickCar(
     context,
   ) async {
-    final CarModel? car = await btmSheet.wait(context,
+    final Car? car = await btmSheet.wait(context,
         useRootNavigator: true, child: const PickCar());
     if (car != null) {
       setState(() {

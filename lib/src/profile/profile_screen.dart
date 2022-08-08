@@ -17,14 +17,6 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return KScaffoldScreen(
         title: "Профиль",
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications_outlined,
-                color: Colors.grey,
-              ))
-        ],
         body: SingleChildScrollView(
           child: Column(
             children: [

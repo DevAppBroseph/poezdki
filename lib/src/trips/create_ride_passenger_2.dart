@@ -1,28 +1,27 @@
-import 'package:app_poezdka/const/images.dart';
-import 'package:app_poezdka/database/database.dart';
-import 'package:app_poezdka/model/city_model.dart';
+import 'package:app_poezdka/bloc/trips_passenger/trips_passenger_bloc.dart';
+
+import 'package:app_poezdka/export/blocs.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
-import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-import 'package:provider/provider.dart';
 import '../../const/colors.dart';
 
 class CreateRidePassenger2 extends StatefulWidget {
-  final City from;
-  final City to;
-  final DateTime date;
-  final TimeOfDay time;
+  final Departure from;
+  final Departure to;
+  final DateTime startTime;
+
 
   const CreateRidePassenger2({
     Key? key,
     required this.from,
     required this.to,
-    required this.date,
-    required this.time,
+    required this.startTime,
+
   }) : super(key: key);
 
   @override
@@ -44,13 +43,14 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
+      resizeToAvoidBottomInset: false,
       title: "Создание поездки",
       isLeading: true,
       body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: SingleChildScrollView(
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 children: [
                   SwitchListTile(
@@ -95,7 +95,6 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
                       onChanged: (value) => setState(() {
                             _isPetTransfer = value;
                           })),
-                
                   _priceField(),
                 ],
               ),
@@ -129,26 +128,27 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
               padding: const EdgeInsets.only(right: 5),
               child: KeyboardActions(
                 config: KeyboardActionsConfig(
-                  defaultDoneWidget: const Text("Готово"),
-                  actions: [
-                  KeyboardActionsItem(
-                      displayArrows: false,
-                      focusNode: _nodeText1,
-                      onTapAction: () => _nodeText1.unfocus(),
-                      footerBuilder: (context) => PreferredSize(
-                          child: ListTile(
-                            trailing: Image.asset("$iconPath/ruble.png"),
-                            title: TextField(
-                              decoration: const InputDecoration(
-                                border: InputBorder.none
-                              ),
-                              readOnly: true,
-                              textAlign: TextAlign.end,
-                              controller: priceController),
-                          ),
-                          preferredSize:
-                              Size(MediaQuery.of(context).size.width, 50))),
-                ]),
+                    defaultDoneWidget: const Text("Готово"),
+                    actions: [
+                      KeyboardActionsItem(
+                        displayArrows: false,
+                        focusNode: _nodeText1,
+                        onTapAction: () => _nodeText1.unfocus(),
+                        // footerBuilder: (context) => PreferredSize(
+                        //     child: ListTile(
+                        //       trailing: Image.asset("$iconPath/ruble.png"),
+                        //       title: TextField(
+                        //         decoration: const InputDecoration(
+                        //           border: InputBorder.none
+                        //         ),
+                        //         readOnly: true,
+                        //         textAlign: TextAlign.end,
+                        //         controller: priceController),
+                        //     ),
+                        //     preferredSize:
+                        //         Size(MediaQuery.of(context).size.width, 50))
+                      ),
+                    ]),
                 child: TextFormField(
                   focusNode: _nodeText1,
                   keyboardType: TextInputType.number,
@@ -180,39 +180,38 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
   }
 
   Widget _createRide() {
-    final db = Provider.of<MyDatabase>(context, listen: false).rideDao;
+    final tripBloc =
+        BlocProvider.of<TripsPassengerBloc>(context, listen: false);
     return Align(
       alignment: Alignment.bottomCenter,
       child: FullWidthElevButton(
         margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
         title: "Опубликовать",
         onPressed: () async {
-          final rideData = RideData(
-              id: null,
-              owner: 1,
-              ownerName: "John",
-              from: widget.from.name,
-              to: widget.to.name,
-              date: widget.date,
-              time: DateTime(widget.date.year, widget.date.month,
-                  widget.date.day, widget.date.hour, widget.date.minute),
-              isPackageTransfer: _isPackageTransfer,
-              isTwoBackSeat: _isTwoBackSeat,
-              isBagadgeTransfer: _isBagadgeTransfer,
-              isChildSeat: _isChildSeat,
-              isCondition: _isCondition,
-              isSmoking: _isSmoking,
-              isPetTransfer: _isPetTransfer,
-              price: double.parse(priceController.text.trim()));
+          final TripModel trip = TripModel(
+              departure: widget.from,
+              timeStart: widget.startTime.microsecondsSinceEpoch,
+              stops: [
+                Stops(
+                    widget.to.coords,
+                    widget.to.district,
+                    widget.to.name,
+                    widget.to.population,
+                    widget.to.subject,
+                    0,
+                    0)
+              ],
+              package: _isPackageTransfer,
+              twoPlacesInBehind: _isTwoBackSeat,
+              baggage: _isBagadgeTransfer,
+              babyChair: _isChildSeat,
+              conditioner: _isCondition,
+              smoke: _isSmoking,
+              animals: _isPetTransfer,
+              price: int.parse(priceController.text.trim()));
 
           if (priceController.text.isNotEmpty) {
-            await db.createRide(rideData);
-            InfoDialog().show(
-              img: "assets/img/like.png",
-              title: "Ваша поездка создана!",
-              description: "Ожидайте попутчиков.",
-            );
-            Navigator.pop(context, true);
+            tripBloc.add(CreatePassangerTrip(context, trip));
           }
         },
       ),

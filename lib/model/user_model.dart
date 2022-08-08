@@ -95,10 +95,11 @@
 //   factory Cars.fromJson(String source) => Cars.fromMap(json.decode(source));
 // }
 
-
 class UserModel {
+  int? id;
   String? token;
   String? login;
+  String? photo;
   String? firstname;
   String? lastname;
   String? gender;
@@ -108,6 +109,7 @@ class UserModel {
   UserModel(
       {this.token,
       this.login,
+      this.photo,
       this.firstname,
       this.lastname,
       this.gender,
@@ -115,8 +117,10 @@ class UserModel {
       this.cars});
 
   UserModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     token = json['token'];
     login = json['login'];
+    photo = json['photo'];
     firstname = json['firstname'];
     lastname = json['lastname'];
     gender = json['gender'];
@@ -133,6 +137,7 @@ class UserModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['token'] = token;
     data['login'] = login;
+    data['photo'] = photo;
     data['firstname'] = firstname;
     data['lastname'] = lastname;
     data['gender'] = gender;

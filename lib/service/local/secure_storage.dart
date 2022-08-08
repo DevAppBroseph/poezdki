@@ -8,10 +8,12 @@ class SecureStorage {
 
   static const _tokenKey = 'TOKEN';
   static const _emailKey = 'EMAIL';
+  static const _userId = 'EMAIL';
 
-  Future<void> persistEmailAndToken(String email, String token) async {
+  Future<void> persistEmailAndToken(String email, String token, int id) async {
     await _storage.write(key: _emailKey, value: email);
     await _storage.write(key: _tokenKey, value: token);
+    await _storage.write(key: _userId, value: id.toString());
   }
 
   Future<bool> hasToken() async {
@@ -32,8 +34,8 @@ class SecureStorage {
     }
   }
 
-  Future<void> deleteToken() async {
-    return _storage.delete(key: _tokenKey);
+  Future<void> deleteUserData() async {
+    return _storage.deleteAll();
   }
 
   Future<void> deleteEmail() async {
@@ -46,6 +48,10 @@ class SecureStorage {
 
   Future<String?> getToken() async {
     return _storage.read(key: _tokenKey);
+  }
+
+  Future<String?> getUserId() async {
+    return _storage.read(key: _userId);
   }
 
   Future<void> deleteAll() async {

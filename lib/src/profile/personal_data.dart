@@ -1,9 +1,9 @@
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/profile/cars_data/add_car.dart';
+import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
@@ -16,17 +16,18 @@ class PersonalData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final btm = BottomSheetCall();
     const profileImg =
         "https://images.unsplash.com/photo-1519011985187-444d62641929?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80";
     return KScaffoldScreen(
         isLeading: true,
         title: "Личные данные",
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                  MaterialCommunityIcons.dots_horizontal_circle_outline))
-        ],
+        // actions: [
+        //   IconButton(
+        //       onPressed: () => btm.show(context, child: EditProfileSheet()),
+        //       icon: const Icon(
+        //           MaterialCommunityIcons.dots_horizontal_circle_outline))
+        // ],
         body: ListView(
           children: [
             ProfileInfo(
@@ -62,7 +63,6 @@ class ProfileInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  
     return Center(
       child: SizedBox(
         height: 230,
@@ -192,7 +192,7 @@ class MyCarList extends StatelessWidget {
         itemCount: cars.length,
         itemBuilder: (context, int index) => ListTile(
               title: Text(
-                "${cars[index].mark!} ${cars[index].model?? ""} ${cars[index].color ?? ""}" ,
+                "${cars[index].mark!} ${cars[index].model ?? ""} ${cars[index].color ?? ""}",
               ),
               // subtitle: Text(cars[index].vehicleNumber ?? "" ),
               trailing: TextButton(

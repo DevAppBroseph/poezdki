@@ -1,5 +1,5 @@
 
-import 'package:app_poezdka/model/car_model.dart';
+import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/service/server/car_service.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -23,7 +23,7 @@ class _PickCarState extends State<PickCar> {
         leading: IconButton(onPressed: () => Navigator.pop(context), icon: const Icon(CupertinoIcons.chevron_down)),
         title: const Text("Выберите автомобиль"),
       ),
-      body: FutureBuilder<List<CarModel>>(
+      body: FutureBuilder<List<Car>>(
         future: CarService().getUserCars(),
         builder: (context, snapshot) {
           if(snapshot.connectionState == ConnectionState.done){
@@ -42,8 +42,8 @@ class _PickCarState extends State<PickCar> {
                       return ListTile(
                         onTap: () => Navigator.pop(context, car),
                         title: Text("${car.mark} ${car.model}"),
-                        subtitle: Text(car.color),
-                        trailing: Text(car.vehicleNumber),
+                        subtitle: Text(car.color!),
+                        // trailing: Text(car.vehicleNumber!),
                       );
                     },
                   ),

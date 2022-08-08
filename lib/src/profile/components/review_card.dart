@@ -1,13 +1,17 @@
-import 'package:app_poezdka/const/lorem_ipsum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class ReviewCard extends StatelessWidget {
-  const ReviewCard({Key? key}) : super(key: key);
+  final String message;
+  final num mark;
+  final String date;
+  const ReviewCard(
+      {Key? key, required this.message, required this.mark, required this.date})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const boldText =  TextStyle(fontWeight: FontWeight.bold);
+    const boldText = TextStyle(fontWeight: FontWeight.bold);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       padding: const EdgeInsets.all(15),
@@ -16,18 +20,18 @@ class ReviewCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(
+          SizedBox(
             height: 20,
             child: Text(
-              "13.12.2022",
+              date.substring(0,10),
               style: TextStyle(color: Colors.grey),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              loremIpsum,
-              style:  TextStyle(color: Colors.black),
+              message,
+              style: const TextStyle(color: Colors.black),
             ),
           ),
           Row(
