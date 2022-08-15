@@ -2,6 +2,7 @@ import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/widget/divider/verical_dividers.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
@@ -49,7 +50,14 @@ class WayPoints extends StatelessWidget {
             onTap: pickDestinitionFrom,
             hintText: "Откуда",
             textEditingController: startWay,
-            suffixIcon: Image.asset('assets/img/gps.png'),
+            suffixIcon: Padding(
+              padding: const EdgeInsets.all(12),
+              child: SvgPicture.asset(
+                'assets/img/gps.svg',
+                width: 20,
+                height: 20,
+              ),
+            ),
           ),
         ),
         midWays != null
@@ -64,7 +72,14 @@ class WayPoints extends StatelessWidget {
                         onTap: () {},
                         hintText: "Куда",
                         textEditingController: midwayControllers[index],
-                        suffixIcon: Image.asset('assets/img/gps.png'),
+                        suffixIcon: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: SvgPicture.asset(
+                            'assets/img/gps.svg',
+                            width: 20,
+                            height: 20,
+                          ),
+                        ),
                       ),
                     ))
             : const SizedBox(),
@@ -105,7 +120,14 @@ class WayPoints extends StatelessWidget {
             onTap: pickDestinitionTo,
             hintText: "Куда",
             textEditingController: endWay,
-            suffixIcon: Image.asset('assets/img/gps.png'),
+            suffixIcon: Padding(
+              padding: const EdgeInsets.all(12),
+              child: SvgPicture.asset(
+                'assets/img/gps.svg',
+                width: 20,
+                height: 20,
+              ),
+            ),
           ),
         ),
       ],
@@ -166,7 +188,11 @@ class WayPoints extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Image.asset('assets/img/way_from.png'),
+            SvgPicture.asset(
+              'assets/img/way_from.svg',
+              width: 30,
+              height: 30,
+            ),
             const DivEnd()
           ],
         );
@@ -176,8 +202,10 @@ class WayPoints extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const DivStart(),
-            Image.asset(
-              'assets/img/location.png',
+            SvgPicture.asset(
+              'assets/img/location.svg',
+              width: 35,
+              height: 35,
             ),
             const SizedBox(
               height: 5,
@@ -193,9 +221,10 @@ class WayPoints extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const DivStart(),
-            Image.asset(
-              'assets/img/location.png',
-              scale: 1.2,
+            SvgPicture.asset(
+              'assets/img/location.svg',
+              width: 35,
+              height: 35,
             ),
             const DivEnd(),
           ],

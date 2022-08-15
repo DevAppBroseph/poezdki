@@ -43,7 +43,7 @@ class TripsPassengerBloc
     final responce = await tripService.createTripPassanger(trip: event.trip);
     if (responce) {
       InfoDialog().show(
-        img: "assets/img/like.png",
+        img: "assets/img/like.svg",
         title: "Ваша поездка создана!",
         description: "Ожидайте попутчиков.",
       );

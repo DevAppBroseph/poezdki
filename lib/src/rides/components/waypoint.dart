@@ -1,5 +1,6 @@
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 import '../../../const/colors.dart';
@@ -8,7 +9,8 @@ import '../../../widget/divider/verical_dividers.dart';
 class WayPointField extends StatelessWidget {
   final WaypointType type;
   final Widget textField;
-  const WayPointField({Key? key, required this.type, required this.textField}) : super(key: key);
+  const WayPointField({Key? key, required this.type, required this.textField})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +64,11 @@ class WayPointField extends StatelessWidget {
             const SizedBox(
               height: 10,
             ),
-            Image.asset('assets/img/way_from.png'),
+            SvgPicture.asset(
+              'assets/img/way_from.svg',
+              width: 30,
+              height: 30,
+            ),
             const DivEnd()
           ],
         );
@@ -72,8 +78,10 @@ class WayPointField extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const DivStart(),
-            Image.asset(
-              'assets/img/location.png',
+            SvgPicture.asset(
+              'assets/img/location.svg',
+              width: 35,
+              height: 35,
             ),
             const SizedBox(
               height: 5,
@@ -89,9 +97,10 @@ class WayPointField extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             const DivStart(),
-            Image.asset(
-              'assets/img/location.png',
-              scale: 1.2,
+            SvgPicture.asset(
+              'assets/img/location.svg',
+              width: 35,
+              height: 35,
             ),
             const DivEnd(),
           ],

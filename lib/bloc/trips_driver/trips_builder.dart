@@ -11,24 +11,25 @@ class TripsBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final tripsBloc = BlocProvider.of<TripsBloc>(context);
     return BlocBuilder(
-        bloc: tripsBloc,
-        builder: ((context, state) {
-          if (state is TripsLoading) {
-            return const Padding(
-              padding:  EdgeInsets.all(20.0),
-              child:  Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          if (state is TripsLoaded) {
-            return TripsList(
-              trips: state.trips,
-            );
-          }
-          return const Center(
-            child: Text("No state detected"),
+      bloc: tripsBloc,
+      builder: ((context, state) {
+        if (state is TripsLoading) {
+          return const Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Center(
+              child: CircularProgressIndicator.adaptive(),
+            ),
           );
-        }));
+        }
+        if (state is TripsLoaded) {
+          return TripsList(
+            trips: state.trips,
+          );
+        }
+        return const Center(
+          child: Text(""),
+        );
+      }),
+    );
   }
 }

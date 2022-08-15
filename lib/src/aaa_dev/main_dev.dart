@@ -72,7 +72,7 @@ class MainDev extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Image.asset("assets/img/like.png"),
+                      Image.asset("assets/img/like.svg"),
                       const SizedBox(
                         height: 20,
                       ),

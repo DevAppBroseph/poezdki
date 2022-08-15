@@ -99,13 +99,13 @@ class TripTileDefault extends StatelessWidget {
                 minVerticalPadding: 0,
                 minLeadingWidth: 30,
                 title: Text(
-                  tripData.stops?.last.name ??
-                  " ",
+                  tripData.stops!.first.name ?? " ",
                   maxLines: 1,
                 ),
                 subtitle: const Text(
-                    // DateFormat("dd MMMM").format(endTime).toString()
-                    ""),
+                  // DateFormat("dd MMMM").format(endTime).toString()
+                  "",
+                ),
               ),
             ],
           ),

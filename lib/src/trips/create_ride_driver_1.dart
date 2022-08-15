@@ -138,8 +138,8 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                   from: from!,
                   to: to!,
                   startTime: DateTime(date!.year, date!.month, date!.day,
-                        time!.hour, time!.minute),
-                        car: selectedCar!,
+                      time!.hour, time!.minute),
+                  car: selectedCar!,
                 ));
             if (success) {
               cleanData();

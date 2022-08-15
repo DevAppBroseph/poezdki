@@ -20,26 +20,26 @@ class KFormField extends StatelessWidget {
   final Widget? suffix;
   final Widget? suffixIcon;
   final String? suffixText;
-  const KFormField({
-    Key? key,
-    this.onTap,
-    this.readOnly,
-    this.inputAction,
-    required this.hintText,
-    this.icon,
-    this.onChanged,
-    required this.textEditingController,
-    this.mainColor,
-    this.bgColor,
-    this.maxLines,
-    this.formatters,
-    this.textInputType,
-    this.obscureText,
-    this.validateFunction,
-    this.suffix,
-    this.suffixIcon,
-    this.suffixText
-  }) : super(key: key);
+  const KFormField(
+      {Key? key,
+      this.onTap,
+      this.readOnly,
+      this.inputAction,
+      required this.hintText,
+      this.icon,
+      this.onChanged,
+      required this.textEditingController,
+      this.mainColor,
+      this.bgColor,
+      this.maxLines,
+      this.formatters,
+      this.textInputType,
+      this.obscureText,
+      this.validateFunction,
+      this.suffix,
+      this.suffixIcon,
+      this.suffixText})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +52,6 @@ class KFormField extends StatelessWidget {
       width: widthOfScreen,
       child: TextFormField(
         onTap: onTap as void Function()?,
-        
-        
         validator: validateFunction,
         readOnly: readOnly ?? false,
         textInputAction: inputAction,
@@ -65,19 +63,17 @@ class KFormField extends StatelessWidget {
         minLines: 1,
         inputFormatters: formatters,
         keyboardType: TextInputType.text,
-        
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
-          suffixText: suffixText,
-          
-          
-          suffix: suffix,
-          suffixIcon: suffixIcon,
-          suffixStyle: TextStyle(
-                fontSize: 14,
-                color: hintTextColor,
-                fontWeight: FontWeight.w400),
-          errorStyle: const TextStyle(height: 0.0, fontSize: 0.0),
+            suffixText: suffixText,
+            suffix: suffix,
+            suffixIcon: suffixIcon,
+            suffixStyle: TextStyle(
+              fontSize: 14,
+              color: hintTextColor,
+              fontWeight: FontWeight.w400,
+            ),
+            errorStyle: const TextStyle(height: 0.0, fontSize: 0.0),
             contentPadding:
                 const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
             filled: true,
@@ -107,9 +103,10 @@ class KFormField extends StatelessWidget {
               ),
             ),
             hintStyle: TextStyle(
-                fontSize: 14,
-                color: hintTextColor,
-                fontWeight: FontWeight.w400),
+              fontSize: 14,
+              color: hintTextColor,
+              fontWeight: FontWeight.w400,
+            ),
             hintText: hintText),
       ),
     );

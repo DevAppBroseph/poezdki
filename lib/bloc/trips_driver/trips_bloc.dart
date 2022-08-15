@@ -49,8 +49,6 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     if (success) add(LoadAllTripsList());
   }
 
-
-
   void _deleteTrip(DeleteTrip event, Emitter<TripsState> emit) async {
     await tripService.deleteTrip(event.tripId);
     add(LoadAllTripsList());

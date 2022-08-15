@@ -46,7 +46,6 @@ class TripService {
       };
       response = await dio.post(getAllTripsUrl,
           data: json.encode(filter), options: Options(headers: userHeader));
-
       if (response.statusCode == 200) {
         final body = response.data;
         final list = body['all_trips'] as List;
@@ -190,7 +189,7 @@ class TripService {
       final responceData = ResponceServerData.fromMap(response.data);
       if (responceData.success == true) {
         InfoDialog().show(
-          img: "assets/img/like.png",
+          img: "assets/img/like.svg",
           title: "Ваша поездка создана!",
           description: "Ожидайте попутчиков.",
         );
@@ -224,7 +223,7 @@ class TripService {
       if (responceData.success) {
         InfoDialog().show(
             title: "Ваше место забронировано!",
-            img: "assets/img/like.png",
+            img: "assets/img/like.svg",
             description:
                 "Желаем вам хорошей поездки. Вы можете отменить свою поездку в разделе Профиль.",
             onPressed: () {

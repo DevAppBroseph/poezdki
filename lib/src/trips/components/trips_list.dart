@@ -10,20 +10,20 @@ class TripsList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (trips.isNotEmpty) {
       return ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: trips.length,
-          itemBuilder: (context, index) => TripTileDefault(
-                trip: trips[index],
-              ));
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: trips.length,
+        itemBuilder: (context, index) => TripTileDefault(
+          trip: trips[index],
+        ),
+      );
     } else {
       return const Center(
         child: Padding(
-          padding: EdgeInsets.all(25),
+          padding: EdgeInsets.only(top: 150),
           child: Text("Поездки не найдены"),
         ),
       );
     }
-    
   }
 }

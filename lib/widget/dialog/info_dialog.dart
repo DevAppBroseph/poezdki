@@ -1,6 +1,7 @@
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:flutter_svg/svg.dart';
 
 class InfoDialog {
   void show(
@@ -34,7 +35,7 @@ class InfoDialog {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      img != null ? Image.asset(img) : const SizedBox(),
+                      img != null ? SvgPicture.asset(img) : const SizedBox(),
                       customIcon ?? const SizedBox(),
                       const SizedBox(
                         height: 20,
@@ -61,7 +62,7 @@ class InfoDialog {
                         height: 10,
                       ),
                       FullWidthElevButton(
-                        title: "Хоршо",
+                        title: "Хорошо",
                         onPressed: onPressed != null
                             ? onPressed as void Function()?
                             : () => SmartDialog.dismiss(),

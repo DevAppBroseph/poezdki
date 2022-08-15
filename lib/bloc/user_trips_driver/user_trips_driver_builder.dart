@@ -13,27 +13,32 @@ class UserTripsDriverBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final userTripsBloc = BlocProvider.of<UserTripsDriverBloc>(context);
     return BlocBuilder(
-        bloc: userTripsBloc,
-        builder: ((context, state) {
-          if (state is UserTripsDriverLoading) {
-            return const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          if (state is UserTripsDriverLoaded) {
+      bloc: userTripsBloc,
+      builder: ((context, state) {
+        if (state is UserTripsDriverLoading) {
+          return const Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        if (state is UserTripsDriverLoaded) {
+          if (state.trips.isNotEmpty) {
             return UserTripsList(
               tripsLists: state.trips,
             );
+          } else {
+            return Container();
           }
-          return const Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-        }));
+        }
+        return const Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }),
+    );
   }
 }

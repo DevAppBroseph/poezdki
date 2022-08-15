@@ -54,13 +54,13 @@ class _BookingRidePlaceState extends State<BookingRidePlace> {
         title: "Забронировать",
         onPressed: () => InfoDialog().show(
             title: "Ваше место забронировано!",
-            img: "assets/img/like.png",
+            img: "assets/img/like.svg",
             description:
                 "Желаем вам хорошей поездки. Вы можете отменить свою поездку в разделе Профиль",
             onPressed: () {
               SmartDialog.dismiss();
               Navigator.pop(context);
-               Navigator.pop(context);
+              Navigator.pop(context);
             }),
       ),
     );

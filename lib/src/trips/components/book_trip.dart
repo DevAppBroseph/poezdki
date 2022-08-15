@@ -57,12 +57,18 @@ class _BookTripState extends State<BookTrip> {
               const SizedBox(
                 height: 40,
               ),
-              const Text("Количество мест"),
-              _rangeSlider(),
+              // const Text("Количество мест"),
+              // _rangeSlider(),
               const SizedBox(
                 height: 40,
               ),
-              const Text("Выберите места в салоне автомобиля"),
+              const Text(
+                "Выберите места в салоне автомобиля",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(
                 height: 40,
               ),

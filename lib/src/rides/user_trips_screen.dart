@@ -32,28 +32,18 @@ class _UserTripsScreenState extends State<UserTripsScreen>
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
-        resizeToAvoidBottomInset: false,
-        title: "Мои поездки",
-        bottom: _tabbar(),
-        body: Container(
-            color: kPrimaryWhite,
-            child: TabBarView(
-                controller: _tabController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      // children: [],
-                      children: const [UserTripsPassengerBuilder()],
-                    ),
-                  ),
-                  SingleChildScrollView(
-                    child: Column(
-                      // children: [],
-                      children: const [UserTripsDriverBuilder()],
-                    ),
-                  ),
-                ])));
+      resizeToAvoidBottomInset: false,
+      title: "Мои поездки",
+      bottom: _tabbar(),
+      body: Container(
+        color: kPrimaryWhite,
+        child: TabBarView(
+          controller: _tabController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [UserTripsPassengerBuilder(), UserTripsDriverBuilder()],
+        ),
+      ),
+    );
   }
 
   Widget futureRides() {
@@ -103,9 +93,11 @@ class _UserTripsScreenState extends State<UserTripsScreen>
             ),
           ),
           ListView.builder(
-              itemCount: pastRidesDriver.length,
-              itemBuilder: (context, index) =>
-                  RideTile(tripData: pastRidesDriver[index]))
+            itemCount: pastRidesDriver.length,
+            itemBuilder: (context, index) => RideTile(
+              tripData: pastRidesDriver[index],
+            ),
+          )
         ],
       );
     }
