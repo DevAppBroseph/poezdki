@@ -3,6 +3,7 @@
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_builder.dart';
 import 'package:app_poezdka/bloc/trips_passenger/trips_p_builder.dart';
+import 'package:app_poezdka/bloc/trips_passenger/trips_passenger_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/filter_model.dart';
@@ -339,6 +340,23 @@ class _SearchRidesState extends State<SearchRides>
         twoPlacesInBehind: filter.isTwoBackSeat,
         conditioner: filter.isConditioner,
         gender: filter.gender?.apiTitle,
+      ),
+    );
+
+    final tripsBlocSecond = BlocProvider.of<TripsPassengerBloc>(context);
+    tripsBlocSecond.add(
+      LoadPassengerTripsList(
+        // page: page,
+        departure: from,
+        destination: to,
+        animals: filter.isPetTransfer,
+        package: filter.isPackageTransfer,
+        baggage: filter.isBagadgeTransfer,
+        babyChair: filter.isChildSeat,
+        smoke: filter.isSmoking,
+        twoPlacesInBehind: filter.isTwoBackSeat,
+        conditioner: filter.isConditioner,
+        // gender: filter.gender?.apiTitle,
       ),
     );
     print('im here');

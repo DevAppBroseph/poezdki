@@ -1,4 +1,6 @@
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/trips/components/trip_tile.dart';
@@ -7,7 +9,10 @@ import 'package:flutter/material.dart';
 
 class UserTripsList extends StatelessWidget {
   final List<List<TripModel>> tripsLists;
-  const UserTripsList({Key? key, required this.tripsLists}) : super(key: key);
+  final int screen;
+  const UserTripsList(
+      {Key? key, required this.tripsLists, required this.screen})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +24,15 @@ class UserTripsList extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           CupertinoSliverRefreshControl(onRefresh: () async {
-            BlocProvider.of<TripsBloc>(context).add(LoadAllTripsList());
+            Future.delayed(Duration(seconds: 1), () {
+              if (screen == 1) {
+                BlocProvider.of<UserTripsDriverBloc>(context)
+                    .add(LoadUserTripsList());
+              } else {
+                BlocProvider.of<UserTripsPassengerBloc>(context)
+                    .add(LoadUserPassengerTripsList());
+              }
+            });
           }),
           SliverToBoxAdapter(
             child: pastList(pastTrips),

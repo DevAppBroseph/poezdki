@@ -21,15 +21,16 @@ class TripsPassengerBloc
       LoadPassengerTripsList event, Emitter<TripsPassengerState> emit) async {
     emit(TripsLoading());
     final trips = await tripService.getAllDriversTrips(
-        departure: event.departure,
-        destination: event.destination,
-        animals: event.animals,
-        package: event.package,
-        baggage: event.baggage,
-        babyChair: event.babyChair,
-        smoke: event.smoke,
-        twoPlacesInBehind: event.twoPlacesInBehind,
-        conditioner: event.conditioner);
+      departure: event.departure?.toJson(),
+      destination: event.destination?.toJson(),
+      animals: event.animals,
+      package: event.package,
+      baggage: event.baggage,
+      babyChair: event.babyChair,
+      smoke: event.smoke,
+      twoPlacesInBehind: event.twoPlacesInBehind,
+      conditioner: event.conditioner,
+    );
     trips != null ? add(UpdateTripsList(trips)) : add(ThrowTipsError());
   }
 

@@ -15,6 +15,7 @@ class UserTripsDriverBuilder extends StatelessWidget {
     return BlocBuilder(
       bloc: userTripsBloc,
       builder: ((context, state) {
+        print(state);
         if (state is UserTripsDriverLoading) {
           return const Padding(
             padding: EdgeInsets.all(20.0),
@@ -27,6 +28,7 @@ class UserTripsDriverBuilder extends StatelessWidget {
           if (state.trips.isNotEmpty) {
             return UserTripsList(
               tripsLists: state.trips,
+              screen: 1,
             );
           } else {
             return Container();

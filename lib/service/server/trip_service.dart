@@ -69,8 +69,8 @@ class TripService {
   }
 
   Future<List<TripModel>?> getAllDriversTrips(
-      {String? departure,
-      String? destination,
+      {Map? departure,
+      Map? destination,
       bool? animals,
       bool? package,
       bool? baggage,

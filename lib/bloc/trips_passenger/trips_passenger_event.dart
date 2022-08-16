@@ -4,8 +4,8 @@ part of 'trips_passenger_bloc.dart';
 abstract class TripsPassengerEvent {}
 
 class LoadPassengerTripsList extends TripsPassengerEvent {
-  final String? departure;
-  final String? destination;
+  final Departure? departure;
+  final Departure? destination;
   final bool? animals;
   final bool? package;
   final bool? baggage;
