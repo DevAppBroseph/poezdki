@@ -81,8 +81,8 @@ class _TripTileState extends State<TripTile> {
                 leading: UserCachedImage(
                   img: ownerImage,
                 ),
-                title: Text(
-                  "${widget.trip.owner!.firstname! + ' ' + widget.trip.owner!.lastname! ?? " Пользователь не найден"}",
+                title: Text('${widget.trip.owner!.firstname!} ${widget.trip.owner!.lastname!}',
+                  // "${widget.trip.owner!.firstname! + ' ' + widget.trip.owner!.lastname! ?? " Пользователь не найден"}",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
