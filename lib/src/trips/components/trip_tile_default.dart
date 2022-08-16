@@ -41,8 +41,8 @@ class TripTileDefault extends StatelessWidget {
                 leading: UserCachedImage(
                   img: ownerImage,
                 ),
-                title: Text(
-                  "${((trip.owner!.firstname! + ' ' + trip.owner!.lastname!)) ?? " Пользователь не найден"}",
+                title: Text('${trip.owner!.firstname!} ${trip.owner!.lastname!}',
+                  // "${((trip.owner!.firstname! + ' ' + trip.owner!.lastname!)) ?? " Пользователь не найден"}",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
