@@ -19,12 +19,14 @@ class TripTileDefault extends StatelessWidget {
     final ownerImage = trip.owner?.photo;
     final btmSheet = BottomSheetCall();
     return InkWell(
-      onTap: (() => btmSheet.show(ctx,
-          useRootNavigator: true,
-          topRadius: const Radius.circular(50),
-          child: TripDetailsSheet(
-            trip: trip,
-          ))),
+      onTap: () => btmSheet.show(
+        ctx,
+        useRootNavigator: true,
+        topRadius: const Radius.circular(50),
+        child: TripDetailsSheet(
+          trip: trip,
+        ),
+      ),
       child: Container(
           margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           decoration: BoxDecoration(
@@ -40,7 +42,7 @@ class TripTileDefault extends StatelessWidget {
                   img: ownerImage,
                 ),
                 title: Text(
-                  "${trip.owner?.firstname ?? " Пользователь не найден"} ${trip.tripId.toString()}",
+                  "${((trip.owner!.firstname! + ' ' + trip.owner!.lastname!)) ?? " Пользователь не найден"}",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
@@ -99,7 +101,7 @@ class TripTileDefault extends StatelessWidget {
                 minVerticalPadding: 0,
                 minLeadingWidth: 30,
                 title: Text(
-                  tripData.stops!.first.name ?? " ",
+                  tripData.stops!.last.name ?? " ",
                   maxLines: 1,
                 ),
                 subtitle: const Text(

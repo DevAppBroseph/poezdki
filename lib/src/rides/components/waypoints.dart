@@ -17,6 +17,7 @@ class WayPoints extends StatelessWidget {
   final Function pickDestinitionTo;
   final Function pickDestinitionStops;
   final Function onAdd;
+  final Function(int index)? onTap;
   final Function onDelete;
   final int? midWayIndex;
 
@@ -24,6 +25,7 @@ class WayPoints extends StatelessWidget {
       {Key? key,
       required this.startWay,
       required this.endWay,
+      this.onTap,
       required this.midWays,
       required this.onAdd,
       required this.onDelete,
@@ -69,7 +71,11 @@ class WayPoints extends StatelessWidget {
                       onDelete: () {},
                       type: WaypointType.middle,
                       textField: KFormField(
-                        onTap: () {},
+                        onTap: () {
+                          midwayControllers.add(TextEditingController());
+                          onTap!(index);
+                        },
+                        readOnly: true,
                         hintText: "Куда",
                         textEditingController: midwayControllers[index],
                         suffixIcon: Padding(
@@ -90,17 +96,18 @@ class WayPoints extends StatelessWidget {
                     textField: Align(
                       alignment: Alignment.centerLeft,
                       child: TextButton.icon(
-                          onPressed: onAdd as void Function(),
-                          icon: const Icon(
-                            Icons.add_circle_outline,
-                            color: kPrimaryWhite,
-                          ),
-                          label: const Text(
-                            "Промежуточное место",
-                            style: TextStyle(
-                                color: kPrimaryDarkGrey,
-                                fontWeight: FontWeight.w300),
-                          )),
+                        onPressed: onAdd as void Function(),
+                        icon: const Icon(
+                          Icons.add_circle_outline,
+                          color: kPrimaryWhite,
+                        ),
+                        label: const Text(
+                          "Промежуточное место",
+                          style: TextStyle(
+                              color: kPrimaryDarkGrey,
+                              fontWeight: FontWeight.w300),
+                        ),
+                      ),
                     ),
                   )
                 : const SizedBox(

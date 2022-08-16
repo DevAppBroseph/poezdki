@@ -40,12 +40,14 @@ class TripDetailsSheet extends StatelessWidget {
   Widget _tripButtons(context) {
     return Row(
       children: [
-       trip.package! ? Expanded(
-            child: FullWidthElevButton(
-          onPressed: () {},
-          title: "Передать посылку",
-          titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
-        )) : const SizedBox(),
+        trip.package!
+            ? Expanded(
+                child: FullWidthElevButton(
+                onPressed: () {},
+                title: "Передать посылку",
+                titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
+              ))
+            : const SizedBox(),
         Expanded(
             child: FullWidthElevButton(
           onPressed: () => bookTrip(context),
@@ -151,7 +153,11 @@ class TripDetailsSheet extends StatelessWidget {
         leading: UserCachedImage(
           img: trip.owner?.photo,
         ),
-        title: Text(trip.owner?.firstname ?? "Пользователь не найден"),
+        title: Text(
+          (trip.owner?.firstname != null ? trip.owner!.firstname! : '') +
+              ' ' +
+              (trip.owner?.lastname != null ? trip.owner!.lastname! : ''),
+        ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

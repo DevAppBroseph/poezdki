@@ -7,6 +7,8 @@ import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/export/services.dart';
 import 'package:app_poezdka/model/passenger_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
+import 'package:app_poezdka/src/trips/components/trip_details_sheet.dart';
+import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/cached_image/user_image.dart';
 import 'package:app_poezdka/widget/divider/verical_dividers.dart';
@@ -47,6 +49,7 @@ class _TripTileState extends State<TripTile> {
   @override
   // ignore: avoid_renaming_method_parameters
   Widget build(BuildContext ctx) {
+    final btmSheet = BottomSheetCall();
     final tripsBloc = BlocProvider.of<TripsBloc>(ctx, listen: false);
     final tripsDriverBloc =
         BlocProvider.of<UserTripsDriverBloc>(ctx, listen: false);
@@ -54,7 +57,16 @@ class _TripTileState extends State<TripTile> {
         BlocProvider.of<UserTripsPassengerBloc>(ctx, listen: false);
     final ownerImage = widget.trip.owner?.photo;
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        btmSheet.show(
+          ctx,
+          useRootNavigator: true,
+          topRadius: const Radius.circular(50),
+          child: TripDetailsSheet(
+            trip: widget.trip,
+          ),
+        );
+      },
       child: Container(
           margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           decoration: BoxDecoration(
@@ -70,7 +82,7 @@ class _TripTileState extends State<TripTile> {
                   img: ownerImage,
                 ),
                 title: Text(
-                  "${widget.trip.owner?.firstname ?? " Пользователь не найден"} ${widget.trip.tripId.toString()}",
+                  "${widget.trip.owner!.firstname! + ' ' + widget.trip.owner!.lastname! ?? " Пользователь не найден"}",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),

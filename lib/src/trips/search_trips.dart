@@ -94,8 +94,8 @@ class _SearchRidesState extends State<SearchRides>
                   CupertinoSliverRefreshControl(
                     onRefresh: () => fetchTrips(context, page: searchPageIndex),
                   ),
-                  SliverToBoxAdapter(
-                    child: const TripsBuilder(),
+                  const SliverToBoxAdapter(
+                    child: TripsBuilder(),
                   )
                 ],
               ),
@@ -139,7 +139,9 @@ class _SearchRidesState extends State<SearchRides>
         children: [
           TabBar(
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-            onTap: (value) => setState(() {}),
+            onTap: (value) => setState(() {
+              fetchTrips(context, page: value);
+            }),
             controller: _tabController,
             splashBorderRadius: BorderRadius.circular(25),
             // give the indicator a decoration (color and border radius)
@@ -181,7 +183,16 @@ class _SearchRidesState extends State<SearchRides>
                   textField: KFormField(
                     readOnly: true,
                     onTap: () => pickDestinition(
-                        context, startWay, from, "Откуда едем?"),
+                      context,
+                      startWay,
+                      from,
+                      "Откуда едем?",
+                      (destination) {
+                        setState(() {
+                          from = destination;
+                        });
+                      },
+                    ),
                     hintText: "Откуда",
                     textEditingController: startWay,
                     suffix: startWay.text.isNotEmpty
@@ -190,9 +201,10 @@ class _SearchRidesState extends State<SearchRides>
                             alignment: Alignment.centerRight,
                             onPressed: () {
                               setState(() {
-                                from == null;
+                                from = null;
                                 startWay.clear();
                               });
+                              fetchTrips(context, page: searchPageIndex);
                             },
                             icon: const Icon(
                               CupertinoIcons.clear_circled,
@@ -224,11 +236,11 @@ class _SearchRidesState extends State<SearchRides>
                     type: WaypointType.end,
                     textField: KFormField(
                       onTap: () => pickDestinition(
-                        context,
-                        endWay,
-                        to,
-                        "Куда едем?",
-                      ),
+                          context, endWay, to, "Куда едем?", (destination) {
+                        setState(() {
+                          to = destination;
+                        });
+                      }),
                       readOnly: true,
                       hintText: "Куда",
                       textEditingController: endWay,
@@ -238,9 +250,10 @@ class _SearchRidesState extends State<SearchRides>
                               alignment: Alignment.centerRight,
                               onPressed: () {
                                 setState(() {
-                                  to == null;
+                                  to = null;
                                   endWay.clear();
                                 });
+                                fetchTrips(context, page: searchPageIndex);
                               },
                               icon: const Icon(
                                 CupertinoIcons.clear_circled,
@@ -286,8 +299,12 @@ class _SearchRidesState extends State<SearchRides>
     );
   }
 
-  void pickDestinition(context, TextEditingController contoller,
-      Departure? city, String title) async {
+  void pickDestinition(
+      context,
+      TextEditingController contoller,
+      Departure? city,
+      String title,
+      Function(Departure? destination) onChanged) async {
     final Departure? destinition = await btmSheet.wait(context,
         useRootNavigator: true,
         child: PickCity(
@@ -297,6 +314,7 @@ class _SearchRidesState extends State<SearchRides>
       setState(() {
         contoller.text = destinition.name!;
         city = destinition;
+        onChanged(destinition);
       });
       print(to);
       fetchTrips(context, page: searchPageIndex);
@@ -323,6 +341,7 @@ class _SearchRidesState extends State<SearchRides>
         gender: filter.gender?.apiTitle,
       ),
     );
+    print('im here');
   }
 
   void applyFilters() async {

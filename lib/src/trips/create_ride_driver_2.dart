@@ -15,6 +15,7 @@ class CreateRideDriverInfo extends StatefulWidget {
   final Departure from;
   final Departure to;
   final DateTime startTime;
+  final List<Departure> stopsList;
   final Car car;
 
   const CreateRideDriverInfo(
@@ -22,6 +23,7 @@ class CreateRideDriverInfo extends StatefulWidget {
       required this.from,
       required this.to,
       required this.startTime,
+      required this.stopsList,
       required this.car})
       : super(key: key);
 
@@ -174,6 +176,31 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
   }
 
   Widget _createRide() {
+    List<Stops> stops = [];
+    for (var element in widget.stopsList) {
+      stops.add(
+        Stops(
+          element.coords,
+          element.district,
+          element.name,
+          element.population,
+          element.subject,
+          0,
+          0,
+        ),
+      );
+    }
+    stops.add(
+      Stops(
+        widget.to.coords,
+        widget.to.district,
+        widget.to.name,
+        widget.to.population,
+        widget.to.subject,
+        0,
+        0,
+      ),
+    );
     final tripBloc = BlocProvider.of<TripsBloc>(context);
     final tripDriverBloc = BlocProvider.of<UserTripsDriverBloc>(context);
     return WidgetsBinding.instance.window.viewInsets.bottom > 0.0
@@ -188,16 +215,7 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                     car: widget.car,
                     departure: widget.from,
                     timeStart: widget.startTime.microsecondsSinceEpoch,
-                    stops: [
-                      Stops(
-                          widget.to.coords,
-                          widget.to.district,
-                          widget.to.name,
-                          widget.to.population,
-                          widget.to.subject,
-                          0,
-                          0)
-                    ],
+                    stops: stops,
                     package: _isPackageTransfer,
                     twoPlacesInBehind: _isTwoBackSeat,
                     baggage: _isBagadgeTransfer,
@@ -207,7 +225,7 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                     animals: _isPetTransfer,
                     price: int.parse(priceController.text.trim()));
 
-                if (priceController.text.isNotEmpty)  {
+                if (priceController.text.isNotEmpty) {
                   tripBloc.add(CreateUserTrip(context, trip));
                   tripDriverBloc.add(LoadUserTripsList());
                 }

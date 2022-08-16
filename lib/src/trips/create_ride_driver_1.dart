@@ -26,7 +26,7 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
   final btmSheet = BottomSheetCallAwait();
   final TextEditingController startWay = TextEditingController();
   final TextEditingController endWay = TextEditingController();
-  final List<TextEditingController> _midwayControllers = [];
+  List<TextEditingController> _midwayControllers = [];
   var midWays = <TextEditingController>[];
   Departure? from;
   Departure? to;
@@ -52,20 +52,34 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 WayPoints(
-                  pickDestinitionFrom: () =>
-                      pickDestinition(startWay, true, "Откуда поедем?"),
-                  pickDestinitionTo: () =>
-                      pickDestinition(endWay, false, "Куда едем?"),
+                  pickDestinitionFrom: () => pickDestinition(
+                    startWay,
+                    true,
+                    "Откуда поедем?",
+                    null,
+                  ),
+                  onTap: (index) => pickDestinition(
+                    null,
+                    false,
+                    "Куда заедем?",
+                    index,
+                  ),
+                  pickDestinitionTo: () => pickDestinition(
+                    endWay,
+                    false,
+                    "Куда едем?",
+                    null,
+                  ),
                   pickDestinitionStops: () {},
                   startWay: startWay,
                   endWay: endWay,
                   midWays: midWays,
                   midwayControllers: _midwayControllers,
                   onAdd: () {
-                    // setState(() {
-                    //   midWays.add(TextEditingController());
-                    //   _midwayControllers.add(TextEditingController());
-                    // });
+                    setState(() {
+                      midWays.add(TextEditingController());
+                      _midwayControllers.add(TextEditingController());
+                    });
                   },
                   onDelete: () {},
                 ),
@@ -98,16 +112,17 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                         ListTile(
                           title: const Text("Автомобиль"),
                           trailing: TextButton(
-                              onPressed: () => pickCar(context),
-                              child: selectedCar != null
-                                  ? Text(
-                                      "${selectedCar!.mark} ${selectedCar!.model} ${selectedCar!.color}",
-                                      style: carStyle,
-                                    )
-                                  : const Text(
-                                      "Выберите автомобиль",
-                                      style: pickerStyle,
-                                    )),
+                            onPressed: () => pickCar(context),
+                            child: selectedCar != null
+                                ? Text(
+                                    "${selectedCar!.mark} ${selectedCar!.model} ${selectedCar!.color}",
+                                    style: carStyle,
+                                  )
+                                : const Text(
+                                    "Выберите автомобиль",
+                                    style: pickerStyle,
+                                  ),
+                          ),
                         ),
                       ],
                     )),
@@ -132,15 +147,23 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
               date != null ||
               time != null ||
               selectedCar != null) {
-            final bool success = await pushNewScreen(context,
-                withNavBar: false,
-                screen: CreateRideDriverInfo(
-                  from: from!,
-                  to: to!,
-                  startTime: DateTime(date!.year, date!.month, date!.day,
-                      time!.hour, time!.minute),
-                  car: selectedCar!,
-                ));
+            final bool success = await pushNewScreen(
+              context,
+              withNavBar: false,
+              screen: CreateRideDriverInfo(
+                from: from!,
+                to: to!,
+                stopsList: stopsList,
+                startTime: DateTime(
+                  date!.year,
+                  date!.month,
+                  date!.day,
+                  time!.hour,
+                  time!.minute,
+                ),
+                car: selectedCar!,
+              ),
+            );
             if (success) {
               cleanData();
             }
@@ -237,18 +260,26 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
     }
   }
 
-  void pickDestinition(
-      TextEditingController contoller, bool isFrom, String title) async {
+  void pickDestinition(TextEditingController? contoller, bool isFrom,
+      String title, int? index) async {
     final Departure? destinition = await btmSheet.wait(context,
         useRootNavigator: true,
         child: PickCity(
           title: title,
         ));
     if (destinition != null) {
-      setState(() {
-        contoller.text = destinition.name!;
-        isFrom ? from = destinition : to = destinition;
-      });
+      if (contoller != null) {
+        setState(() {
+          contoller.text = destinition.name!;
+          isFrom ? from = destinition : to = destinition;
+        });
+      } else {
+        setState(() {
+          _midwayControllers[index!].text = destinition.name!;
+          stopsList.add(destinition);
+          isFrom ? from = destinition : to = destinition;
+        });
+      }
     }
   }
 

@@ -20,8 +20,8 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
   void _loadTripsList(LoadAllTripsList event, Emitter<TripsState> emit) async {
     emit(TripsLoading());
     final trips = await tripService.getAllTrips(
-        departure: event.departure?.toJson().toString(),
-        destination: event.destination?.toJson().toString(),
+        departure: event.departure?.toJson(),
+        destination: event.destination?.toJson(),
         animals: event.animals,
         package: event.package,
         baggage: event.baggage,

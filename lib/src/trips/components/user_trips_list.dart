@@ -16,25 +16,27 @@ class UserTripsList extends StatelessWidget {
     return Container(
       // width: double.infinity,
       // height: MediaQuery.of(context).size.height,
-      child: CustomScrollView(slivers: [
-        CupertinoSliverRefreshControl(onRefresh: () async {
-          BlocProvider.of<TripsBloc>(context).add(LoadAllTripsList());
-        }),
-        SliverToBoxAdapter(
-          child: pastList(pastTrips),
-        ),
-        SliverToBoxAdapter(
-          child: upcomingList(upcomingTrips),
-        ),
-        // SliverToBoxAdapter(
-        //   child: SingleChildScrollView(
+      child: CustomScrollView(
+        slivers: [
+          CupertinoSliverRefreshControl(onRefresh: () async {
+            BlocProvider.of<TripsBloc>(context).add(LoadAllTripsList());
+          }),
+          SliverToBoxAdapter(
+            child: pastList(pastTrips),
+          ),
+          SliverToBoxAdapter(
+            child: upcomingList(upcomingTrips),
+          ),
+          // SliverToBoxAdapter(
+          //   child: SingleChildScrollView(
 
-        //     child: Column(
-        //       children: [pastList(pastTrips), upcomingList(upcomingTrips)],
-        //     ),
-        //   ),
-        // ),
-      ]),
+          //     child: Column(
+          //       children: [pastList(pastTrips), upcomingList(upcomingTrips)],
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
     );
   }
 

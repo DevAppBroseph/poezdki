@@ -13,8 +13,8 @@ class TripService {
   final errorDialog = ErrorDialogs();
 
   Future<List<TripModel>?> getAllTrips(
-      {String? departure,
-      String? destination,
+      {Map? departure,
+      Map? destination,
       bool? animals,
       bool? package,
       bool? baggage,
@@ -23,6 +23,8 @@ class TripService {
       bool? twoPlacesInBehind,
       bool? conditioner,
       String? gender}) async {
+    print(departure);
+    print(destination);
     Map<String, dynamic> filter = {
       if (departure != null) "departure": departure,
       if (destination != null) "destination": destination,
@@ -35,6 +37,7 @@ class TripService {
       "two_places_in_behind": twoPlacesInBehind,
       "conditioner": conditioner
     };
+    print(filter);
     Response response;
     var dio = Dio();
 
@@ -49,6 +52,7 @@ class TripService {
       if (response.statusCode == 200) {
         final body = response.data;
         final list = body['all_trips'] as List;
+        print(response.data);
 
         List<TripModel> trips = [];
         list.map((e) {
@@ -59,7 +63,7 @@ class TripService {
         throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
       }
     } catch (e) {
-      // errorDialog.showError(e.toString());
+      errorDialog.showError(e.toString());
       return null;
     }
   }
