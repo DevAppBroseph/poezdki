@@ -1,3 +1,4 @@
+import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/trips_passenger/trips_passenger_bloc.dart';
@@ -59,6 +60,9 @@ class App extends StatelessWidget {
         ),
         BlocProvider<ProfileBloc>(
           create: (context) => ProfileBloc(userRepository)..add(LoadProfile()),
+        ),
+        BlocProvider<ChatBloc>(
+          create: (context) => ChatBloc(),
         ),
         BlocProvider<AuthBloc>(
           create: (context) {

@@ -1,3 +1,5 @@
+import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
+import 'package:app_poezdka/bloc/chat/chat_builder.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/export/services.dart';
@@ -10,6 +12,7 @@ import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/cached_image/user_image.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,19 +25,21 @@ class TripDetailsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomSheetChildren(children: [
-      _ownerInfo(context),
-      _price(),
-      _tripData(),
-      _div(),
-      _rideInfo(),
-      _div(),
-      // _rideComment(),
-      _tripButtons(context),
-      const SizedBox(
-        height: 30,
-      )
-    ]);
+    return BottomSheetChildren(
+      children: [
+        _ownerInfo(context),
+        _price(),
+        _tripData(),
+        _div(),
+        _rideInfo(),
+        _div(),
+        // _rideComment(),
+        _tripButtons(context),
+        const SizedBox(
+          height: 30,
+        )
+      ],
+    );
   }
 
   Widget _tripButtons(context) {
@@ -188,14 +193,16 @@ class TripDetailsSheet extends StatelessWidget {
     final userId = await userRepo.getUserId();
     final passengers = trip.passengers;
     if (token != null) {
-      // if (passengers!.any((p) => p.id == int.parse(userId!))) {
-      //   null;
-      // } else {
-      pushNewScreen(context,
+      if (passengers!.any((p) => p.id == int.parse(userId!))) {
+        null;
+      } else {
+        pushNewScreen(
+          context,
           screen: BookTrip(
             tripData: trip,
-          ));
-      // }
+          ),
+        );
+      }
     } else {
       pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
     }
@@ -225,12 +232,13 @@ class TripDetailsSheet extends StatelessWidget {
     if (token != null) {
       final passengers = trip.passengers;
       if (passengers!.any((p) => p.id == int.parse(userId!))) {
-        trip.owner?.id;
         pushNewScreen(
           context,
           withNavBar: false,
-          screen: ChatScreen(
+          screen: ChatsBuilder(
             ownerId: trip.owner!.id!,
+            token: token,
+            receiverId: trip.owner!.id!,
           ),
         );
       } else {

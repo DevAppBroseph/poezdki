@@ -28,7 +28,6 @@ class _BookTripState extends State<BookTrip> {
 
   @override
   void initState() {
-    print(widget.tripData.passengers?.first.seat);
     widget.tripData.passengers?.forEach((element) {
       // print(element.seat);
       final seatsElement = element.seat;
