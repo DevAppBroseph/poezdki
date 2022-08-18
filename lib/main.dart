@@ -42,47 +42,46 @@ class App extends StatelessWidget {
     final userRepository = SecureStorage.instance;
     final appRepository = HiveBoxService.instance;
     return MultiBlocProvider(
-        providers: [
-          BlocProvider<TripsBloc>(
-            create: (context) => TripsBloc()..add(LoadAllTripsList()),
-          ),
-          BlocProvider<TripsPassengerBloc>(
-            create: (context) =>
-                TripsPassengerBloc()..add(LoadPassengerTripsList()),
-          ),
-          BlocProvider<UserTripsDriverBloc>(
-            create: (context) =>
-                UserTripsDriverBloc()..add(LoadUserTripsList()),
-          ),
-          BlocProvider<UserTripsPassengerBloc>(
-            create: (context) =>
-                UserTripsPassengerBloc()..add(LoadUserPassengerTripsList()),
-          ),
-          BlocProvider<ProfileBloc>(
-            create: (context) =>
-                ProfileBloc(userRepository)..add(LoadProfile()),
-          ),
-          BlocProvider<AuthBloc>(
-            create: (context) {
-              return AuthBloc(
-                  userRepository: userRepository, appRepository: appRepository)
-                ..add(AppStarted());
-            },
-          ),
+      providers: [
+        BlocProvider<TripsBloc>(
+          create: (context) => TripsBloc()..add(LoadAllTripsList()),
+        ),
+        BlocProvider<TripsPassengerBloc>(
+          create: (context) =>
+              TripsPassengerBloc()..add(LoadPassengerTripsList()),
+        ),
+        BlocProvider<UserTripsDriverBloc>(
+          create: (context) => UserTripsDriverBloc()..add(LoadUserTripsList()),
+        ),
+        BlocProvider<UserTripsPassengerBloc>(
+          create: (context) =>
+              UserTripsPassengerBloc()..add(LoadUserPassengerTripsList()),
+        ),
+        BlocProvider<ProfileBloc>(
+          create: (context) => ProfileBloc(userRepository)..add(LoadProfile()),
+        ),
+        BlocProvider<AuthBloc>(
+          create: (context) {
+            return AuthBloc(
+                userRepository: userRepository, appRepository: appRepository)
+              ..add(AppStarted());
+          },
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Poezdka',
+        theme: appTheme,
+        builder: FlutterSmartDialog.init(),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Poezdka',
-          theme: appTheme,
-          builder: FlutterSmartDialog.init(),
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [Locale('ru')],
-          // home: MultiBlocProvider(providers: [], child: const AppInitBuilder()),
-          home: const AppInitBuilder(),
-        ));
+        supportedLocales: const [Locale('ru')],
+        // home: MultiBlocProvider(providers: [], child: const AppInitBuilder()),
+        home: const AppInitBuilder(),
+      ),
+    );
   }
 }

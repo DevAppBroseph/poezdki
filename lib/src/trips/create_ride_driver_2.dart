@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
@@ -8,6 +10,8 @@ import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import '../../const/colors.dart';
 
@@ -176,31 +180,6 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
   }
 
   Widget _createRide() {
-    List<Stops> stops = [];
-    for (var element in widget.stopsList) {
-      stops.add(
-        Stops(
-          element.coords,
-          element.district,
-          element.name,
-          element.population,
-          element.subject,
-          0,
-          0,
-        ),
-      );
-    }
-    stops.add(
-      Stops(
-        widget.to.coords,
-        widget.to.district,
-        widget.to.name,
-        widget.to.population,
-        widget.to.subject,
-        0,
-        0,
-      ),
-    );
     final tripBloc = BlocProvider.of<TripsBloc>(context);
     final tripDriverBloc = BlocProvider.of<UserTripsDriverBloc>(context);
     return WidgetsBinding.instance.window.viewInsets.bottom > 0.0
@@ -211,6 +190,94 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
               margin: const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
               title: "Опубликовать",
               onPressed: () async {
+                List<Stops> stops = [];
+                int index = 0;
+                print(widget.startTime);
+                for (var element in widget.stopsList) {
+                  var distance = Geolocator.distanceBetween(
+                        index == 0
+                            ? widget.from.coords!.lat!
+                            : widget.stopsList[index - 1].coords!.lat!,
+                        index == 0
+                            ? widget.from.coords!.lon!
+                            : widget.stopsList[index - 1].coords!.lon!,
+                        element.coords!.lat!,
+                        element.coords!.lon!,
+                      ) /
+                      1000;
+                  stops.add(
+                    Stops(
+                      element.coords,
+                      element.district,
+                      element.name,
+                      element.population,
+                      element.subject,
+                      stops.isEmpty
+                          ? widget.startTime.microsecondsSinceEpoch +
+                              distance / 80 * 3600000000
+                          : stops.last.approachTime! +
+                              distance / 80 * 3600000000,
+                      distance.toInt(),
+                    ),
+                  );
+                  print(DateTime.fromMicrosecondsSinceEpoch((stops.isEmpty
+                          ? widget.startTime.microsecondsSinceEpoch +
+                              distance / 80 * 3600000000
+                          : stops.last.approachTime! +
+                              distance / 80 * 3600000000)
+                      .toInt()));
+                  index++;
+                }
+                var approachTime = Geolocator.distanceBetween(
+                      widget.stopsList.isEmpty
+                          ? widget.from.coords!.lat!
+                          : widget.stopsList[widget.stopsList.length - 1]
+                              .coords!.lat!,
+                      widget.stopsList.isEmpty
+                          ? widget.from.coords!.lon!
+                          : widget.stopsList[widget.stopsList.length - 1]
+                              .coords!.lon!,
+                      widget.to.coords!.lat!,
+                      widget.to.coords!.lon!,
+                    ) /
+                    1000 /
+                    80 *
+                    3600000000;
+                stops.add(
+                  Stops(
+                    widget.to.coords,
+                    widget.to.district,
+                    widget.to.name,
+                    widget.to.population,
+                    widget.to.subject,
+                    widget.stopsList.isNotEmpty
+                        ? stops.last.approachTime! + approachTime
+                        : widget.startTime.microsecondsSinceEpoch +
+                            approachTime,
+                    Geolocator.distanceBetween(
+                          widget.stopsList.isEmpty
+                              ? widget.from.coords!.lat!
+                              : widget.stopsList[widget.stopsList.length - 1]
+                                  .coords!.lat!,
+                          widget.stopsList.isEmpty
+                              ? widget.from.coords!.lon!
+                              : widget.stopsList[widget.stopsList.length - 1]
+                                  .coords!.lon!,
+                          widget.to.coords!.lat!,
+                          widget.to.coords!.lon!,
+                        ) ~/
+                        1000,
+                  ),
+                );
+                print(
+                  DateTime.fromMicrosecondsSinceEpoch(
+                    (widget.stopsList.isNotEmpty
+                            ? stops.last.approachTime! + approachTime
+                            : widget.startTime.microsecondsSinceEpoch +
+                                approachTime)
+                        .toInt(),
+                  ),
+                );
                 final TripModel trip = TripModel(
                     car: widget.car,
                     departure: widget.from,
@@ -229,8 +296,24 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                   tripBloc.add(CreateUserTrip(context, trip));
                   tripDriverBloc.add(LoadUserTripsList());
                 }
+
+                print(Geolocator.bearingBetween(
+                  widget.from.coords!.lat!,
+                  widget.from.coords!.lon!,
+                  stops.last.coords!.lat!,
+                  stops.last.coords!.lon!,
+                ));
               },
             ),
           );
+  }
+
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    var p = 0.017453292519943295;
+    var a = 0.5 -
+        cos((lat2 - lat1) * p) / 2 +
+        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
+    print(12742 * asin(sqrt(a)));
+    return 12742 * asin(sqrt(a));
   }
 }

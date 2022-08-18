@@ -41,7 +41,8 @@ class TripTileDefault extends StatelessWidget {
                 leading: UserCachedImage(
                   img: ownerImage,
                 ),
-                title: Text('${trip.owner!.firstname!} ${trip.owner!.lastname!}',
+                title: Text(
+                  '${trip.owner!.firstname!} ${trip.owner!.lastname!}',
                   // "${((trip.owner!.firstname! + ' ' + trip.owner!.lastname!)) ?? " Пользователь не найден"}",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
@@ -67,8 +68,8 @@ class TripTileDefault extends StatelessWidget {
 
   Widget _trip(TripModel? tripData) {
     final startTime = DateTime.fromMicrosecondsSinceEpoch(tripData!.timeStart!);
-    // final endTime = DateTime.fromMicrosecondsSinceEpoch(
-    //     tripData?.stops?.last.approachTime ?? 0);
+    final endTime = DateTime.fromMicrosecondsSinceEpoch(
+        tripData.stops?.last.approachTime?.toInt() ?? 0);
     return Row(
       children: [
         Container(
@@ -88,7 +89,9 @@ class TripTileDefault extends StatelessWidget {
                   maxLines: 1,
                 ),
                 subtitle: Text(
-                  DateFormat("dd MMMM").format(startTime).toString(),
+                  DateFormat("dd MMMM, HH:mm", 'RU')
+                      .format(startTime)
+                      .toString(),
                   maxLines: 1,
                 ),
               ),
@@ -104,9 +107,8 @@ class TripTileDefault extends StatelessWidget {
                   tripData.stops!.last.name ?? " ",
                   maxLines: 1,
                 ),
-                subtitle: const Text(
-                  // DateFormat("dd MMMM").format(endTime).toString()
-                  "",
+                subtitle: Text(
+                  DateFormat("dd MMMM, HH:mm", "RU").format(endTime).toString(),
                 ),
               ),
             ],

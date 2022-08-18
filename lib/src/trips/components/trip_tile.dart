@@ -19,7 +19,9 @@ import 'package:intl/intl.dart';
 
 class TripTile extends StatefulWidget {
   final TripModel trip;
-  const TripTile({Key? key, required this.trip}) : super(key: key);
+  bool last;
+  TripTile({Key? key, required this.trip, required this.last})
+      : super(key: key);
 
   @override
   State<TripTile> createState() => _TripTileState();
@@ -81,13 +83,14 @@ class _TripTileState extends State<TripTile> {
                 leading: UserCachedImage(
                   img: ownerImage,
                 ),
-                title: Text('${widget.trip.owner!.firstname!} ${widget.trip.owner!.lastname!}',
+                title: Text(
+                  '${widget.trip.owner!.firstname!} ${widget.trip.owner!.lastname!}',
                   // "${widget.trip.owner!.firstname! + ' ' + widget.trip.owner!.lastname! ?? " Пользователь не найден"}",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
                 subtitle: Text(
-                  "${widget.trip.car?.color ?? ""} ${widget.trip.car?.mark ?? ""} ${widget.trip.car?.model ?? ""} ${widget.trip.price} ₽",
+                  "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''} ${widget.trip.price} ₽",
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
@@ -105,17 +108,17 @@ class _TripTileState extends State<TripTile> {
                       },
                     )
                   : const SizedBox(),
-
-              widget.trip.owner!.id == userId
-                  ? FullWidthElevButton(
-                      title: "Отменить поездку",
-                      onPressed: () {
-                        tripsBloc.add(DeleteTrip(widget.trip.tripId!));
-                        tripsBloc.add(LoadAllTripsList());
-                        tripsDriverBloc.add(LoadUserTripsList());
-                      },
-                    )
-                  : const SizedBox()
+              if (!widget.last)
+                widget.trip.owner!.id == userId
+                    ? FullWidthElevButton(
+                        title: "Отменить поездку",
+                        onPressed: () {
+                          tripsBloc.add(DeleteTrip(widget.trip.tripId!));
+                          tripsBloc.add(LoadAllTripsList());
+                          tripsDriverBloc.add(LoadUserTripsList());
+                        },
+                      )
+                    : const SizedBox()
               // isUpcoming!
               //     ? FullWidthElevButton(
               //         title: "Отменить поездку",
@@ -129,8 +132,8 @@ class _TripTileState extends State<TripTile> {
 
   Widget _trip(TripModel? tripData) {
     final startTime = DateTime.fromMicrosecondsSinceEpoch(tripData!.timeStart!);
-    // final endTime = DateTime.fromMicrosecondsSinceEpoch(
-    //     tripData?.stops?.last.approachTime ?? 0);
+    final endTime = DateTime.fromMicrosecondsSinceEpoch(
+        tripData.stops?.last.approachTime?.toInt() ?? 0);
     return Row(
       children: [
         Container(
@@ -150,7 +153,9 @@ class _TripTileState extends State<TripTile> {
                   maxLines: 1,
                 ),
                 subtitle: Text(
-                  DateFormat("dd MMMM").format(startTime).toString(),
+                  DateFormat("dd MMMM, HH:mm", 'RU')
+                      .format(startTime)
+                      .toString(),
                   maxLines: 1,
                 ),
               ),
@@ -168,9 +173,9 @@ class _TripTileState extends State<TripTile> {
                       : " ",
                   maxLines: 1,
                 ),
-                subtitle: const Text(
-                    // DateFormat("dd MMMM").format(endTime).toString()
-                    ""),
+                subtitle: Text(DateFormat("dd MMMM, HH:mm", "RU")
+                    .format(endTime)
+                    .toString()),
               ),
             ],
           ),

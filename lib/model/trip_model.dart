@@ -110,7 +110,13 @@ class Owner {
   String? photo;
   String? seat;
 
-  Owner({this.id, this.phone, this.firstname, this.lastname, this.photo, this.seat});
+  Owner(
+      {this.id,
+      this.phone,
+      this.firstname,
+      this.lastname,
+      this.photo,
+      this.seat});
 
   Owner.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -201,19 +207,17 @@ class Departure {
     data['subject'] = subject;
     return data;
   }
-
-  
 }
 
 class Coords {
-  String? lat;
-  String? lon;
+  double? lat;
+  double? lon;
 
   Coords({this.lat, this.lon});
 
   Coords.fromJson(Map<String, dynamic> json) {
-    lat = json['lat'].toString();
-    lon = json['lon'].toString();
+    lat = double.tryParse(json['lat'].toString());
+    lon = double.tryParse(json['lon'].toString());
   }
 
   Map<String, dynamic> toJson() {
@@ -230,7 +234,7 @@ class Stops {
   String? name;
   int? population;
   String? subject;
-  int? approachTime;
+  double? approachTime;
   int? distanceToPrevious;
 
   Stops(this.coords, this.district, this.name, this.population, this.subject,
@@ -242,7 +246,7 @@ class Stops {
     name = json['name'];
     population = json['population'];
     subject = json['subject'];
-    approachTime = json['approach_time'];
+    approachTime = (json['approach_time'] as int).toDouble();
     distanceToPrevious = json['distance_to_previous'];
   }
 
@@ -266,7 +270,7 @@ class Stops {
     String? name,
     int? population,
     String? subject,
-    int? approachTime,
+    double? approachTime,
     int? distanceToPrevious,
   }) {
     return Stops(

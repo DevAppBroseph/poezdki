@@ -303,6 +303,8 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
     selectedCar = null;
     startWay.clear();
     midWays.clear();
+    _midwayControllers = [];
+    setState(() {});
     endWay.clear();
     _midwayControllers.clear();
   }

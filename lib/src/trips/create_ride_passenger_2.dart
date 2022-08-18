@@ -7,6 +7,7 @@ import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import '../../const/colors.dart';
 
@@ -15,13 +16,11 @@ class CreateRidePassenger2 extends StatefulWidget {
   final Departure to;
   final DateTime startTime;
 
-
   const CreateRidePassenger2({
     Key? key,
     required this.from,
     required this.to,
     required this.startTime,
-
   }) : super(key: key);
 
   @override
@@ -182,6 +181,13 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
   Widget _createRide() {
     final tripBloc =
         BlocProvider.of<TripsPassengerBloc>(context, listen: false);
+    var route = Geolocator.distanceBetween(
+          widget.from.coords!.lat!,
+          widget.from.coords!.lon!,
+          widget.to.coords!.lat!,
+          widget.to.coords!.lon!,
+        ) ~/
+        1000;
     return Align(
       alignment: Alignment.bottomCenter,
       child: FullWidthElevButton(
@@ -193,13 +199,15 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
               timeStart: widget.startTime.microsecondsSinceEpoch,
               stops: [
                 Stops(
-                    widget.to.coords,
-                    widget.to.district,
-                    widget.to.name,
-                    widget.to.population,
-                    widget.to.subject,
-                    0,
-                    0)
+                  widget.to.coords,
+                  widget.to.district,
+                  widget.to.name,
+                  widget.to.population,
+                  widget.to.subject,
+                  widget.startTime.microsecondsSinceEpoch +
+                      route / 80 * 3600000000,
+                  route,
+                )
               ],
               package: _isPackageTransfer,
               twoPlacesInBehind: _isTwoBackSeat,

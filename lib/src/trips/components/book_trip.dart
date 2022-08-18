@@ -28,7 +28,9 @@ class _BookTripState extends State<BookTrip> {
 
   @override
   void initState() {
+    print(widget.tripData.passengers?.first.seat);
     widget.tripData.passengers?.forEach((element) {
+      // print(element.seat);
       final seatsElement = element.seat;
       bookedSeats.addAll(seatsElement ?? []);
     });
@@ -43,9 +45,9 @@ class _BookTripState extends State<BookTrip> {
   @override
   Widget build(BuildContext context) {
     if (bookedSeats.contains(1)) seat1.isEmpty = false;
-    if (bookedSeats.contains(2)) seat1.isEmpty = false;
-    if (bookedSeats.contains(3)) seat1.isEmpty = false;
-    if (bookedSeats.contains(4)) seat1.isEmpty = false;
+    if (bookedSeats.contains(2)) seat2.isEmpty = false;
+    if (bookedSeats.contains(3)) seat3.isEmpty = false;
+    if (bookedSeats.contains(4)) seat4.isEmpty = false;
 
     return KScaffoldScreen(
         isLeading: true,

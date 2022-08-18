@@ -14,7 +14,7 @@ class RideDetailsTrip extends StatelessWidget {
     final startTime =
         DateTime.fromMicrosecondsSinceEpoch(tripData.timeStart ?? 0);
     final endTime = DateTime.fromMicrosecondsSinceEpoch(
-        tripData.stops?.last.approachTime ?? 0);
+        tripData.stops?.last.approachTime?.toInt() ?? 0);
     return Row(
       children: [
         // Align(
@@ -56,7 +56,8 @@ class RideDetailsTrip extends StatelessWidget {
                   ),
                   subtitle: Text(
                     DateFormat(
-                      "dd MMMM",
+                      "dd MMMM, HH:mm",
+                      'RU',
                     ).format(startTime),
                     maxLines: 1,
                     style: const TextStyle(
@@ -145,7 +146,13 @@ class RideDetailsTrip extends StatelessWidget {
                                 style: const TextStyle(fontSize: 16),
                               ),
                               Text(
-                                DateFormat("dd MMMM").format(endTime),
+                                DateFormat("dd MMMM, HH:mm", 'RU').format(
+                                  DateTime.fromMicrosecondsSinceEpoch(
+                                    tripData.stops?[index].approachTime
+                                            ?.toInt() ??
+                                        0,
+                                  ),
+                                ),
                                 style: const TextStyle(
                                   fontSize: 14,
                                   color: Colors.grey,

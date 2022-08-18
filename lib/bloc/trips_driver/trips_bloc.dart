@@ -20,16 +20,17 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
   void _loadTripsList(LoadAllTripsList event, Emitter<TripsState> emit) async {
     emit(TripsLoading());
     final trips = await tripService.getAllTrips(
-        departure: event.departure?.toJson(),
-        destination: event.destination?.toJson(),
-        animals: event.animals,
-        package: event.package,
-        baggage: event.baggage,
-        babyChair: event.babyChair,
-        smoke: event.smoke,
-        twoPlacesInBehind: event.twoPlacesInBehind,
-        conditioner: event.conditioner,
-        gender: event.gender);
+      departure: event.departure?.toJson(),
+      destination: event.destination?.toJson(),
+      animals: event.animals,
+      package: event.package,
+      baggage: event.baggage,
+      babyChair: event.babyChair,
+      smoke: event.smoke,
+      twoPlacesInBehind: event.twoPlacesInBehind,
+      conditioner: event.conditioner,
+      gender: event.gender,
+    );
     trips != null ? add(UpdateTripsList(trips)) : add(ThrowAllTripsError());
   }
 

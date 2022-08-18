@@ -24,15 +24,18 @@ class UserTripsList extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           CupertinoSliverRefreshControl(onRefresh: () async {
-            Future.delayed(Duration(seconds: 1), () {
-              if (screen == 1) {
-                BlocProvider.of<UserTripsDriverBloc>(context)
-                    .add(LoadUserTripsList());
-              } else {
-                BlocProvider.of<UserTripsPassengerBloc>(context)
-                    .add(LoadUserPassengerTripsList());
-              }
-            });
+            Future.delayed(
+              const Duration(seconds: 1),
+              () {
+                if (screen == 1) {
+                  BlocProvider.of<UserTripsDriverBloc>(context)
+                      .add(LoadUserTripsList());
+                } else {
+                  BlocProvider.of<UserTripsPassengerBloc>(context)
+                      .add(LoadUserPassengerTripsList());
+                }
+              },
+            );
           }),
           SliverToBoxAdapter(
             child: pastList(pastTrips),
@@ -69,6 +72,7 @@ class UserTripsList extends StatelessWidget {
             itemCount: pastTrips.length,
             itemBuilder: (context, index) => TripTile(
               trip: pastTrips[index],
+              last: true,
             ),
           ),
         ],
@@ -88,12 +92,14 @@ class UserTripsList extends StatelessWidget {
             ),
           ),
           ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: upcoming.length,
-              itemBuilder: (context, index) => TripTile(
-                    trip: upcoming[index],
-                  ))
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: upcoming.length,
+            itemBuilder: (context, index) => TripTile(
+              trip: upcoming[index],
+              last: false,
+            ),
+          ),
         ],
       );
     }

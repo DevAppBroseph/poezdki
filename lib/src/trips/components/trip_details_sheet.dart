@@ -188,14 +188,14 @@ class TripDetailsSheet extends StatelessWidget {
     final userId = await userRepo.getUserId();
     final passengers = trip.passengers;
     if (token != null) {
-      if (passengers!.any((p) => p.id == int.parse(userId!))) {
-        null;
-      } else {
-        pushNewScreen(context,
-            screen: BookTrip(
-              tripData: trip,
-            ));
-      }
+      // if (passengers!.any((p) => p.id == int.parse(userId!))) {
+      //   null;
+      // } else {
+      pushNewScreen(context,
+          screen: BookTrip(
+            tripData: trip,
+          ));
+      // }
     } else {
       pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
     }
@@ -225,7 +225,14 @@ class TripDetailsSheet extends StatelessWidget {
     if (token != null) {
       final passengers = trip.passengers;
       if (passengers!.any((p) => p.id == int.parse(userId!))) {
-        pushNewScreen(context, withNavBar: false, screen: const ChatScreen());
+        trip.owner?.id;
+        pushNewScreen(
+          context,
+          withNavBar: false,
+          screen: ChatScreen(
+            ownerId: trip.owner!.id!,
+          ),
+        );
       } else {
         ErrorDialogs()
             .showError("Только пассажиры могут связаться с водителем.");
