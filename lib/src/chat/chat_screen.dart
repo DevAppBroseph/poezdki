@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:core';
 
+import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
+import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/send_message.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
@@ -29,7 +30,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
-  final _messagesStream = StreamController<List<ChatMessage>>();
+  final _messagesStream = StreamController<List<ChatMessage>>.broadcast();
   List<ChatMessage> _message = [];
 
   @override
@@ -66,17 +67,14 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.dispose();
     print('dispose');
     _message = [];
-    _messagesStream.sink.close();
+    // _messagesStream.sink.close();
+    _messagesStream.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: widget.channel.stream,
-        builder: (context, snapshot) {
-          print(snapshot.data);
-          return StreamBuilder<List<ChatMessage>>(
+    return StreamBuilder<List<ChatMessage>>(
               stream: _messagesStream.stream,
               initialData: widget.message,
               builder: (context, snapshot2) {
@@ -98,54 +96,69 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     )
                   ],
-                  body: DashChat(
-                    currentUser: ChatUser(id: widget.ownerId.toString()),
-                    onSend: (ChatMessage m) {
-                      // setState(() {
-                      //   _message.insert(0, m);
-                      // });
+                  body: BlocConsumer<ChatBloc, ChatState>(
+                    listener: (context, state){
+                      print('state: ${state}');
+                      if(state is TestState){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(state.message))
+                        );
+                      }
                     },
-                    messages: snapshot2.data!,
-                    messageOptions: const MessageOptions(
-                      messagePadding: EdgeInsets.all(16),
-                      showTime: true,
-                      currentUserContainerColor: kPrimaryWhite,
-                      currentUserTextColor: Colors.black,
-                      containerColor: kPrimaryLightGrey,
-                    ),
-                    inputOptions: InputOptions(
-                      textController: _controller,
-                      inputDecoration: InputDecoration(
-                        filled: true,
-                        fillColor: kPrimaryWhite,
-                        hintText: "Написать сообщение...",
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide.none),
-                      ),
-                      alwaysShowSend: true,
-                      showTraillingBeforeSend: true,
-                      sendButtonBuilder: (send) => IconButton(
-                        onPressed: () {
-                          _sendMessage(_controller.text);
-                          _controller.clear();
-                          // setState(() {});
+                    builder: (context, state) {
+                      return DashChat(
+                        currentUser: ChatUser(id: widget.ownerId.toString()),
+                        onSend: (ChatMessage m) {
+                          // setState(() {
+                          //   _message.insert(0, m);
+                          // });
                         },
-                        icon: Image.asset("$iconPath/send-2.png"),
-                      ),
-                      trailing: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            CupertinoIcons.plus_circle_fill,
-                            color: kPrimaryLightGrey,
+                        messages: snapshot2.data!,
+                        messageOptions: const MessageOptions(
+                          messagePadding: EdgeInsets.all(16),
+                          showTime: true,
+                          currentUserContainerColor: kPrimaryWhite,
+                          currentUserTextColor: Colors.black,
+                          containerColor: kPrimaryLightGrey,
+                        ),
+                        inputOptions: InputOptions(
+                          textController: _controller,
+                          inputDecoration: InputDecoration(
+                            filled: true,
+                            fillColor: kPrimaryWhite,
+                            hintText: "Написать сообщение...",
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide.none),
                           ),
-                        )
-                      ],
-                    ),
+                          alwaysShowSend: true,
+                          showTraillingBeforeSend: true,
+                          sendButtonBuilder: (send) => IconButton(
+                            onPressed: () {
+                              _sendMessage(_controller.text);
+                              _controller.clear();
+                              // setState(() {});
+                            },
+                            icon: Image.asset("$iconPath/send-2.png"),
+                          ),
+                          trailing: [
+                            IconButton(
+                              onPressed: () {
+                                ///Example
+                                context.read<ChatBloc>().testController.sink.add('HELLO');
+                                ///
+                              },
+                              icon: const Icon(
+                                CupertinoIcons.plus_circle_fill,
+                                color: kPrimaryLightGrey,
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }
                   ),
                 );
               });
-        });
   }
 }

@@ -22,3 +22,7 @@ class UpdateChat extends ChatEvent {
 
   UpdateChat({required this.messages});
 }
+class ShowTestEvent extends ChatEvent {
+  final String message;
+  ShowTestEvent({required this.message});
+}

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app_poezdka/service/server/chat_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:bloc/bloc.dart';
@@ -11,12 +13,25 @@ part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final chatService = ChatService();
+  
   ChatBloc() : super(ChatInitial()) {
+    ///Example
+    testController.stream.listen((event) {
+      add(ShowTestEvent(message: event));
+    });
+    on<ShowTestEvent>((event, emit) {
+      emit(TestState(message: event.message));
+    });
+    ///
+
     on<ChatStarted>(_onChatStarted);
     on<UpdateChat>(_updateChat);
     on<StartSocket>(_startSocket);
   }
   WebSocketChannel? channel;
+    ///Example
+  final testController = StreamController<String>();
+    ///
 
   void _startSocket(StartSocket event, Emitter<ChatState> emit) async {
     // if (channel == null) {
@@ -26,7 +41,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       Uri.parse('ws://194.87.145.140:80/ws/$token'),
     );
     print('is inited');
-
     channel?.stream.listen(
       (event) {
         // setState(() {
@@ -41,7 +55,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         // );
         // _messagesStream.sink.add(_message);
         // });
-        print(event);
       },
       onDone: () {
         debugPrint('ws channel closed');

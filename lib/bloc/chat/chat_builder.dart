@@ -36,10 +36,11 @@ class ChatsBuilder extends StatelessWidget {
             ),
           );
         }
-        if (state is ChatLoaded) {
+        ///Example
+        if (state is ChatLoaded || state is TestState) {
           return ChatScreen(
             ownerId: ownerId,
-            message: state.messages,
+            message: [],
             channel: chatBloc.channel!,
           );
         }

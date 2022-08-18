@@ -62,7 +62,7 @@ class App extends StatelessWidget {
           create: (context) => ProfileBloc(userRepository)..add(LoadProfile()),
         ),
         BlocProvider<ChatBloc>(
-          create: (context) => ChatBloc(),
+          create: (context) => ChatBloc()..add(StartSocket()),
         ),
         BlocProvider<AuthBloc>(
           create: (context) {

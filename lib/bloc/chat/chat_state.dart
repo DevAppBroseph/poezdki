@@ -16,3 +16,8 @@ class ChatLoaded extends ChatState {
         messages,
       ];
 }
+
+class TestState extends ChatState {
+  final String message;
+  TestState({required this.message});
+}
