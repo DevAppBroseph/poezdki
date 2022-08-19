@@ -1,8 +1,10 @@
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/bloc/chat/chat_builder.dart';
+import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/export/services.dart';
+import 'package:app_poezdka/model/passenger_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/src/chat/chat_screen.dart';
@@ -12,6 +14,7 @@ import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/cached_image/user_image.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
@@ -21,7 +24,9 @@ import 'trip_details_info.dart';
 
 class TripDetailsSheet extends StatelessWidget {
   final TripModel trip;
-  const TripDetailsSheet({Key? key, required this.trip}) : super(key: key);
+  bool isMyTrips;
+  TripDetailsSheet({Key? key, required this.trip, this.isMyTrips = false})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +38,12 @@ class TripDetailsSheet extends StatelessWidget {
         _div(),
         _rideInfo(),
         _div(),
+        if (isMyTrips)
+          if (trip.passengers!.isNotEmpty) _passengerInfo(),
+        if (isMyTrips)
+          if (trip.passengers!.isNotEmpty) _div(),
         // _rideComment(),
-        _tripButtons(context),
+        if (!isMyTrips) _tripButtons(context),
         const SizedBox(
           height: 30,
         )
@@ -48,10 +57,12 @@ class TripDetailsSheet extends StatelessWidget {
         trip.package!
             ? Expanded(
                 child: FullWidthElevButton(
-                onPressed: () {},
-                title: "Передать посылку",
-                titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
-              ))
+                  onPressed: () => bookPackage(context),
+                  title: "Передать посылку",
+                  titleStyle:
+                      const TextStyle(fontSize: 13, color: Colors.white),
+                ),
+              )
             : const SizedBox(),
         Expanded(
             child: FullWidthElevButton(
@@ -149,6 +160,192 @@ class TripDetailsSheet extends StatelessWidget {
     );
   }
 
+  Widget _passengerInfo() {
+    if (trip.passengers!.any((element) => element.seat!.contains(0))) {
+      if (trip.passengers!.last.id != 0) {
+        trip.passengers!.add(PassengerModel(
+          id: 0,
+          phone: '',
+          firstname: '',
+          lastname: '',
+          seat: [0],
+        ));
+      }
+    }
+    print(trip.passengers!.any((element) => element.seat!.contains(0)));
+    print(trip.passengers!.last.id != 0);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        //TODO доделать кол-во доступных мест
+
+        // if (trip.maxSeats != null)
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 15, bottom: 5, top: 5),
+        //   child: Text(
+        //     'Пассажиры 3/${trip.maxSeats}',
+        //     style: const TextStyle(
+        //       fontSize: 16,
+        //       color: Colors.grey,
+        //       fontWeight: FontWeight.w600,
+        //     ),
+        //   ),
+        // ),
+        SizedBox(
+          height: 100,
+          width: double.infinity,
+          child: ListView.builder(
+              // physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              // padding: EdgeInsets.all(5),
+              itemCount: trip.passengers?.length,
+              itemBuilder: (context, int index) {
+                return Container(
+                  margin: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(
+                        offset: Offset(0, 0),
+                        blurRadius: 10,
+                        spreadRadius: 4,
+                        color: Color.fromRGBO(26, 42, 97, 0.06),
+                      ),
+                    ],
+                    color: Colors.white,
+                  ),
+                  height: 62,
+                  width: MediaQuery.of(context).size.width / 2,
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    child: InkWell(
+                      onTap: () {
+                        final btmSheet = BottomSheetCall();
+                        btmSheet.show(
+                          topRadius: const Radius.circular(50),
+                          context,
+                          child: BottomSheetChildren(
+                            children: [
+                              SizedBox(
+                                height: 200,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 15, right: 15),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 65,
+                                        child: Material(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          color: Colors.white,
+                                          child: InkWell(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            onTap: () {
+                                              chatToDriver(context,
+                                                  id: trip
+                                                      .passengers![index].id);
+                                            },
+                                            child: Center(
+                                              child: ListTile(
+                                                title: const Text(
+                                                    'Написать в чат'),
+                                                trailing: SvgPicture.asset(
+                                                  "$svgPath/messages-2.svg",
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 65,
+                                        child: Material(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                          color: Colors.white,
+                                          child: InkWell(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            onTap: () {},
+                                            child: Center(
+                                              child: ListTile(
+                                                title: Text('Оставить отзыв'),
+                                                trailing: Image.asset(
+                                                  "assets/img/star.png",
+                                                  color: kPrimaryColor,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(10),
+                      child: Center(
+                        child: ListTile(
+                          leading: UserCachedImage(
+                            img: trip.passengers![index].photo,
+                          ),
+                          title: Text(
+                            trip.passengers![index].id != 0
+                                ? trip.passengers![index].firstname! +
+                                    ' ' +
+                                    trip.passengers![index].lastname!
+                                : '1 посылка',
+                            style: const TextStyle(
+                                fontFamily: '.SF Pro Display', fontSize: 15),
+                          ),
+                          subtitle: trip.passengers![index].id != 0
+                              ? Text(
+                                  _getSeat(
+                                    trip.passengers![index].seat!
+                                        .where((element) => element != 0)
+                                        .length,
+                                  ),
+                                  style: const TextStyle(
+                                    fontFamily: '.SF Pro Display',
+                                  ),
+                                )
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+        ),
+      ],
+    );
+  }
+
+  String _getSeat(int count) {
+    print(count);
+    var n = count;
+    n %= 100;
+    if (n >= 5 && n <= 20) {
+      return '$count мест';
+    }
+    n %= 10;
+    if (n == 1) {
+      return '$count место';
+    }
+    if (n >= 2 && n <= 4) {
+      return '$count места';
+    }
+    return '$count мест';
+  }
+
   Widget _ownerInfo(context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -169,11 +366,13 @@ class TripDetailsSheet extends StatelessWidget {
             trip.owner?.phone != null
                 ? IconButton(
                     onPressed: () => callToDriver(context),
-                    icon: SvgPicture.asset("$svgPath/call-calling.svg"))
+                    icon: SvgPicture.asset("$svgPath/call-calling.svg"),
+                  )
                 : const SizedBox(),
             IconButton(
-                onPressed: () => chatToDriver(context),
-                icon: SvgPicture.asset("$svgPath/messages-2.svg"))
+              onPressed: () => chatToDriver(context),
+              icon: SvgPicture.asset("$svgPath/messages-2.svg"),
+            )
           ],
         ),
       ),
@@ -187,22 +386,31 @@ class TripDetailsSheet extends StatelessWidget {
     );
   }
 
+  void bookPackage(context) async {
+    final userRepo = SecureStorage.instance;
+    final token = await userRepo.getToken();
+    final userId = await userRepo.getUserId();
+    final passengers = trip.passengers;
+    final tripBloc = BlocProvider.of<TripsBloc>(context, listen: false)
+      ..add(BookThisPackage(context, [], trip.tripId!));
+  }
+
   void bookTrip(context) async {
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
     final userId = await userRepo.getUserId();
     final passengers = trip.passengers;
     if (token != null) {
-      if (passengers!.any((p) => p.id == int.parse(userId!))) {
-        null;
-      } else {
-        pushNewScreen(
-          context,
-          screen: BookTrip(
-            tripData: trip,
-          ),
-        );
-      }
+      // if (passengers!.any((p) => p.id == int.parse(userId!))) {
+      //   null;
+      // } else {
+      pushNewScreen(
+        context,
+        screen: BookTrip(
+          tripData: trip,
+        ),
+      );
+      // }
     } else {
       pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
     }
@@ -225,25 +433,46 @@ class TripDetailsSheet extends StatelessWidget {
     }
   }
 
-  void chatToDriver(context) async {
+  void chatToDriver(context, {int? id}) async {
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
     final userId = await userRepo.getUserId();
     if (token != null) {
-      final passengers = trip.passengers;
-      if (passengers!.any((p) => p.id == int.parse(userId!))) {
-        pushNewScreen(
-          context,
-          withNavBar: false,
-          screen: ChatsBuilder(
-            ownerId: trip.owner!.id!,
-            token: token,
-            receiverId: trip.owner!.id!,
-          ),
-        );
+      if (id == null) {
+        final passengers = trip.passengers;
+        if (passengers!.any((p) => p.id == int.parse(userId!))) {
+          BlocProvider.of<ChatBloc>(context).testController.add([]);
+
+          pushNewScreen(
+            context,
+            withNavBar: false,
+            screen: ChatsBuilder(
+              ownerId: trip.owner!.id!,
+              senderId: int.parse(userId!),
+              token: token,
+              receiverId: trip.owner!.id!,
+            ),
+          );
+        } else {
+          ErrorDialogs()
+              .showError("Только пассажиры могут связаться с водителем.");
+        }
       } else {
-        ErrorDialogs()
-            .showError("Только пассажиры могут связаться с водителем.");
+        if (int.parse(userId!) != id) {
+          pushNewScreen(
+            context,
+            withNavBar: false,
+            screen: ChatsBuilder(
+              ownerId: id,
+              senderId: int.parse(userId),
+              token: token,
+              receiverId: id,
+            ),
+          );
+        } else {
+          ErrorDialogs()
+              .showError("Связаться можно только с другими пользователями.");
+        }
       }
     } else {
       pushNewScreen(context, withNavBar: false, screen: const SignInScreen());

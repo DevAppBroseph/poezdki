@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class KScaffoldScreen extends StatelessWidget {
+  final Color backgroundColor;
   final bool? resizeToAvoidBottomInset;
   final String title;
   final bool? isLeading;
@@ -12,17 +13,20 @@ class KScaffoldScreen extends StatelessWidget {
   const KScaffoldScreen(
       {Key? key,
       this.resizeToAvoidBottomInset,
+      this.backgroundColor = const Color.fromRGBO(247, 247, 248, 1),
       required this.title,
       this.isLeading,
       this.actions,
       this.bottom,
       required this.body,
-      this.floatingActionButton, this.floatingActionButtonLocation})
+      this.floatingActionButton,
+      this.floatingActionButtonLocation})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? false,
       appBar: AppBar(
         title: Padding(
@@ -38,7 +42,8 @@ class KScaffoldScreen extends StatelessWidget {
       ),
       body: body,
       floatingActionButton: floatingActionButton,
-      floatingActionButtonLocation: floatingActionButtonLocation ?? FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: floatingActionButtonLocation ??
+          FloatingActionButtonLocation.centerDocked,
     );
   }
 }

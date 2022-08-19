@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SliderPage extends StatelessWidget {
   final String message;
@@ -21,7 +22,7 @@ class SliderPage extends StatelessWidget {
             const SizedBox(
               height: 200,
             ),
-            Image.asset(
+            SvgPicture.asset(
               image,
               fit: BoxFit.scaleDown,
               width: 300,

@@ -10,12 +10,12 @@ class UserTripsPassengerInitial extends UserTripsPassengerState {}
 class UserTripsPassengerLoading extends UserTripsPassengerState {}
 
 class UserTripsPassengerLoaded extends UserTripsPassengerState {
-  final List<List<TripModel>> trips;
+  final List<List<TripModel>>? trips;
 
   UserTripsPassengerLoaded(this.trips);
   @override
   List<Object> get props => [
-        trips,
+        trips!,
       ];
 }
 

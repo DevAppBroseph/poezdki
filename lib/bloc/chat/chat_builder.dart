@@ -8,11 +8,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatsBuilder extends StatelessWidget {
   final int ownerId;
+  final int senderId;
   final String token;
   final int receiverId;
   const ChatsBuilder({
     Key? key,
     required this.ownerId,
+    required this.senderId,
     required this.token,
     required this.receiverId,
   }) : super(key: key);
@@ -21,7 +23,7 @@ class ChatsBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final chatBloc = BlocProvider.of<ChatBloc>(context)
       ..add(ChatStarted(
-        senderId: ownerId,
+        senderId: senderId,
         receiverId: receiverId,
         token: token,
       ));
@@ -36,11 +38,11 @@ class ChatsBuilder extends StatelessWidget {
             ),
           );
         }
-        ///Example
-        if (state is ChatLoaded || state is TestState) {
+        if (state is ChatLoaded) {
           return ChatScreen(
+            senderId: senderId,
             ownerId: ownerId,
-            message: [],
+            message: state.messages,
             channel: chatBloc.channel!,
           );
         }

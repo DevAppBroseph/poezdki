@@ -14,6 +14,7 @@ class InfoDialog {
       List<Widget>? children,
       Function? onPressed}) {
     SmartDialog.show(
+      maskColor: Color.fromRGBO(6, 22, 46, 0.67),
       builder: (context) => Align(
         alignment: Alignment.center,
         child: Center(

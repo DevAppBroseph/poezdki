@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 List<MessagesAnswer> messagesAnswerFromJson(String str) =>
     List<MessagesAnswer>.from(
         json.decode(str).map((x) => MessagesAnswer.fromJson(x)));
@@ -16,16 +18,19 @@ class MessagesAnswer {
     required this.from,
     required this.to,
     required this.message,
+    required this.time,
   });
 
   int from;
   int to;
   String message;
+  DateTime time;
 
   factory MessagesAnswer.fromJson(Map<String, dynamic> json) => MessagesAnswer(
         from: json["from"],
         to: json["to"],
         message: json["message"],
+        time: DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["time"]),
       );
 
   Map<String, dynamic> toJson() => {

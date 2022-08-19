@@ -62,7 +62,7 @@ class RideTile extends StatelessWidget {
   Widget _trip(TripModel? tripData) {
     final startTime =
         DateTime.fromMicrosecondsSinceEpoch(tripData?.timeStart ?? 0 * 1000);
-  
+
     return Row(
       children: [
         Container(

@@ -27,6 +27,7 @@ class FullWidthElevButton extends StatelessWidget {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           alignment: alignment ?? Alignment.center,
+          elevation: 0,
           side: BorderSide(color: color ?? kPrimaryColor),
           padding: const EdgeInsets.all(10.0),
           primary: color ?? kPrimaryColor,
@@ -48,5 +49,3 @@ class FullWidthElevButton extends StatelessWidget {
     );
   }
 }
-
-

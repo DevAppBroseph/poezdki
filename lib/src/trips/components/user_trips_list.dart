@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserTripsList extends StatelessWidget {
-  final List<List<TripModel>> tripsLists;
+  final List<List<TripModel>>? tripsLists;
   final int screen;
   const UserTripsList(
       {Key? key, required this.tripsLists, required this.screen})
@@ -16,8 +16,9 @@ class UserTripsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<TripModel> upcomingTrips = tripsLists[0];
-    final List<TripModel> pastTrips = tripsLists[1];
+    final List<TripModel> upcomingTrips =
+        tripsLists != null ? tripsLists![0] : [];
+    final List<TripModel> pastTrips = tripsLists != null ? tripsLists![1] : [];
     return Container(
       // width: double.infinity,
       // height: MediaQuery.of(context).size.height,
@@ -42,6 +43,11 @@ class UserTripsList extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: upcomingList(upcomingTrips),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: 40,
+            ),
           ),
           // SliverToBoxAdapter(
           //   child: SingleChildScrollView(

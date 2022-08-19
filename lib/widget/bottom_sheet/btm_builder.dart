@@ -3,8 +3,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class BottomSheetCallAwait {
   Future wait(BuildContext context,
-          {
-          bool? expand,
+          {bool? expand,
           bool? dismissible,
           bool? bounce,
           bool? enableDrag,
@@ -31,6 +30,7 @@ class BottomSheetCall {
           Radius? topRadius,
           required Widget child}) =>
       showCupertinoModalBottomSheet(
+          barrierColor: Color.fromRGBO(6, 22, 46, 0.67),
           bounce: false,
           enableDrag: enableDrag ?? true,
           isDismissible: dismissible ?? true,

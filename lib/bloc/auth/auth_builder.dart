@@ -27,7 +27,9 @@ class AppInitBuilder extends StatelessWidget {
         return const AppScreens();
       }
       if (state is AuthUnauthenticated) {
-        return const SearchRides(isAuthorized: false,);
+        return const SearchRides(
+          isAuthorized: false,
+        );
       }
 
       // Default screen

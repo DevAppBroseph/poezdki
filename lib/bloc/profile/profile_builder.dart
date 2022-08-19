@@ -16,18 +16,20 @@ class PersonalDataBuilder extends StatelessWidget {
         builder: (context, state) {
           if (state is ProfileLoading) {
             return const KScaffoldScreen(
+              backgroundColor: Colors.white,
               title: "Личные данные",
               isLeading: true,
-              body:  Center(
+              body: Center(
                 child: CircularProgressIndicator(),
               ),
             );
           }
           if (state is ProfileError) {
             return const KScaffoldScreen(
+              backgroundColor: Colors.white,
               title: "Личные данные",
               isLeading: true,
-              body:   Center(
+              body: Center(
                 child: Text("Ooops! Возникла ошибка.\nУже исправляем =)"),
               ),
             );
@@ -38,12 +40,13 @@ class PersonalDataBuilder extends StatelessWidget {
             );
           }
           return const KScaffoldScreen(
-              title: "Личные данные",
-              isLeading: true,
-              body:  Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
+            backgroundColor: Colors.white,
+            title: "Личные данные",
+            isLeading: true,
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
         });
   }
 }

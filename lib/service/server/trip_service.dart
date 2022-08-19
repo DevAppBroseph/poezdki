@@ -218,11 +218,14 @@ class TripService {
     };
     try {
       final token = await SecureStorage.instance.getToken();
-      response = await dio.post("$bookingTripUrl$tripId",
-          data: json.encode(data),
-          options: Options(
-              headers: {"Authorization": token},
-              responseType: ResponseType.json));
+      response = await dio.post(
+        "$bookingTripUrl$tripId",
+        data: json.encode(data),
+        options: Options(
+          headers: {"Authorization": token},
+          responseType: ResponseType.json,
+        ),
+      );
       final responceData = ResponceServerData.fromMap(response.data);
       if (responceData.success) {
         InfoDialog().show(
@@ -233,6 +236,41 @@ class TripService {
             onPressed: () {
               SmartDialog.dismiss();
               Navigator.pop(context);
+              Navigator.pop(context);
+            });
+        return responceData.success;
+      } else {
+        errorDialog.showError(responceData.status);
+        return responceData.success;
+      }
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> bookPackage(context,
+      {required int tripId, required List<int> seats}) async {
+    Response response;
+    var dio = Dio();
+    try {
+      final token = await SecureStorage.instance.getToken();
+      response = await dio.post(
+        "$bookingTripUrl$tripId",
+        data: json.encode({}),
+        options: Options(
+          headers: {"Authorization": token},
+          responseType: ResponseType.json,
+        ),
+      );
+      final responceData = ResponceServerData.fromMap(response.data);
+      if (responceData.success) {
+        InfoDialog().show(
+            title: "Место для посылки забронировано!",
+            img: "assets/img/like.svg",
+            description: "Посылка доедет в целости и сохранности.",
+            onPressed: () {
+              SmartDialog.dismiss();
               Navigator.pop(context);
             });
         return responceData.success;

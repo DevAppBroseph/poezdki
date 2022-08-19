@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:scale_button/scale_button.dart';
 
 class TripTile extends StatefulWidget {
   final TripModel trip;
@@ -58,7 +59,9 @@ class _TripTileState extends State<TripTile> {
     final tripsPassangerBloc =
         BlocProvider.of<UserTripsPassengerBloc>(ctx, listen: false);
     final ownerImage = widget.trip.owner?.photo;
-    return InkWell(
+    return ScaleButton(
+      bound: 0.05,
+      duration: const Duration(milliseconds: 200),
       onTap: () {
         btmSheet.show(
           ctx,
@@ -66,13 +69,23 @@ class _TripTileState extends State<TripTile> {
           topRadius: const Radius.circular(50),
           child: TripDetailsSheet(
             trip: widget.trip,
+            isMyTrips: true,
           ),
         );
+        print('object');
       },
       child: Container(
           margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
           decoration: BoxDecoration(
             color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                offset: Offset(0, 4),
+                blurRadius: 10,
+                spreadRadius: 3,
+                color: Color.fromRGBO(26, 42, 97, 0.06),
+              ),
+            ],
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
@@ -97,17 +110,18 @@ class _TripTileState extends State<TripTile> {
                 trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
               ),
               _trip(widget.trip),
-              passengers.any((element) => element.id == userId)
-                  ? FullWidthElevButton(
-                      color: kPrimaryRed,
-                      title: "Отменить бронь",
-                      onPressed: () {
-                        tripsPassangerBloc
-                            .add(CancelBookTrip(widget.trip.tripId!));
-                        tripsBloc.add(LoadAllTripsList());
-                      },
-                    )
-                  : const SizedBox(),
+              if (!widget.last)
+                passengers.any((element) => element.id == userId)
+                    ? FullWidthElevButton(
+                        color: kPrimaryRed,
+                        title: "Отменить бронь",
+                        onPressed: () {
+                          tripsPassangerBloc
+                              .add(CancelBookTrip(widget.trip.tripId!));
+                          tripsBloc.add(LoadAllTripsList());
+                        },
+                      )
+                    : const SizedBox(),
               if (!widget.last)
                 widget.trip.owner!.id == userId
                     ? FullWidthElevButton(

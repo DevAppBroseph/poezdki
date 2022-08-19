@@ -27,6 +27,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
     final profileBloc = BlocProvider.of<ProfileBloc>(context, listen: false);
     return KScaffoldScreen(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
       isLeading: true,
       title: "Добавить авто",
       body: Stack(
@@ -58,16 +59,17 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                             textEditingController: carColor,
                             inputAction: TextInputAction.done,
                           ),
-                          // KFormField(
-                          //     hintText: 'Гос. номер',
-                          //     textEditingController: carNumber,
-                          //     inputAction: TextInputAction.next,),
+                          KFormField(
+                            hintText: 'Гос. номер',
+                            textEditingController: carNumber,
+                            inputAction: TextInputAction.next,
+                          ),
                           // KFormField(
                           //   hintText: 'Количество мест',
                           //   textInputType: TextInputType.number,
                           //   textEditingController: carSeats,
                           //   validateFunction: Validations.validateTitle,
-                          //     inputAction: TextInputAction.done,
+                          //   inputAction: TextInputAction.done,
                           // ),
                         ],
                       ),
@@ -81,7 +83,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
           Align(
             alignment: Alignment.bottomCenter,
             child: FullWidthElevButton(
-              margin: const EdgeInsets.symmetric(vertical: 40),
+              margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
               title: "Добавить",
               onPressed: () {
                 if (
@@ -89,15 +91,18 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                     //   carModel.text.isNotEmpty &&
                     //   carSeats.text.isEmpty &&
                     _carKeyForm.currentState!.validate()) {
-                 
-                  profileBloc.add(CreateCar(
+                  profileBloc.add(
+                    CreateCar(
                       context,
                       Car(
-                          mark: carMade.text.trim(),
-                          model: carModel.text.trim(),
-                          color: carColor.text.trim(),
-                          vehicleNumber: '-',
-                          countOfPassengers: 4)));
+                        mark: carMade.text.trim(),
+                        model: carModel.text.trim(),
+                        color: carColor.text.trim(),
+                        vehicleNumber: carNumber.text.trim(),
+                        countOfPassengers: 4,
+                      ),
+                    ),
+                  );
                 }
               },
             ),

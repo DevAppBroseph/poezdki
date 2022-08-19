@@ -97,6 +97,9 @@ class _SearchRidesState extends State<SearchRides>
                   ),
                   const SliverToBoxAdapter(
                     child: TripsBuilder(),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 40),
                   )
                 ],
               ),
@@ -112,6 +115,9 @@ class _SearchRidesState extends State<SearchRides>
                           fetchTrips(context, page: searchPageIndex),
                       child: const TripsPassengerBuilder(),
                     ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 40),
                   )
                 ],
               ),

@@ -14,31 +14,39 @@ class Review extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
-        isLeading: true,
-        title: "Отзывы",
-        body: Container(
-            height: MediaQuery.of(context).size.height,
-            decoration: const BoxDecoration(color: kPrimaryWhite),
-            child: FutureBuilder<ReviewModel?>(
-              future: fetchReviews(),
-              builder: ((context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  final reviews = snapshot.data?.reviews ?? [];
-                  return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: reviews.length,
-                      itemBuilder: ((context, index) => ReviewCard(
-                            message: reviews[index].message!,
-                            mark: reviews[index].mark!,
-                            date: reviews[index].date!,
-                          )));
-                }
-                return const Padding(
-                  padding: EdgeInsets.all(20),
-                  child: CircularProgressIndicator(),
-                );
-              }),
-            )));
+      backgroundColor: Colors.white,
+      isLeading: true,
+      title: "Отзывы",
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: const BoxDecoration(color: kPrimaryWhite),
+        child: FutureBuilder<ReviewModel?>(
+          future: fetchReviews(),
+          builder: ((context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              final reviews = snapshot.data?.reviews ?? [];
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: reviews.length,
+                itemBuilder: ((context, index) => ReviewCard(
+                      message: reviews[index].message!,
+                      mark: reviews[index].mark!,
+                      date: reviews[index].date!,
+                    )),
+              );
+            }
+            return Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.all(20),
+              child: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
   }
 
   Future<ReviewModel?> fetchReviews() async {

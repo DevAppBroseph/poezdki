@@ -51,6 +51,13 @@ class BookThisTrip extends TripsEvent {
   BookThisTrip(this.context, this.seats, this.tripId);
 }
 
+class BookThisPackage extends TripsEvent {
+  final BuildContext context;
+  final List<int> seats;
+  final int tripId;
+
+  BookThisPackage(this.context, this.seats, this.tripId);
+}
 
 class DeleteTrip extends TripsEvent {
   final int tripId;

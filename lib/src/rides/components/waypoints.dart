@@ -72,7 +72,7 @@ class WayPoints extends StatelessWidget {
                       type: WaypointType.middle,
                       textField: KFormField(
                         onTap: () {
-                          midwayControllers.add(TextEditingController());
+                          // midwayControllers.add(TextEditingController());
                           onTap!(index);
                         },
                         readOnly: true,

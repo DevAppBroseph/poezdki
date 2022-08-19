@@ -14,6 +14,6 @@ class UserCachedImage extends StatelessWidget {
             ? ClipRRect(
                 borderRadius: BorderRadius.circular(50),
                 child: CachedNetworkImage(imageUrl: "$serverURL/$img"))
-            : const FlutterLogo());
+            : null);
   }
 }

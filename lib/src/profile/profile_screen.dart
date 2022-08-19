@@ -16,6 +16,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
+        backgroundColor: Colors.white,
         title: "Профиль",
         body: SingleChildScrollView(
           child: Column(
@@ -35,29 +36,31 @@ class ProfileScreen extends StatelessWidget {
                       pushNewScreen(context, screen: const Rating()),
                   title: "Рейтинг",
                   icon: 'star'),
-              const ProfileBtn(title: "Бонусы", icon: 'dollar-circlebonus'),
+              // const ProfileBtn(title: "Бонусы", icon: 'dollar-circlebonus'),
+              // ProfileBtn(
+              //     onPressed: () =>
+              //         pushNewScreen(context, screen: const Referal()),
+              //     title: "Реферальная система",
+              //     icon: 'profile-2userreferal'),
+              // ProfileBtn(
+              //     onPressed: () =>
+              //         pushNewScreen(context, screen: const Balance()),
+              //     title: "Баланс",
+              //     icon: 'profile-2userreferal'),
               ProfileBtn(
-                  onPressed: () =>
-                      pushNewScreen(context, screen: const Referal()),
-                  title: "Реферальная система",
-                  icon: 'profile-2userreferal'),
-              ProfileBtn(
-                  onPressed: () =>
-                      pushNewScreen(context, screen: const Balance()),
-                  title: "Баланс",
-                  icon: 'profile-2userreferal'),
-              ProfileBtn(
-                  onPressed: () => pushNewScreen(context, screen: const FAQ()),
-                  title: "Вопросы и ответы",
-                  icon: 'message-questionfaq'),
+                onPressed: () => pushNewScreen(context, screen: const FAQ()),
+                title: "Вопросы и ответы",
+                icon: 'message-questionfaq',
+              ),
               ProfileBtn(
                   onPressed: () => pushNewScreen(context, screen: const Blog()),
                   title: "Блог",
                   icon: 'bookblog'),
               const ProfileBtn(title: "О проекте", icon: 'mouseabout'),
               const ProfileBtn(
-                  title: "Пользовательское соглашение",
-                  icon: 'document-textp_agree'),
+                title: "Пользовательское соглашение",
+                icon: 'document-textp_agree',
+              ),
               const ProfileBtn(
                   title: "Политика конфиденциальности",
                   icon: 'document-favoritep_privacy'),

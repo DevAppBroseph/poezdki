@@ -9,6 +9,7 @@ class Rating extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
+        backgroundColor: Colors.white,
         isLeading: true,
         title: "Рейтинг",
         body: SingleChildScrollView(
@@ -21,7 +22,7 @@ class Rating extends StatelessWidget {
                 award: "100 баллов",
               ),
               RatingLevel(
-                 img: 'tarantula',
+                img: 'tarantula',
                 level: "2 Уровень",
                 goal: "Проехать 500 км.",
                 award: "200 баллов",
@@ -39,7 +40,7 @@ class Rating extends StatelessWidget {
                 award: "400 баллов",
               ),
               RatingLevel(
-                 img: 'dog',
+                img: 'dog',
                 isLastLevel: true,
                 level: "5 Уровень",
                 goal: "Проехать 3000 км.",

@@ -31,6 +31,7 @@ class _CreateRideState extends State<CreateRide>
   Widget build(BuildContext context) {
     initializeDateFormatting('ru', null);
     return KScaffoldScreen(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       title: "Создание поездки",
       bottom: _tabbar(),

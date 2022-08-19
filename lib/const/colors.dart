@@ -14,11 +14,10 @@ Map<int, Color> kPrimaryMaterialColor = {
   900: const Color.fromRGBO(34, 187, 156, 1),
 };
 
-
 const Color kPrimaryColor2 = Color(0xFFA7E4D7);
 const Color kPrimaryBlack = Color(0xFF171716);
 const Color kPrimaryDarkGrey = Color(0xFF515150);
 const Color kPrimaryLightGrey = Color(0xFFDADADA);
-const Color kPrimaryWhite = Color(0xFFF3F3F4);
+const Color kPrimaryWhite = Color.fromRGBO(247, 247, 248, 1);
 const Color kPrimaryRed = Color(0xFFFF5959);
 const Color kPrimaryOrange = Color(0xFFFFAD2E);

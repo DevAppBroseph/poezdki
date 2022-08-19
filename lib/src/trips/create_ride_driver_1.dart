@@ -1,6 +1,7 @@
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
+import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +61,7 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                   ),
                   onTap: (index) => pickDestinition(
                     null,
-                    false,
+                    null,
                     "Куда заедем?",
                     index,
                   ),
@@ -76,10 +77,33 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                   midWays: midWays,
                   midwayControllers: _midwayControllers,
                   onAdd: () {
-                    setState(() {
-                      midWays.add(TextEditingController());
-                      _midwayControllers.add(TextEditingController());
-                    });
+                    if (stopsList.isEmpty &&
+                        _midwayControllers.length == stopsList.length) {
+                      setState(() {
+                        midWays.add(TextEditingController());
+                        _midwayControllers.add(TextEditingController());
+                      });
+                    } else {
+                      if (stopsList.isNotEmpty) {
+                        if (stopsList.last.name != '' &&
+                            _midwayControllers.last.text != '') {
+                          setState(() {
+                            midWays.add(TextEditingController());
+                            _midwayControllers.add(TextEditingController());
+                          });
+                        } else {
+                          ErrorDialogs()
+                              .showError("Заполните предыдущее поле.");
+                        }
+                      } else {
+                        ErrorDialogs().showError("Заполните предыдущее поле.");
+                      }
+                    }
+                    print(_midwayControllers.length);
+                    // if (midWays.isEmpty || midWays.last.text != '') {
+                    // } else {
+                    //   ErrorDialogs().showError("Заполните предыдущее поле.");
+                    // }
                   },
                   onDelete: () {},
                 ),
@@ -260,8 +284,9 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
     }
   }
 
-  void pickDestinition(TextEditingController? contoller, bool isFrom,
+  void pickDestinition(TextEditingController? contoller, bool? isFrom,
       String title, int? index) async {
+    print(_midwayControllers.length);
     final Departure? destinition = await btmSheet.wait(context,
         useRootNavigator: true,
         child: PickCity(
@@ -271,16 +296,35 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
       if (contoller != null) {
         setState(() {
           contoller.text = destinition.name!;
-          isFrom ? from = destinition : to = destinition;
+          if (isFrom != null) {
+            isFrom ? from = destinition : to = destinition;
+          }
         });
       } else {
-        setState(() {
-          _midwayControllers[index!].text = destinition.name!;
-          stopsList.add(destinition);
-          isFrom ? from = destinition : to = destinition;
-        });
+        if (index! + 1 < _midwayControllers.length) {
+          setState(() {
+            _midwayControllers[index].text = destinition.name!;
+            stopsList[index] = destinition;
+            if (isFrom != null) {
+              isFrom ? from = destinition : to = destinition;
+            }
+          });
+        } else {
+          setState(() {
+            _midwayControllers[index].text = destinition.name!;
+            stopsList.add(destinition);
+            if (isFrom != null) {
+              isFrom ? from = destinition : to = destinition;
+            }
+          });
+        }
       }
     }
+    print(from?.name);
+    stopsList.forEach((element) {
+      print(element.name);
+    });
+    print(to?.name);
   }
 
   void pickCar(
@@ -301,6 +345,7 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
     date = null;
     time = null;
     selectedCar = null;
+    stopsList = [];
     startWay.clear();
     midWays.clear();
     _midwayControllers = [];

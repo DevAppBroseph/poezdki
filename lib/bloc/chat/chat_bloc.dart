@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:app_poezdka/model/send_message.dart';
 import 'package:app_poezdka/service/server/chat_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:bloc/bloc.dart';
@@ -13,15 +15,28 @@ part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final chatService = ChatService();
-  
+
   ChatBloc() : super(ChatInitial()) {
     ///Example
     testController.stream.listen((event) {
-      add(ShowTestEvent(message: event));
+      // print('object');
+      // print(event.length);
+      // print(event.last.replyTo?.user.id);
+      // print(event.first.text);
+      // print(event.first.user.id);
+      if (event.last.replyTo?.user.id != null) {
+        channel?.sink.add(jsonEncode({
+          "to": event.last.replyTo?.user.id,
+          "from": event.last.user.id,
+          "message": event.last.text,
+        }));
+      }
+      add(UpdateChat(messages: event));
     });
     on<ShowTestEvent>((event, emit) {
       emit(TestState(message: event.message));
     });
+
     ///
 
     on<ChatStarted>(_onChatStarted);
@@ -29,9 +44,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<StartSocket>(_startSocket);
   }
   WebSocketChannel? channel;
-    ///Example
-  final testController = StreamController<String>();
-    ///
+
+  ///Example
+  final testController = StreamController<List<ChatMessage>>();
+
+  List<ChatMessage> messages = [];
+
+  ///
 
   void _startSocket(StartSocket event, Emitter<ChatState> emit) async {
     // if (channel == null) {
@@ -44,16 +63,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     channel?.stream.listen(
       (event) {
         // setState(() {
-        // _message.insert(
-        //   0,
-        //   ChatMessage(
-        //     user: ChatUser(
-        //         id: SendMessage.fromJson(jsonDecode(event)).from.toString()),
-        //     createdAt: DateTime.now(),
-        //     text: SendMessage.fromJson(jsonDecode(event)).message,
-        //   ),
-        // );
-        // _messagesStream.sink.add(_message);
+        messages.add(
+          ChatMessage(
+            user: ChatUser(
+                id: SendMessage.fromJson(jsonDecode(event)).from.toString()),
+            createdAt: DateTime.now(),
+            text: SendMessage.fromJson(jsonDecode(event)).message,
+          ),
+        );
+        testController.sink.add(messages);
+        print(event);
+        add(UpdateChat(messages: messages));
         // });
       },
       onDone: () {
@@ -73,24 +93,25 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     );
 
     if (chats != null) {
-      List<ChatMessage> _messages = [];
+      messages = [];
       chats.forEach((element) {
-        _messages.add(
+        messages.add(
           ChatMessage(
             user: ChatUser(
               id: element.from.toString(),
             ),
-            createdAt: DateTime.now(),
+            createdAt: element.time,
             text: element.message,
           ),
         );
       });
-      add(UpdateChat(messages: _messages));
+      print(messages);
+      add(UpdateChat(messages: messages));
     }
   }
 
   void _updateChat(UpdateChat event, Emitter<ChatState> emit) {
-    emit(ChatLoaded(event.messages));
+    emit(ChatLoaded(event.messages.reversed.toList()));
   }
 
   // void _initApp(AppInit event, Emitter<AuthState> emit) async {

@@ -6,6 +6,7 @@ class TripModel {
   Owner? owner;
   Car? car;
   int? price;
+  int? maxSeats;
   int? timeStart;
   Departure? departure;
   List<Stops>? stops;
@@ -25,6 +26,7 @@ class TripModel {
       this.owner,
       this.car,
       this.price,
+      this.maxSeats,
       this.timeStart,
       this.departure,
       this.stops,
@@ -44,6 +46,7 @@ class TripModel {
     owner = json['owner'] != null ? Owner.fromJson(json['owner']) : null;
     car = json['car'] != null ? Car.fromJson(json['car']) : null;
     price = json['price'];
+    // maxSeats = json['max_seats'];
     timeStart = json['time_start'];
     departure = json['departure'] != null
         ? Departure.fromJson(json['departure'])

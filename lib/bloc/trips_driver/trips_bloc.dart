@@ -13,6 +13,7 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     on<UpdateTripsList>(_updateTripsList);
     on<CreateUserTrip>(_createTrip);
     on<BookThisTrip>(_bookTrip);
+    on<BookThisPackage>(_bookPackage);
     on<DeleteTrip>(_deleteTrip);
     on<ThrowAllTripsError>(_throwTripsError);
   }
@@ -45,8 +46,20 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
   }
 
   void _bookTrip(BookThisTrip event, Emitter<TripsState> emit) async {
-    final success = await tripService.bookTrip(event.context,
-        seats: event.seats, tripId: event.tripId);
+    final success = await tripService.bookTrip(
+      event.context,
+      seats: event.seats,
+      tripId: event.tripId,
+    );
+    if (success) add(LoadAllTripsList());
+  }
+
+  void _bookPackage(BookThisPackage event, Emitter<TripsState> emit) async {
+    final success = await tripService.bookPackage(
+      event.context,
+      seats: event.seats,
+      tripId: event.tripId,
+    );
     if (success) add(LoadAllTripsList());
   }
 

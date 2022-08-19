@@ -1,8 +1,10 @@
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/const/server/server_data.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/profile/cars_data/add_car.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
@@ -17,9 +19,8 @@ class PersonalData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final btm = BottomSheetCall();
-    const profileImg =
-        "https://images.unsplash.com/photo-1519011985187-444d62641929?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80";
     return KScaffoldScreen(
+        backgroundColor: Colors.white,
         isLeading: true,
         title: "Личные данные",
         // actions: [
@@ -32,14 +33,17 @@ class PersonalData extends StatelessWidget {
           children: [
             ProfileInfo(
               name: "${user.firstname} ${user.lastname}",
-              imageUrl: profileImg,
+              imageUrl: user.photo,
             ),
             Container(
               color: kPrimaryWhite,
               child: Column(
                 children: [
-                  ProfileDataCard(
-                    user: user,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25),
+                    child: ProfileDataCard(
+                      user: user,
+                    ),
                   ),
                   ProfileCarsData(
                     user: user,
@@ -58,7 +62,7 @@ class PersonalData extends StatelessWidget {
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({required this.imageUrl, required this.name, Key? key})
       : super(key: key);
-  final String imageUrl;
+  final String? imageUrl;
   final String name;
 
   @override
@@ -72,9 +76,13 @@ class ProfileInfo extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 60,
-              backgroundImage: NetworkImage(
-                imageUrl,
-              ),
+              child: imageUrl != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child:
+                          CachedNetworkImage(imageUrl: '$serverURL/$imageUrl'),
+                    )
+                  : null,
             ),
             const SizedBox(
               height: 10,
@@ -82,9 +90,10 @@ class ProfileInfo extends StatelessWidget {
             Text(
               name,
               style: const TextStyle(
-                  color: kPrimaryColor,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold),
+                color: kPrimaryColor,
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -99,9 +108,22 @@ class ProfileDataCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(
+            offset: Offset(0, 4),
+            blurRadius: 10,
+            spreadRadius: 3,
+            color: Color.fromRGBO(26, 42, 97, 0.06),
+          ),
+        ],
+      ),
       child: Card(
+        elevation: 0,
         child: Column(
           children: [
             const ListTile(
@@ -144,9 +166,22 @@ class ProfileCarsData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(
+            offset: Offset(0, 4),
+            blurRadius: 10,
+            spreadRadius: 3,
+            color: Color.fromRGBO(26, 42, 97, 0.06),
+          ),
+        ],
+      ),
       child: Card(
+        elevation: 0,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

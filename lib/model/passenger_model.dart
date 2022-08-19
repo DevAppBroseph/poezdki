@@ -1,6 +1,7 @@
 class PassengerModel {
   int? id;
   String? phone;
+  String? photo;
   String? firstname;
   String? lastname;
   List<int>? seat;
@@ -10,6 +11,7 @@ class PassengerModel {
   PassengerModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     phone = json['phone'];
+    photo = json['photo'];
     firstname = json['firstname'];
     lastname = json['lastname'];
     seat = json['seat'].cast<int>();
@@ -19,6 +21,7 @@ class PassengerModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['phone'] = phone;
+    data['photo'] = photo;
     data['firstname'] = firstname;
     data['lastname'] = lastname;
     data['seat'] = seat;

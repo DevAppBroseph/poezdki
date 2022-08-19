@@ -74,6 +74,8 @@ dependencies:
   drift: ^1.7.0
   uuid: ^3.0.6
 
+  scale_button: ^2.1.2
+
   #Google
   google_maps_flutter: ^2.1.11
   flutter_polyline_points: ^1.0.0

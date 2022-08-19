@@ -32,7 +32,6 @@ class ChatService {
         },
         body: body,
       );
-      // print(response.body);
       if (response.statusCode == 200) {
         final resp = messagesAnswerFromJson(response.body);
 

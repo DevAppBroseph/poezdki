@@ -86,6 +86,14 @@ class AppScreens extends StatelessWidget {
       hideNavigationBarWhenKeyboardShows:
           true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
       decoration: NavBarDecoration(
+        boxShadow: [
+          const BoxShadow(
+            offset: Offset(0, -4),
+            blurRadius: 55,
+            spreadRadius: 0,
+            color: Color.fromRGBO(26, 42, 97, 0.06),
+          ),
+        ],
         borderRadius: BorderRadius.circular(10.0),
         colorBehindNavBar: Colors.white,
       ),

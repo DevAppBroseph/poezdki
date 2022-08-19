@@ -17,8 +17,8 @@ class UserTripsPassengerBuilder extends StatelessWidget {
       bloc: userTripsBloc,
       builder: ((context, state) {
         print(state);
-        List<List<TripModel>> _lastTrips = [];
-        if (state is UserTripsPassengerLoading && _lastTrips.isEmpty) {
+        // List<List<TripModel>>? _lastTrips;
+        if (state is UserTripsPassengerLoading) {
           return const Padding(
             padding: EdgeInsets.all(20.0),
             child: Center(
@@ -26,29 +26,27 @@ class UserTripsPassengerBuilder extends StatelessWidget {
             ),
           );
         }
-        if (_lastTrips.isNotEmpty) {
-          return UserTripsList(
-            tripsLists: _lastTrips,
-            screen: 0,
-          );
-        }
         if (state is UserTripsPassengerLoaded) {
-          _lastTrips = state.trips;
-          return UserTripsList(
-            tripsLists: _lastTrips,
-            screen: 0,
-          );
+          // _lastTrips = state.trips!;
+          if (state.trips!.isNotEmpty) {
+            return UserTripsList(
+              tripsLists: state.trips,
+              screen: 0,
+            );
+          } else {
+            return Container();
+          }
         }
-        return UserTripsList(
-          tripsLists: _lastTrips,
-          screen: 0,
-        );
-        // return const Padding(
-        //   padding: EdgeInsets.all(20.0),
-        //   child: Center(
-        //     child: CircularProgressIndicator(),
-        //   ),
+        // return UserTripsList(
+        //   tripsLists: _lastTrips,
+        //   screen: 0,
         // );
+        return const Padding(
+          padding: EdgeInsets.all(20.0),
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
       }),
     );
   }

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:scale_button/scale_button.dart';
 
 class TripTileDefault extends StatelessWidget {
   final TripModel trip;
@@ -18,7 +19,9 @@ class TripTileDefault extends StatelessWidget {
   Widget build(BuildContext ctx) {
     final ownerImage = trip.owner?.photo;
     final btmSheet = BottomSheetCall();
-    return InkWell(
+    return ScaleButton(
+      bound: 0.05,
+      duration: const Duration(milliseconds: 200),
       onTap: () => btmSheet.show(
         ctx,
         useRootNavigator: true,
@@ -28,41 +31,50 @@ class TripTileDefault extends StatelessWidget {
         ),
       ),
       child: Container(
-          margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              ListTile(
-                leading: UserCachedImage(
-                  img: ownerImage,
-                ),
-                title: Text(
-                  '${trip.owner!.firstname!} ${trip.owner!.lastname!}',
-                  // "${((trip.owner!.firstname! + ' ' + trip.owner!.lastname!)) ?? " Пользователь не найден"}",
-                  maxLines: 1,
-                  overflow: TextOverflow.clip,
-                ),
-                subtitle: Text(
-                  "${trip.price} ₽",
-                  maxLines: 1,
-                  overflow: TextOverflow.clip,
-                ),
-                trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
+        margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            const BoxShadow(
+              offset: Offset(0, 4),
+              blurRadius: 10,
+              spreadRadius: 3,
+              color: Color.fromRGBO(26, 42, 97, 0.06),
+            ),
+          ],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            ListTile(
+              leading: UserCachedImage(
+                img: ownerImage,
               ),
-              _trip(trip),
-              // isUpcoming!
-              //     ? FullWidthElevButton(
-              //         title: "Отменить поездку",
-              //         onPressed: () {},
-              //       )
-              //     : const SizedBox()
-            ],
-          )),
+              title: Text(
+                '${trip.owner!.firstname!} ${trip.owner!.lastname!}',
+                // "${((trip.owner!.firstname! + ' ' + trip.owner!.lastname!)) ?? " Пользователь не найден"}",
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+              ),
+              subtitle: Text(
+                "${trip.price} ₽",
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+              ),
+              trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
+            ),
+            _trip(trip),
+            // isUpcoming!
+            //     ? FullWidthElevButton(
+            //         title: "Отменить поездку",
+            //         onPressed: () {},
+            //       )
+            //     : const SizedBox()
+          ],
+        ),
+      ),
     );
   }
 
