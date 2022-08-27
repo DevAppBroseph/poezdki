@@ -45,114 +45,123 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
 
     return Stack(
       children: [
-        SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                WayPoints(
-                  pickDestinitionFrom: () => pickDestinition(
-                    startWay,
-                    true,
-                    "Откуда поедем?",
-                    null,
-                  ),
-                  onTap: (index) => pickDestinition(
-                    null,
-                    null,
-                    "Куда заедем?",
-                    index,
-                  ),
-                  pickDestinitionTo: () => pickDestinition(
-                    endWay,
-                    false,
-                    "Куда едем?",
-                    null,
-                  ),
-                  pickDestinitionStops: () {},
-                  startWay: startWay,
-                  endWay: endWay,
-                  midWays: midWays,
-                  midwayControllers: _midwayControllers,
-                  onAdd: () {
-                    if (stopsList.isEmpty &&
-                        _midwayControllers.length == stopsList.length) {
-                      setState(() {
-                        midWays.add(TextEditingController());
-                        _midwayControllers.add(TextEditingController());
-                      });
-                    } else {
-                      if (stopsList.isNotEmpty) {
-                        if (stopsList.last.name != '' &&
-                            _midwayControllers.last.text != '') {
+        CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    WayPoints(
+                      pickDestinitionFrom: () => pickDestinition(
+                        startWay,
+                        true,
+                        "Откуда поедем?",
+                        null,
+                      ),
+                      onTap: (index) => pickDestinition(
+                        null,
+                        null,
+                        "Куда заедем?",
+                        index,
+                      ),
+                      pickDestinitionTo: () => pickDestinition(
+                        endWay,
+                        false,
+                        "Куда едем?",
+                        null,
+                      ),
+                      pickDestinitionStops: () {},
+                      startWay: startWay,
+                      endWay: endWay,
+                      midWays: midWays,
+                      midwayControllers: _midwayControllers,
+                      onAdd: () {
+                        if (stopsList.isEmpty &&
+                            _midwayControllers.length == stopsList.length) {
                           setState(() {
                             midWays.add(TextEditingController());
                             _midwayControllers.add(TextEditingController());
                           });
                         } else {
-                          ErrorDialogs()
-                              .showError("Заполните предыдущее поле.");
+                          if (stopsList.isNotEmpty) {
+                            if (stopsList.last.name != '' &&
+                                _midwayControllers.last.text != '') {
+                              setState(() {
+                                midWays.add(TextEditingController());
+                                _midwayControllers.add(TextEditingController());
+                              });
+                            } else {
+                              ErrorDialogs()
+                                  .showError("Заполните предыдущее поле.");
+                            }
+                          } else {
+                            ErrorDialogs()
+                                .showError("Заполните предыдущее поле.");
+                          }
                         }
-                      } else {
-                        ErrorDialogs().showError("Заполните предыдущее поле.");
-                      }
-                    }
-                    print(_midwayControllers.length);
-                    // if (midWays.isEmpty || midWays.last.text != '') {
-                    // } else {
-                    //   ErrorDialogs().showError("Заполните предыдущее поле.");
-                    // }
-                  },
-                  onDelete: () {},
-                ),
-                Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          title: const Text("Дата"),
-                          trailing: TextButton(
-                              onPressed: () => _pickDate(),
-                              child: Text(
-                                date != null
-                                    ? DateFormat.yMMMMd('ru').format(date!)
-                                    : "Укажите дату",
-                                style: pickerStyle,
-                              )),
-                        ),
-                        ListTile(
-                          title: const Text("Время выезда"),
-                          trailing: TextButton(
-                              onPressed: () => _pickTime(),
-                              child: Text(
-                                time != null
-                                    ? "${time!.hour.toString().padLeft(2, '0')}:${time!.minute.toString().padLeft(2, '0')}"
-                                    : "Укажите время",
-                                style: pickerStyle,
-                              )),
-                        ),
-                        ListTile(
-                          title: const Text("Автомобиль"),
-                          trailing: TextButton(
-                            onPressed: () => pickCar(context),
-                            child: selectedCar != null
-                                ? Text(
-                                    "${selectedCar!.mark} ${selectedCar!.model} ${selectedCar!.color}",
-                                    style: carStyle,
-                                  )
-                                : const Text(
-                                    "Выберите автомобиль",
-                                    style: pickerStyle,
-                                  ),
+
+                        // if (midWays.isEmpty || midWays.last.text != '') {
+                        // } else {
+                        //   ErrorDialogs().showError("Заполните предыдущее поле.");
+                        // }
+                      },
+                      onDelete: () {},
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: const Text("Дата"),
+                            trailing: TextButton(
+                                onPressed: () => _pickDate(),
+                                child: Text(
+                                  date != null
+                                      ? DateFormat.yMMMMd('ru').format(date!)
+                                      : "Укажите дату",
+                                  style: pickerStyle,
+                                )),
                           ),
-                        ),
-                      ],
-                    )),
-              ],
-            ),
-          ),
+                          ListTile(
+                            title: const Text("Время выезда"),
+                            trailing: TextButton(
+                                onPressed: () => _pickTime(),
+                                child: Text(
+                                  time != null
+                                      ? "${time!.hour.toString().padLeft(2, '0')}:${time!.minute.toString().padLeft(2, '0')}"
+                                      : "Укажите время",
+                                  style: pickerStyle,
+                                )),
+                          ),
+                          ListTile(
+                            title: const Text("Автомобиль"),
+                            trailing: TextButton(
+                              onPressed: () => pickCar(context),
+                              child: selectedCar != null
+                                  ? Text(
+                                      "${selectedCar!.mark} ${selectedCar!.model} ${selectedCar!.color}",
+                                      style: carStyle,
+                                    )
+                                  : const Text(
+                                      "Выберите автомобиль",
+                                      style: pickerStyle,
+                                    ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 100,
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
         ),
         _nextButton(context)
       ],
@@ -166,10 +175,10 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
         margin: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
         title: "Далее",
         onPressed: () async {
-          if (from != null ||
-              to != null ||
-              date != null ||
-              time != null ||
+          if (from != null &&
+              to != null &&
+              date != null &&
+              time != null &&
               selectedCar != null) {
             final bool success = await pushNewScreen(
               context,
@@ -286,7 +295,6 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
 
   void pickDestinition(TextEditingController? contoller, bool? isFrom,
       String title, int? index) async {
-    print(_midwayControllers.length);
     final Departure? destinition = await btmSheet.wait(context,
         useRootNavigator: true,
         child: PickCity(
@@ -320,11 +328,6 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
         }
       }
     }
-    print(from?.name);
-    stopsList.forEach((element) {
-      print(element.name);
-    });
-    print(to?.name);
   }
 
   void pickCar(

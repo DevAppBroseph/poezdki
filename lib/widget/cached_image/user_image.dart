@@ -10,10 +10,19 @@ class UserCachedImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-        child: img != null
-            ? ClipRRect(
-                borderRadius: BorderRadius.circular(50),
-                child: CachedNetworkImage(imageUrl: "$serverURL/$img"))
-            : null);
+      child: img != null
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(100),
+              child: SizedBox(
+                width: 120,
+                height: 120,
+                child: CachedNetworkImage(
+                  imageUrl: '$serverURL/$img',
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          : null,
+    );
   }
 }

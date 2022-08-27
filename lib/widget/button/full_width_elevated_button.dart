@@ -22,27 +22,45 @@ class FullWidthElevButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: margin ?? const EdgeInsets.all(10.0),
-      padding: const EdgeInsets.all(10),
+      // padding: const EdgeInsets.all(10),
+      height: 50,
       width: double.infinity,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          alignment: alignment ?? Alignment.center,
-          elevation: 0,
-          side: BorderSide(color: color ?? kPrimaryColor),
-          padding: const EdgeInsets.all(10.0),
-          primary: color ?? kPrimaryColor,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      // child: ElevatedButton(
+      //   style: ElevatedButton.styleFrom(
+      //     alignment: alignment ?? Alignment.center,
+      //     elevation: 0,
+      //     side: BorderSide(color: color ?? kPrimaryColor),
+      //     padding: const EdgeInsets.all(10.0),
+      //     primary: color ?? kPrimaryColor,
+      //     shape:
+      //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
 
-          // primary: ThemeProvider.optionsOf<MyThemeOptions>(context)
-          //     .blackThemeBlackColor,
-        ),
-        onPressed: onPressed as void Function()?,
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Text(
-            title,
-            style: titleStyle ?? const TextStyle(color: Colors.white),
+      //     // primary: ThemeProvider.optionsOf<MyThemeOptions>(context)
+      //     //     .blackThemeBlackColor,
+      //   ),
+      //   onPressed: onPressed as void Function()?,
+      //   child: Padding(
+      //     padding: const EdgeInsets.all(5.0),
+      //     child: Text(
+      //       title,
+      //       style: titleStyle ?? const TextStyle(color: Colors.white),
+      //     ),
+      //   ),
+      // ),
+      child: Material(
+        borderRadius: BorderRadius.circular(10.0),
+        color: color ?? kPrimaryColor,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(10.0),
+          onTap: onPressed as void Function()?,
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Center(
+              child: Text(
+                title,
+                style: titleStyle ?? const TextStyle(color: Colors.white),
+              ),
+            ),
           ),
         ),
       ),

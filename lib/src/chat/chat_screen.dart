@@ -35,7 +35,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void initState() {
-    print(widget.ownerId);
     super.initState();
   }
 
@@ -49,7 +48,6 @@ class _ChatScreenState extends State<ChatScreen> {
     // );
     // setState(() {
     var messages = context.read<ChatBloc>().messages;
-    print(widget.ownerId.toString());
 
     messages.add(
       ChatMessage(
@@ -77,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _controller.dispose();
-    print('dispose');
+
     // _message = [];
     // _messagesStream.sink.close();
     // _messagesStream.close();
@@ -87,6 +85,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
+      backgroundColor: Colors.white,
       isLeading: true,
       resizeToAvoidBottomInset: true,
       title: "Чат с водителем",
@@ -105,7 +104,6 @@ class _ChatScreenState extends State<ChatScreen> {
         )
       ],
       body: BlocConsumer<ChatBloc, ChatState>(listener: (context, state) {
-        print('state: ${state}');
         if (state is TestState) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text(state.message)));

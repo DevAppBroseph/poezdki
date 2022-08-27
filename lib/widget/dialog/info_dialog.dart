@@ -27,9 +27,16 @@ class InfoDialog {
                 width: width ?? 600,
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                ),
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                    boxShadow: const [
+                      BoxShadow(
+                        offset: Offset(0, 4),
+                        blurRadius: 10,
+                        spreadRadius: 3,
+                        color: Color.fromRGBO(26, 42, 97, 0.06),
+                      ),
+                    ]),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
@@ -44,7 +51,10 @@ class InfoDialog {
                       Text(
                         title,
                         style: const TextStyle(
-                            fontSize: 23, fontWeight: FontWeight.bold),
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                       const SizedBox(
                         height: 30,

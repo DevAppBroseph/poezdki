@@ -23,14 +23,12 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
   final GlobalKey<FormState> _regFormPersonal = GlobalKey<FormState>();
 
   final PageController controller = PageController();
-  final TextEditingController email =
-      TextEditingController(text: "email@mail.ru");
-  final TextEditingController pw = TextEditingController(text: "12345678");
-  final TextEditingController pwConfirm =
-      TextEditingController(text: "12345678");
+  final TextEditingController email = TextEditingController();
+  final TextEditingController pw = TextEditingController();
+  final TextEditingController pwConfirm = TextEditingController();
 
-  final TextEditingController name = TextEditingController(text: "Name");
-  final TextEditingController surname = TextEditingController(text: "Surname");
+  final TextEditingController name = TextEditingController();
+  final TextEditingController surname = TextEditingController();
   final TextEditingController gender = TextEditingController();
   final TextEditingController dob = TextEditingController();
 
@@ -49,7 +47,14 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
       appBar: AppBar(
         leadingWidth: 30,
         leading: IconButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              if (currentPage == 1) {
+                controller.animateTo(0,
+                    duration: Duration(milliseconds: 300), curve: Curves.ease);
+              } else {
+                Navigator.pop(context);
+              }
+            },
             icon: const Icon(
               Icons.chevron_left,
               size: 30,
@@ -57,19 +62,21 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
         title: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 0),
           child: RichText(
-            text: const TextSpan(
+            text: TextSpan(
                 text: 'Регистрация',
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
                 children: <TextSpan>[
                   TextSpan(
-                    text: ' 1/2',
-                    style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500),
+                    text: ' ${currentPage == 0 ? 1 : 2}/2',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
                   )
                 ]),
           ),
@@ -95,14 +102,15 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                     pw: pw,
                     pwConfirm: pwConfirm),
                 SignUpPersonalInfo(
-                    formKey: _regFormPersonal,
-                    name: name,
-                    surname: surname,
-                    selectedDate: selectedDate,
-                    genderCrl: gender,
-                    onPickGender: () => _pickGender(),
-                    onPickDob: () => _pickDate(),
-                    dob: dob)
+                  formKey: _regFormPersonal,
+                  name: name,
+                  surname: surname,
+                  selectedDate: selectedDate,
+                  genderCrl: gender,
+                  onPickGender: () => _pickGender(),
+                  onPickDob: () => _pickDate(),
+                  dob: dob,
+                )
               ],
             ),
           ),
@@ -120,13 +128,14 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                 FullWidthElevButton(
                   title: currentPage == 1 ? "Зарегистрироваться" : "Далее",
                   onPressed: () async {
-                    if (currentPage == 0 && _regFormAccount.currentState!.validate() == false) {
+                    if (currentPage == 0 &&
+                        _regFormAccount.currentState!.validate() == false) {
                       infoDialog.show(
                         title: "Что то не так:",
                         children: const [
                           ListTile(
                             title: Text(
-                                "1) Убедить что вы корректно ввели E-mail",
+                                "1) Убедитесь что вы корректно ввели E-mail",
                                 style: TextStyle(fontSize: 14)),
                           ),
                           ListTile(
@@ -150,14 +159,17 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                       });
                     } else if (currentPage == 1 &&
                         _regFormPersonal.currentState!.validate()) {
-                      authBloc.add(SignUp(
-                        context: context,
+                      authBloc.add(
+                        SignUp(
+                          context: context,
                           login: email.text,
                           password: pw.text,
                           firstName: name.text,
                           lastName: surname.text,
                           gender: selectedGender!,
-                          birth: selectedDate.millisecondsSinceEpoch));
+                          birth: selectedDate.millisecondsSinceEpoch,
+                        ),
+                      );
 
                       // authBloc.add(LoggedIn(email, token))
 

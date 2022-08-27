@@ -39,57 +39,65 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
 
     return Stack(
       children: [
-        SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                WayPoints(
-                  pickDestinitionStops: () {},
-                  pickDestinitionFrom: () =>
-                      pickDestinition(startWay, true, "Откуда поедем?"),
-                  pickDestinitionTo: () =>
-                      pickDestinition(endWay, false, "Куда едем?"),
-                  startWay: startWay,
-                  endWay: endWay,
-                  midWays: null,
-                  midwayControllers: _midwayControllers,
-                  onAdd: () {},
-                  onDelete: () {},
+        CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    WayPoints(
+                      pickDestinitionStops: () {},
+                      pickDestinitionFrom: () =>
+                          pickDestinition(startWay, true, "Откуда поедем?"),
+                      pickDestinitionTo: () =>
+                          pickDestinition(endWay, false, "Куда едем?"),
+                      startWay: startWay,
+                      endWay: endWay,
+                      midWays: null,
+                      midwayControllers: _midwayControllers,
+                      onAdd: () {},
+                      onDelete: () {},
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: const Text("Дата"),
+                            trailing: TextButton(
+                                onPressed: () => _pickDate(),
+                                child: Text(
+                                  date != null
+                                      ? DateFormat.yMMMMd('ru').format(date!)
+                                      : "Укажите дату",
+                                  style: pickerStyle,
+                                )),
+                          ),
+                          ListTile(
+                            title: const Text("Время выезда"),
+                            trailing: TextButton(
+                                onPressed: () => _pickTime(),
+                                child: Text(
+                                  time != null
+                                      ? "${time!.hour.toString().padLeft(2, '0')}:${time!.minute.toString().padLeft(2, '0')}"
+                                      : "Укажите время",
+                                  style: pickerStyle,
+                                )),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                  ],
                 ),
-                Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          title: const Text("Дата"),
-                          trailing: TextButton(
-                              onPressed: () => _pickDate(),
-                              child: Text(
-                                date != null
-                                    ? DateFormat.yMMMMd('ru').format(date!)
-                                    : "Укажите дату",
-                                style: pickerStyle,
-                              )),
-                        ),
-                        ListTile(
-                          title: const Text("Время выезда"),
-                          trailing: TextButton(
-                              onPressed: () => _pickTime(),
-                              child: Text(
-                                time != null
-                                    ? "${time!.hour.toString().padLeft(2, '0')}:${time!.minute.toString().padLeft(2, '0')}"
-                                    : "Укажите время",
-                                style: pickerStyle,
-                              )),
-                        ),
-                      ],
-                    )),
-              ],
-            ),
-          ),
+              ),
+            )
+          ],
         ),
         _nextButton(context)
       ],
@@ -108,7 +116,7 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
             //  (from!.coords.toString() == to!.coords.toString()) {
             //   ErrorDialogs().showError("Города не могут совпадать");
             // } else
-             {
+            {
               final bool success = await pushNewScreen(context,
                   withNavBar: false,
                   screen: CreateRidePassenger2(
@@ -195,11 +203,12 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
         initialEntryMode: TimePickerEntryMode.input,
         builder: (context, widget) {
           return MediaQuery(
-              data: MediaQuery.of(context).copyWith(
-                  // Using 24-Hour format
-                  alwaysUse24HourFormat: true),
-              // If you want 12-Hour format, just change alwaysUse24HourFormat to false or remove all the builder argument
-              child: widget!);
+            data: MediaQuery.of(context).copyWith(
+                // Using 24-Hour format
+                alwaysUse24HourFormat: true),
+            // If you want 12-Hour format, just change alwaysUse24HourFormat to false or remove all the builder argument
+            child: widget!,
+          );
         });
     if (picked != null) {
       setState(() {

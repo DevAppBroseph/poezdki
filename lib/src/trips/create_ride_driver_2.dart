@@ -51,6 +51,7 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
       title: "Создание поездки",
       isLeading: true,
@@ -192,7 +193,7 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
               onPressed: () async {
                 List<Stops> stops = [];
                 int index = 0;
-                print(widget.startTime);
+
                 for (var element in widget.stopsList) {
                   var distance = Geolocator.distanceBetween(
                         index == 0
@@ -220,12 +221,6 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                       distance.toInt(),
                     ),
                   );
-                  print(DateTime.fromMicrosecondsSinceEpoch((stops.isEmpty
-                          ? widget.startTime.microsecondsSinceEpoch +
-                              distance / 80 * 3600000000
-                          : stops.last.approachTime! +
-                              distance / 80 * 3600000000)
-                      .toInt()));
                   index++;
                 }
                 var approachTime = Geolocator.distanceBetween(
@@ -269,15 +264,6 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                         1000,
                   ),
                 );
-                print(
-                  DateTime.fromMicrosecondsSinceEpoch(
-                    (widget.stopsList.isNotEmpty
-                            ? stops.last.approachTime! + approachTime
-                            : widget.startTime.microsecondsSinceEpoch +
-                                approachTime)
-                        .toInt(),
-                  ),
-                );
                 final TripModel trip = TripModel(
                     car: widget.car,
                     departure: widget.from,
@@ -296,24 +282,8 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                   tripBloc.add(CreateUserTrip(context, trip));
                   tripDriverBloc.add(LoadUserTripsList());
                 }
-
-                print(Geolocator.bearingBetween(
-                  widget.from.coords!.lat!,
-                  widget.from.coords!.lon!,
-                  stops.last.coords!.lat!,
-                  stops.last.coords!.lon!,
-                ));
               },
             ),
           );
-  }
-
-  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
-    var p = 0.017453292519943295;
-    var a = 0.5 -
-        cos((lat2 - lat1) * p) / 2 +
-        cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2;
-    print(12742 * asin(sqrt(a)));
-    return 12742 * asin(sqrt(a));
   }
 }

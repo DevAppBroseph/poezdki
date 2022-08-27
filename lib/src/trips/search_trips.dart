@@ -90,36 +90,44 @@ class _SearchRidesState extends State<SearchRides>
           body: TabBarView(
             controller: _tabController,
             children: [
-              CustomScrollView(
-                slivers: [
-                  CupertinoSliverRefreshControl(
-                    onRefresh: () => fetchTrips(context, page: searchPageIndex),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: TripsBuilder(),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 40),
-                  )
-                ],
-              ),
-              CustomScrollView(
-                slivers: [
-                  CupertinoSliverRefreshControl(
-                    onRefresh: () => fetchTrips(context, page: searchPageIndex),
-                  ),
-                  SliverToBoxAdapter(
-                    child: RefreshIndicator(
-                      triggerMode: RefreshIndicatorTriggerMode.anywhere,
-                      onRefresh: () =>
-                          fetchTrips(context, page: searchPageIndex),
-                      child: const TripsPassengerBuilder(),
+              RefreshIndicator(
+                displacement: 0,
+                onRefresh: () => fetchTrips(context, page: searchPageIndex),
+                child: const CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: 20),
                     ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 40),
-                  )
-                ],
+                    SliverToBoxAdapter(
+                      child: TripsBuilder(),
+                    ),
+                    SliverToBoxAdapter(
+                      child: SizedBox(height: 40),
+                    )
+                  ],
+                ),
+              ),
+              RefreshIndicator(
+                displacement: 0,
+                onRefresh: () => fetchTrips(context, page: searchPageIndex),
+                child: CustomScrollView(
+                  slivers: [
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 20),
+                    ),
+                    SliverToBoxAdapter(
+                      child: RefreshIndicator(
+                        triggerMode: RefreshIndicatorTriggerMode.anywhere,
+                        onRefresh: () =>
+                            fetchTrips(context, page: searchPageIndex),
+                        child: const TripsPassengerBuilder(),
+                      ),
+                    ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(height: 40),
+                    )
+                  ],
+                ),
               ),
             ],
           ),
@@ -323,7 +331,7 @@ class _SearchRidesState extends State<SearchRides>
         city = destinition;
         onChanged(destinition);
       });
-      print(to);
+
       fetchTrips(context, page: searchPageIndex);
     }
   }
@@ -365,7 +373,6 @@ class _SearchRidesState extends State<SearchRides>
         // gender: filter.gender?.apiTitle,
       ),
     );
-    print('im here');
   }
 
   void applyFilters() async {

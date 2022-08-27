@@ -34,8 +34,8 @@ class TripTileDefault extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         decoration: BoxDecoration(
           color: Colors.white,
-          boxShadow: [
-            const BoxShadow(
+          boxShadow: const [
+            BoxShadow(
               offset: Offset(0, 4),
               blurRadius: 10,
               spreadRadius: 3,

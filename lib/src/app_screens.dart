@@ -94,7 +94,7 @@ class AppScreens extends StatelessWidget {
             color: Color.fromRGBO(26, 42, 97, 0.06),
           ),
         ],
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(0.0),
         colorBehindNavBar: Colors.white,
       ),
       popAllScreensOnTapOfSelectedTab: true,

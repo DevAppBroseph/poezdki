@@ -42,6 +42,7 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       title: "Создание поездки",
       isLeading: true,

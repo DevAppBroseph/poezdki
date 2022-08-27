@@ -1,3 +1,5 @@
+import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
+import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/src/app_screens.dart';
 import 'package:app_poezdka/src/onboarding/on_board.dart';
 import 'package:app_poezdka/src/trips/search_trips.dart';
@@ -10,6 +12,8 @@ class AppInitBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<ChatBloc>(context);
+    BlocProvider.of<ProfileBloc>(context);
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthInitial) {
         return const Scaffold(body: CircularProgressIndicator());

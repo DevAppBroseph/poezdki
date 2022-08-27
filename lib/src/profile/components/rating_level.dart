@@ -12,7 +12,8 @@ class RatingLevel extends StatelessWidget {
       required this.award,
       required this.level,
       required this.goal,
-      this.isLastLevel = false, required this.img})
+      this.isLastLevel = false,
+      required this.img})
       : super(key: key);
 
   @override
@@ -36,11 +37,16 @@ class RatingLevel extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-         CircleAvatar(
+        CircleAvatar(
           radius: 30,
           backgroundColor: kPrimaryWhite,
           // backgroundImage: AssetImage("assets/img/$img.png"),
-          child: Image.asset("assets/img/$img.png", scale: 1, width: 45, height: 45,),
+          child: Image.asset(
+            "assets/img/$img.png",
+            scale: 1,
+            width: 45,
+            height: 45,
+          ),
         ),
         SizedBox(
           height: isLastLevel == true ? 21 : 5,

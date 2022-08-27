@@ -21,7 +21,6 @@ class SignUpAccountInfo extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: Form(
-        
         key: formKey,
         child: Column(
           children: [
@@ -33,7 +32,7 @@ class SignUpAccountInfo extends StatelessWidget {
             KPasswordField(
               hintText: 'Пароль*',
               controller: pw,
-              validateFunction: Validations.validatePassword,
+              validateFunction: validatePassword2,
             ),
             KPasswordField(
               hintText: 'Повторите пароль*',

@@ -10,7 +10,11 @@ class SliderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const style = TextStyle(
-        fontSize: 30, color: Colors.black, fontWeight: FontWeight.bold);
+      fontSize: 30,
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+    );
+    print(MediaQuery.of(context).size.height);
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -19,14 +23,14 @@ class SliderPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const SizedBox(
-              height: 200,
+            SizedBox(
+              height: MediaQuery.of(context).size.height < 800 ? 80 : 200,
             ),
             SvgPicture.asset(
               image,
               fit: BoxFit.scaleDown,
-              width: 300,
-              height: 300,
+              width: MediaQuery.of(context).size.height < 800 ? 200 : 300,
+              height: MediaQuery.of(context).size.height < 800 ? 200 : 300,
             ),
             const SizedBox(
               height: 50,

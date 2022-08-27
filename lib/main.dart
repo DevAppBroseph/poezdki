@@ -5,6 +5,8 @@ import 'package:app_poezdka/bloc/trips_passenger/trips_passenger_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/const/theme.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +21,19 @@ import 'export/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  await FirebaseMessaging.instance.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  print('key is' + (await FirebaseMessaging.instance.getToken()).toString());
 
   // await Parse().initialize(keyApplicationId, keyParseServerUrl,
   //     clientKey: keyClientKey,
@@ -61,14 +76,19 @@ class App extends StatelessWidget {
         BlocProvider<ProfileBloc>(
           create: (context) => ProfileBloc(userRepository)..add(LoadProfile()),
         ),
-        BlocProvider<ChatBloc>(
-          create: (context) => ChatBloc()..add(StartSocket()),
-        ),
         BlocProvider<AuthBloc>(
           create: (context) {
+            print('auth');
             return AuthBloc(
-                userRepository: userRepository, appRepository: appRepository)
-              ..add(AppStarted());
+              userRepository: userRepository,
+              appRepository: appRepository,
+            )..add(AppStarted());
+          },
+        ),
+        BlocProvider<ChatBloc>(
+          create: (context) {
+            print('chat');
+            return ChatBloc()..add(StartSocket());
           },
         ),
       ],

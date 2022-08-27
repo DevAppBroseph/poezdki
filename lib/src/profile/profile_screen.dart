@@ -1,10 +1,9 @@
 import 'package:app_poezdka/bloc/profile/profile_builder.dart';
-import 'package:app_poezdka/src/profile/balance.dart';
+import 'package:app_poezdka/src/policy/policy.dart';
 import 'package:app_poezdka/src/profile/blog.dart';
 import 'package:app_poezdka/src/profile/components/profile_button.dart';
 import 'package:app_poezdka/src/profile/faq.dart';
 import 'package:app_poezdka/src/profile/rating.dart';
-import 'package:app_poezdka/src/profile/referal.dart';
 import 'package:app_poezdka/src/profile/review.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
@@ -25,17 +24,17 @@ class ProfileScreen extends StatelessWidget {
                   onPressed: () => pushNewScreen(context,
                       screen: const PersonalDataBuilder()),
                   title: "Личные данные",
-                  icon: 'profilepersonal'),
+                  icon: 'profile'),
               ProfileBtn(
                   onPressed: () =>
                       pushNewScreen(context, screen: const Review()),
                   title: "Отзывы",
-                  icon: 'likethumbup'),
+                  icon: 'like_small'),
               ProfileBtn(
                   onPressed: () =>
                       pushNewScreen(context, screen: const Rating()),
                   title: "Рейтинг",
-                  icon: 'star'),
+                  icon: 'rate_star'),
               // const ProfileBtn(title: "Бонусы", icon: 'dollar-circlebonus'),
               // ProfileBtn(
               //     onPressed: () =>
@@ -50,22 +49,25 @@ class ProfileScreen extends StatelessWidget {
               ProfileBtn(
                 onPressed: () => pushNewScreen(context, screen: const FAQ()),
                 title: "Вопросы и ответы",
-                icon: 'message-questionfaq',
+                icon: 'message-question',
               ),
-              ProfileBtn(
-                  onPressed: () => pushNewScreen(context, screen: const Blog()),
-                  title: "Блог",
-                  icon: 'bookblog'),
-              const ProfileBtn(title: "О проекте", icon: 'mouseabout'),
+              // ProfileBtn(
+              //     onPressed: () => pushNewScreen(context, screen: const Blog()),
+              //     title: "Блог",
+              //     icon: 'book'),
+              const ProfileBtn(title: "О проекте", icon: 'mouse'),
               const ProfileBtn(
                 title: "Пользовательское соглашение",
-                icon: 'document-textp_agree',
+                icon: 'document-text',
               ),
-              const ProfileBtn(
-                  title: "Политика конфиденциальности",
-                  icon: 'document-favoritep_privacy'),
-              const ProfileBtn(
-                  title: "Публичная оферта", icon: 'document-textpublic_of'),
+              ProfileBtn(
+                onPressed: () {
+                  pushNewScreen(context, screen: const WebViewPage());
+                },
+                title: "Политика конфиденциальности",
+                icon: 'document-favorite',
+              ),
+              const ProfileBtn(title: "Публичная оферта", icon: 'public_ofert'),
               const SignOutButton(),
             ],
           ),

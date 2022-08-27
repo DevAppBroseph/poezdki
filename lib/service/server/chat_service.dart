@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:app_poezdka/const/server/sever_chat.dart';
-import 'package:app_poezdka/export/server_url.dart';
 import 'package:app_poezdka/model/messages_answer.dart';
-import 'package:app_poezdka/model/server_responce.dart';
 
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +18,6 @@ class ChatService {
       "from_id": senderId,
       "to_id": receiverId,
     };
-    print(params);
 
     try {
       var body = json.encode(params);

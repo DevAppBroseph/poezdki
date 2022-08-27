@@ -1,7 +1,5 @@
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
-import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/src/chat/chat_screen.dart';
-import 'package:app_poezdka/src/trips/components/trips_list.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';

@@ -76,9 +76,30 @@ dependencies:
 
   scale_button: ^2.1.2
 
+  #Firebase
+  firebase_auth: ^3.3.11
+  firebase_core: ^1.11.0
+  firebase_analytics: ^8.3.4
+  firebase_messaging: ^11.2.5
+
+  #Rating
+  flutter_rating_bar: ^4.0.1
+
+  #WebView
+  webview_flutter: ^3.0.4
+
+  #Vibration
+  vibration: ^1.7.5
+
+  flutter_login_vk: ^2.2.1
+  image_picker: ^0.8.5+3
   #Google
   google_maps_flutter: ^2.1.11
   flutter_polyline_points: ^1.0.0
+  flutter_image_compress: ^1.1.1
+  google_sign_in: ^5.4.1
+  sign_in_with_apple: ^4.1.0
+  pinput: ^2.2.12
 
 dev_dependencies:
   flutter_test:

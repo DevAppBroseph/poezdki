@@ -13,9 +13,11 @@ import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/cached_image/user_image.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
+import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -172,8 +174,7 @@ class TripDetailsSheet extends StatelessWidget {
         ));
       }
     }
-    print(trip.passengers!.any((element) => element.seat!.contains(0)));
-    print(trip.passengers!.last.id != 0);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -216,7 +217,7 @@ class TripDetailsSheet extends StatelessWidget {
                     color: Colors.white,
                   ),
                   height: 62,
-                  width: MediaQuery.of(context).size.width / 2,
+                  width: MediaQuery.of(context).size.width / 1.8,
                   child: Material(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -226,69 +227,7 @@ class TripDetailsSheet extends StatelessWidget {
                         btmSheet.show(
                           topRadius: const Radius.circular(50),
                           context,
-                          child: BottomSheetChildren(
-                            children: [
-                              SizedBox(
-                                height: 200,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 15, right: 15),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 65,
-                                        child: Material(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.white,
-                                          child: InkWell(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            onTap: () {
-                                              chatToDriver(context,
-                                                  id: trip
-                                                      .passengers![index].id);
-                                            },
-                                            child: Center(
-                                              child: ListTile(
-                                                title: const Text(
-                                                    'Написать в чат'),
-                                                trailing: SvgPicture.asset(
-                                                  "$svgPath/messages-2.svg",
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 65,
-                                        child: Material(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors.white,
-                                          child: InkWell(
-                                            borderRadius:
-                                                BorderRadius.circular(15),
-                                            onTap: () {},
-                                            child: Center(
-                                              child: ListTile(
-                                                title: Text('Оставить отзыв'),
-                                                trailing: Image.asset(
-                                                  "assets/img/star.png",
-                                                  color: kPrimaryColor,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                          child: _passangerBottom(context, index),
                         );
                       },
                       borderRadius: BorderRadius.circular(10),
@@ -329,8 +268,131 @@ class TripDetailsSheet extends StatelessWidget {
     );
   }
 
+  BottomSheetChildren _passangerBottom(BuildContext context, int index) {
+    return BottomSheetChildren(
+      children: [
+        SizedBox(
+          height: 200,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15, right: 15),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 65,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () {
+                        chatToDriver(context, id: trip.passengers![index].id);
+                      },
+                      child: Center(
+                        child: ListTile(
+                          title: const Text('Написать в чат'),
+                          trailing: SvgPicture.asset(
+                            "$svgPath/messages-2.svg",
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 65,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () async {
+                        final userRepo = SecureStorage.instance;
+                        final passengers = trip.passengers;
+                        final userId = await userRepo.getUserId();
+                        if (passengers?[index].id != int.parse(userId!)) {
+                          Navigator.pop(context);
+                          final btmSheet = BottomSheetCall();
+                          var reviewController = TextEditingController();
+                          var ratingCount = 3;
+                          btmSheet.show(
+                            topRadius: const Radius.circular(50),
+                            context,
+                            expand: true,
+                            child: SizedBox(
+                              height: 250,
+                              child: BottomSheetChildren(
+                                children: [
+                                  const SizedBox(height: 30),
+                                  RatingBar.builder(
+                                    initialRating: 3,
+                                    minRating: 1,
+                                    direction: Axis.horizontal,
+                                    allowHalfRating: false,
+                                    itemCount: 5,
+                                    itemPadding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0),
+                                    itemBuilder: (context, _) => const Icon(
+                                      Icons.star,
+                                      color: Colors.amber,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      ratingCount = rating.toInt();
+                                    },
+                                  ),
+                                  const SizedBox(height: 30),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: KFormField(
+                                      hintText: 'Оставьте отзыв',
+                                      textEditingController: reviewController,
+                                    ),
+                                  ),
+                                  FullWidthElevButton(
+                                    title: 'Отправить',
+                                    onPressed: () {
+                                      print(ratingCount);
+                                      print(reviewController.text);
+                                      BlocProvider.of<TripsBloc>(context).add(
+                                        AddReview(
+                                          context,
+                                          trip.passengers![index].id!,
+                                          reviewController.text,
+                                          ratingCount,
+                                        ),
+                                      );
+                                    },
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        } else {
+                          ErrorDialogs()
+                              .showError("Нельзя оставить отзыв себе.");
+                        }
+                      },
+                      child: Center(
+                        child: ListTile(
+                          title: const Text('Оставить отзыв'),
+                          trailing: Image.asset(
+                            "assets/img/star.png",
+                            color: kPrimaryColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   String _getSeat(int count) {
-    print(count);
     var n = count;
     n %= 100;
     if (n >= 5 && n <= 20) {
@@ -370,7 +432,7 @@ class TripDetailsSheet extends StatelessWidget {
                   )
                 : const SizedBox(),
             IconButton(
-              onPressed: () => chatToDriver(context),
+              onPressed: () => chatToDriver(context, id: trip.owner?.id),
               icon: SvgPicture.asset("$svgPath/messages-2.svg"),
             )
           ],
@@ -442,7 +504,6 @@ class TripDetailsSheet extends StatelessWidget {
         final passengers = trip.passengers;
         if (passengers!.any((p) => p.id == int.parse(userId!))) {
           BlocProvider.of<ChatBloc>(context).testController.add([]);
-
           pushNewScreen(
             context,
             withNavBar: false,

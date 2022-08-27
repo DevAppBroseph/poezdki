@@ -39,6 +39,22 @@ class LoggedOut extends AuthEvent {}
 
 class OnBoardComplete extends AuthEvent {}
 
+class SignInWithGoogle extends AuthEvent {
+  final GoogleSignInAccount account;
+  final BuildContext context;
+
+  SignInWithGoogle(this.account, this.context);
+}
+
+class SignInWithVk extends AuthEvent {
+  final UserModel account;
+  final BuildContext context;
+
+  SignInWithVk(this.account, this.context);
+}
+
+class DeleteProfile extends AuthEvent {}
+
 class AuthError extends AuthEvent {
   final String? error;
 

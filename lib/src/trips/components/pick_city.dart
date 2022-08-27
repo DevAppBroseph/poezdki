@@ -19,6 +19,8 @@ class _PickCityState extends State<PickCity> {
   final List<Departure> citySearchList = [];
   final TextEditingController searchController = TextEditingController();
 
+  FocusNode? focusNode;
+
   loadJson() async {
     String data = await rootBundle.loadString('assets/city/ru_cities.json');
     var jsonlist = jsonDecode(data) as List;
@@ -33,9 +35,19 @@ class _PickCityState extends State<PickCity> {
   @override
   void initState() {
     loadJson();
+    focusNode = FocusNode();
+    Future.delayed(Duration(milliseconds: 500), () {
+      FocusScope.of(context).requestFocus(focusNode);
+    });
 
     setState(() {});
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    focusNode?.dispose();
+    super.dispose();
   }
 
   void filterSearchResults(String query) {
@@ -72,6 +84,7 @@ class _PickCityState extends State<PickCity> {
         child: Column(
           children: [
             KFormField(
+              focusNode: focusNode,
               hintText: "Название населенного пункта",
               textEditingController: searchController,
               onChanged: (query) => filterSearchResults(query.trim()),

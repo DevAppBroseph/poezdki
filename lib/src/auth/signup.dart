@@ -67,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               MaterialPageRoute(
                   builder: (context) => const SignUpWithEmailPhone())),
         ),
-        const SocialAuthButtons(),
+        SocialAuthButtons(),
       ],
     );
   }

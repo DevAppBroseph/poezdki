@@ -1,19 +1,21 @@
-
 class Validations {
   static String? validateName(String? value) {
-    if (value!.isEmpty) return '';
-    final RegExp nameExp = RegExp(r'^[A-za-zğüşöçİĞÜŞÖÇ]+$');
-    if (!nameExp.hasMatch(value)) {
-      return 'Используйте только буквы.';
-    }
+    if (value!.isEmpty) return 'Укажите имя.';
+    return null;
+  }
+
+  static String? validateSurname(String? value) {
+    if (value!.isEmpty) return 'Укажите фамилию.';
+    return null;
+  }
+
+  static String? validateGender(String? value) {
+    if (value!.isEmpty) return 'Укажите пол.';
     return null;
   }
 
   static String? validateEmail(String? value) {
-    if (value!.isEmpty) return 'Email is required.';
-    final RegExp nameExp = RegExp(
-        r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
-    if (!nameExp.hasMatch(value)) return 'Введите действующий email';
+    if (value!.isEmpty) return 'Укажите номер телефона.';
     return null;
   }
 
@@ -30,6 +32,4 @@ class Validations {
     }
     return null;
   }
-
-
 }

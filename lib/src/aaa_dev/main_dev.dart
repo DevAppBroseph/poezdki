@@ -34,9 +34,7 @@ class MainDev extends StatelessWidget {
               onPressed: () async {
                 final user = SecureStorage.instance;
                 final token = await user.getToken();
-                if (kDebugMode) {
-                  print(token);
-                }
+                if (kDebugMode) {}
               },
             ),
             FullWidthElevButton(
@@ -44,9 +42,7 @@ class MainDev extends StatelessWidget {
               onPressed: () async {
                 final user = SecureStorage.instance;
                 final id = await user.getUserId();
-                if (kDebugMode) {
-                  print(id);
-                }
+                if (kDebugMode) {}
               },
             )
           ],

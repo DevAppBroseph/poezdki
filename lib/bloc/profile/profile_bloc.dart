@@ -1,3 +1,4 @@
+import 'package:app_poezdka/model/questions.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
@@ -5,6 +6,8 @@ import 'package:app_poezdka/service/server/car_service.dart';
 import 'package:app_poezdka/service/server/user_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+
+import '../../model/blog.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';
@@ -39,8 +42,45 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateProfile>((event, emit) {
       emit(ProfileLoaded(event.user));
     });
+    on<EditProfileValues>((event, emit) async {
+      print('123');
+      final token = await userRepository.getToken();
+      var result = await userService.editUser(token: token!, user: event.user);
+
+      if (result != null) {
+        add(LoadProfile());
+        Navigator.pop(event.context);
+      }
+    });
+    on<ChangePhoto>((event, emit) async {
+      final token = await userRepository.getToken();
+      final UserModel? user =
+          await userService.changeUserPhoto(token: token!, image: event.media);
+      if (user != null) {
+        emit(ProfileLoaded(user));
+      }
+    });
     on<ErrorProfileLoaded>((event, emit) {
       emit(ProfileError());
+    });
+    on<GetBlog>((event, emit) async {
+      emit(BlogLoading());
+      final List<Blog>? blogs = await userService.getBlog();
+      print(blogs);
+      if (blogs != null) {
+        emit(BlogLoaded(blogs));
+      } else {
+        // emit(ProfileError());
+      }
+    });
+    on<GetQuestions>((event, emit) async {
+      emit(QuestionsLoading());
+      final List<Question>? questions = await userService.getQuestions();
+      if (questions != null) {
+        emit(QuestionsLoaded(questions));
+      } else {
+        // emit(ProfileError());
+      }
     });
   }
 }

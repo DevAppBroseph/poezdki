@@ -29,7 +29,6 @@ class _BookTripState extends State<BookTrip> {
   @override
   void initState() {
     widget.tripData.passengers?.forEach((element) {
-      // print(element.seat);
       final seatsElement = element.seat;
       bookedSeats.addAll(seatsElement ?? []);
     });
@@ -50,6 +49,7 @@ class _BookTripState extends State<BookTrip> {
 
     return KScaffoldScreen(
         isLeading: true,
+        backgroundColor: Colors.white,
         title: "Бронирование",
         body: SingleChildScrollView(
           child: Column(
@@ -106,7 +106,7 @@ class _BookTripState extends State<BookTrip> {
       children: [
         Image.asset(
           'assets/img/car_book.png',
-          scale: 0.8,
+          scale: 2.75,
         ),
         carPlace(context, positionTop: 180, positionLeft: 112, carPlace: seat1),
         carPlace(context, positionTop: 215, positionLeft: 42, carPlace: seat2),
@@ -171,7 +171,9 @@ class _BookTripState extends State<BookTrip> {
           )
         : const Padding(
             padding: EdgeInsets.all(23.0),
-            child: Text("Свободных мест нет."),
+            child: Text(
+              "Свободных мест нет.",
+            ),
           );
   }
 }

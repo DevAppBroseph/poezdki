@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 class KFormField extends StatelessWidget {
   final Function? onTap;
   final bool? readOnly;
+  final FocusNode? focusNode;
   final TextInputAction? inputAction;
   final String hintText;
   final IconData? icon;
@@ -25,6 +26,7 @@ class KFormField extends StatelessWidget {
       this.onTap,
       this.readOnly,
       this.inputAction,
+      this.focusNode,
       required this.hintText,
       this.icon,
       this.onChanged,
@@ -51,6 +53,7 @@ class KFormField extends StatelessWidget {
       height: 75,
       width: widthOfScreen,
       child: TextFormField(
+        focusNode: focusNode,
         onTap: onTap as void Function()?,
         validator: validateFunction,
         readOnly: readOnly ?? false,

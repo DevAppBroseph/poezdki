@@ -42,11 +42,13 @@ class SignUpPersonalInfo extends StatelessWidget {
             KFormField(
               hintText: 'Ваша Фамилия',
               textEditingController: surname,
+              validateFunction: Validations.validateSurname,
             ),
             KFormField(
               onTap: onPickGender,
               readOnly: true,
               hintText: 'Пол*',
+              validateFunction: Validations.validateGender,
               textEditingController: genderCrl,
               suffixIcon: Row(
                 mainAxisSize: MainAxisSize.min,

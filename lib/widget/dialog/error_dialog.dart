@@ -9,15 +9,26 @@ class ErrorDialogs {
         displayTime: const Duration(seconds: 3),
         builder: (context) => Padding(
               padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
-              child: Card(
-                child: ListTile(
-                  minLeadingWidth: 10,
-                  leading: const Icon(
-                    MaterialCommunityIcons.information,
-                    color: kPrimaryColor,
-                    size: 30,
+              child: Container(
+                decoration: BoxDecoration(boxShadow: const [
+                  BoxShadow(
+                    offset: Offset(0, 4),
+                    blurRadius: 10,
+                    spreadRadius: 3,
+                    color: Color.fromRGBO(26, 42, 97, 0.06),
                   ),
-                  title: Text(msg ?? "Возникла ошибка. Пропробуйте еще раз."),
+                ]),
+                child: Card(
+                  elevation: 0,
+                  child: ListTile(
+                    minLeadingWidth: 10,
+                    leading: const Icon(
+                      MaterialCommunityIcons.information,
+                      color: kPrimaryColor,
+                      size: 30,
+                    ),
+                    title: Text(msg ?? "Возникла ошибка. Пропробуйте еще раз."),
+                  ),
                 ),
               ),
             ),

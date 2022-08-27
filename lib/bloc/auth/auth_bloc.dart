@@ -1,9 +1,12 @@
 import 'package:app_poezdka/model/server_responce.dart';
+import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/service/server/auth_service.dart';
 
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:bloc/bloc.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../export/services.dart';
 
@@ -24,8 +27,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoggedOut>(_onLoggedOut);
     on<OnBoardComplete>(_onOnBoardComplete);
     on<AuthError>(_onAuthError);
+    on<SignInWithGoogle>(_signWithGoogle);
+    on<SignInWithVk>(_signWithVk);
     ////////// Dev ////////
     on<OnDevLogIn>(_devLogIn);
+    on<DeleteProfile>((event, emit) async {
+      emit(AuthLoading());
+      print('123');
+      final token = await userRepository.getToken();
+      var result = await authService.deleteUser(token: token!);
+
+      await userRepository.deleteUserData();
+      add(AppInit());
+    });
   }
 
   void _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
@@ -51,12 +65,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
 
     final ResponceAuth? data = await authService.signUp(
-        login: event.login,
-        password: event.password,
-        firstName: event.firstName,
-        lastName: event.lastName,
-        gender: event.gender,
-        birth: event.birth);
+      login: event.login,
+      password: event.password,
+      firstName: event.firstName,
+      lastName: event.lastName,
+      gender: event.gender,
+      birth: event.birth,
+      fcmToken: (await FirebaseMessaging.instance.getToken()).toString(),
+    );
 
     if (data != null) {
       await userRepository.persistEmailAndToken(
@@ -73,8 +89,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _onLoggedIn(LoggedIn event, Emitter<AuthState> emit) async {
     final authService = AuthService();
     emit(AuthLoading());
-    final ResponceAuth? responceSignIn =
-        await authService.signIn(login: event.email, password: event.password);
+    final ResponceAuth? responceSignIn = await authService.signIn(
+        login: event.email,
+        password: event.password,
+        fcmToken: (await FirebaseMessaging.instance.getToken()).toString());
 
     if (responceSignIn != null) {
       await userRepository.persistEmailAndToken(
@@ -100,6 +118,41 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   void _devLogIn(OnDevLogIn event, Emitter<AuthState> emit) async {
     await userRepository.persistEmailAndToken("email", "token", 1);
+    add(AppInit());
+  }
+
+  void _signWithGoogle(SignInWithGoogle event, Emitter<AuthState> emit) async {
+    var result = await authService.signWithService(event.account,
+        (await FirebaseMessaging.instance.getToken()).toString());
+
+    if (result != null) {
+      await userRepository.persistEmailAndToken(
+        result.login!,
+        result.token!,
+        result.id!,
+      );
+      Navigator.pop(event.context);
+      print('okkkey');
+      add(AppInit());
+    }
+    add(AppInit());
+  }
+
+  void _signWithVk(SignInWithVk event, Emitter<AuthState> emit) async {
+    var result = await authService.signWithVk(event.account,
+        (await FirebaseMessaging.instance.getToken()).toString());
+
+    if (result != null) {
+      await userRepository.persistEmailAndToken(
+        result.login!,
+        result.token!,
+        result.id!,
+      );
+      Navigator.pop(event.context);
+      Navigator.pop(event.context);
+      print('okkkey');
+      add(AppInit());
+    }
     add(AppInit());
   }
 }

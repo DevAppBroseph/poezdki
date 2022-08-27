@@ -72,7 +72,6 @@ class _TripTileState extends State<TripTile> {
             isMyTrips: true,
           ),
         );
-        print('object');
       },
       child: Container(
           margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
@@ -128,7 +127,7 @@ class _TripTileState extends State<TripTile> {
                         title: "Отменить поездку",
                         onPressed: () {
                           tripsBloc.add(DeleteTrip(widget.trip.tripId!));
-                          tripsBloc.add(LoadAllTripsList());
+                          // tripsBloc.add(LoadAllTripsList());
                           tripsDriverBloc.add(LoadUserTripsList());
                         },
                       )

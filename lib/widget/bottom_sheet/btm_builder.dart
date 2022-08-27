@@ -47,43 +47,50 @@ class BottomSheetChildren extends StatelessWidget {
   final List<Widget> children;
   final List<Widget>? buttons;
 
-  const BottomSheetChildren(
-      {Key? key, required this.children, this.headerTitle, this.buttons})
-      : super(key: key);
+  const BottomSheetChildren({
+    Key? key,
+    required this.children,
+    this.headerTitle,
+    this.buttons,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      clipBehavior: Clip.antiAlias,
-      borderRadius: BorderRadius.circular(40),
-      child: SafeArea(
-        bottom: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              width: 100,
-              height: 4,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(50), color: Colors.grey),
-            ),
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      child: Column(
-                        children: [...children],
+    return Padding(
+      padding: MediaQuery.of(context).viewPadding,
+      child: Material(
+        color: Colors.white,
+        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(40),
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                width: 100,
+                height: 4,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.grey),
+              ),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        child: Column(
+                          children: [...children],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

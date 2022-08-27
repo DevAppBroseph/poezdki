@@ -99,28 +99,37 @@ class UserModel {
   int? id;
   String? token;
   String? login;
+  String? email;
   String? photo;
   String? firstname;
   String? lastname;
   String? gender;
+  String? phone;
+  String? fcmToken;
   int? birth;
   List<Cars>? cars;
 
-  UserModel(
-      {this.token,
-      this.login,
-      this.photo,
-      this.firstname,
-      this.lastname,
-      this.gender,
-      this.birth,
-      this.cars});
+  UserModel({
+    this.token,
+    this.login,
+    this.photo,
+    this.email,
+    this.phone,
+    this.firstname,
+    this.fcmToken,
+    this.lastname,
+    this.gender,
+    this.birth,
+    this.cars,
+  });
 
   UserModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     token = json['token'];
     login = json['login'];
+    email = json['email'];
     photo = json['photo'];
+    phone = json['phone_number'];
     firstname = json['firstname'];
     lastname = json['lastname'];
     gender = json['gender'];
@@ -137,9 +146,12 @@ class UserModel {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['token'] = token;
     data['login'] = login;
+    data['email'] = email;
     data['photo'] = photo;
-    data['firstname'] = firstname;
-    data['lastname'] = lastname;
+    data['fcm_token'] = fcmToken;
+    data['phone_number'] = phone;
+    data['first_name'] = firstname;
+    data['last_name'] = lastname;
     data['gender'] = gender;
     data['birth'] = birth;
     if (cars != null) {

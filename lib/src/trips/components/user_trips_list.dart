@@ -19,25 +19,37 @@ class UserTripsList extends StatelessWidget {
     final List<TripModel> upcomingTrips =
         tripsLists != null ? tripsLists![0] : [];
     final List<TripModel> pastTrips = tripsLists != null ? tripsLists![1] : [];
-    return Container(
-      // width: double.infinity,
-      // height: MediaQuery.of(context).size.height,
+    return RefreshIndicator(
+      onRefresh: () async {
+        Future.delayed(
+          const Duration(seconds: 1),
+          () {
+            if (screen == 1) {
+              BlocProvider.of<UserTripsDriverBloc>(context)
+                  .add(LoadUserTripsList());
+            } else {
+              BlocProvider.of<UserTripsPassengerBloc>(context)
+                  .add(LoadUserPassengerTripsList());
+            }
+          },
+        );
+      },
       child: CustomScrollView(
         slivers: [
-          CupertinoSliverRefreshControl(onRefresh: () async {
-            Future.delayed(
-              const Duration(seconds: 1),
-              () {
-                if (screen == 1) {
-                  BlocProvider.of<UserTripsDriverBloc>(context)
-                      .add(LoadUserTripsList());
-                } else {
-                  BlocProvider.of<UserTripsPassengerBloc>(context)
-                      .add(LoadUserPassengerTripsList());
-                }
-              },
-            );
-          }),
+          // CupertinoSliverRefreshControl(onRefresh: () async {
+          //   Future.delayed(
+          //     const Duration(seconds: 1),
+          //     () {
+          //       if (screen == 1) {
+          //         BlocProvider.of<UserTripsDriverBloc>(context)
+          //             .add(LoadUserTripsList());
+          //       } else {
+          //         BlocProvider.of<UserTripsPassengerBloc>(context)
+          //             .add(LoadUserPassengerTripsList());
+          //       }
+          //     },
+          //   );
+          // }),
           SliverToBoxAdapter(
             child: pastList(pastTrips),
           ),

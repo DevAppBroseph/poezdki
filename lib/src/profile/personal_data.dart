@@ -1,13 +1,21 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/server/server_data.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/profile/cars_data/add_car.dart';
+import 'package:app_poezdka/src/profile/edit_profile.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter/material.dart';
+import 'package:mime/mime.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:scale_button/scale_button.dart';
 
 import '../../bloc/profile/profile_bloc.dart';
 import '../../export/blocs.dart';
@@ -20,42 +28,52 @@ class PersonalData extends StatelessWidget {
   Widget build(BuildContext context) {
     final btm = BottomSheetCall();
     return KScaffoldScreen(
-        backgroundColor: Colors.white,
-        isLeading: true,
-        title: "Личные данные",
-        // actions: [
-        //   IconButton(
-        //       onPressed: () => btm.show(context, child: EditProfileSheet()),
-        //       icon: const Icon(
-        //           MaterialCommunityIcons.dots_horizontal_circle_outline))
-        // ],
-        body: ListView(
-          children: [
-            ProfileInfo(
-              name: "${user.firstname} ${user.lastname}",
-              imageUrl: user.photo,
-            ),
-            Container(
-              color: kPrimaryWhite,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 25),
-                    child: ProfileDataCard(
-                      user: user,
-                    ),
-                  ),
-                  ProfileCarsData(
+      backgroundColor: Colors.white,
+      isLeading: true,
+      title: "Личные данные",
+      // actions: [
+      //   IconButton(
+      //       onPressed: () => btm.show(context, child: EditProfileSheet()),
+      //       icon: const Icon(
+      //           MaterialCommunityIcons.dots_horizontal_circle_outline))
+      // ],
+      body: ListView(
+        children: [
+          ProfileInfo(
+            name: "${user.firstname} ${user.lastname}",
+            imageUrl: user.photo,
+          ),
+          Container(
+            color: kPrimaryWhite,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 25),
+                  child: ProfileDataCard(
                     user: user,
                   ),
-                  const SizedBox(
-                    height: 60,
-                  )
-                ],
-              ),
-            )
-          ],
-        ));
+                ),
+                ProfileCarsData(
+                  user: user,
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                TextButton(
+                  onPressed: () {
+                    BlocProvider.of<AuthBloc>(context).add(DeleteProfile());
+                  },
+                  child: const Text('Удалить аккаунт'),
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -74,15 +92,45 @@ class ProfileInfo extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 60,
-              child: imageUrl != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child:
-                          CachedNetworkImage(imageUrl: '$serverURL/$imageUrl'),
-                    )
-                  : null,
+            ScaleButton(
+              bound: 0.05,
+              duration: const Duration(milliseconds: 200),
+              onTap: () async {
+                final ImagePicker _picker = ImagePicker();
+                // Pick an image
+                final XFile? image = await _picker
+                    .pickImage(source: ImageSource.gallery)
+                    .then((value) async {
+                  if (value is XFile) {
+                    var compressedFile = await compressFile(File(value.path));
+                    var mime = lookupMimeType(value.path);
+                    var bytes = compressedFile!.readAsBytesSync();
+                    var media =
+                        "data:${mime == 'video/quicktime' ? 'video/mp4' : mime};base64," +
+                            base64Encode(bytes);
+                    BlocProvider.of<ProfileBloc>(context)
+                        .add(ChangePhoto(media));
+                  }
+                }).catchError((error) {
+                  print(error);
+                });
+              },
+              child: CircleAvatar(
+                radius: 60,
+                child: imageUrl != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: SizedBox(
+                          width: 120,
+                          height: 120,
+                          child: CachedNetworkImage(
+                            imageUrl: '$serverURL/$imageUrl',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      )
+                    : null,
+              ),
             ),
             const SizedBox(
               height: 10,
@@ -100,6 +148,22 @@ class ProfileInfo extends StatelessWidget {
       ),
     );
   }
+
+  Future<File?> compressFile(File file) async {
+    final filePath = file.absolute.path;
+
+    // Create output file path
+    // eg:- "Volume/VM/abcd_out.jpeg"
+    final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
+    final splitted = filePath.substring(0, (lastIndex));
+    final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+    var result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      outPath,
+      quality: 30,
+    );
+    return result;
+  }
 }
 
 class ProfileDataCard extends StatelessWidget {
@@ -108,52 +172,71 @@ class ProfileDataCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.white,
-        boxShadow: const [
-          BoxShadow(
-            offset: Offset(0, 4),
-            blurRadius: 10,
-            spreadRadius: 3,
-            color: Color.fromRGBO(26, 42, 97, 0.06),
+    return ScaleButton(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditProfile(
+              user: user,
+            ),
           ),
-        ],
-      ),
-      child: Card(
-        elevation: 0,
-        child: Column(
-          children: [
-            const ListTile(
-              dense: true,
-              title: Text(
-                "Профиль",
-                style: TextStyle(color: Colors.grey, fontSize: 15),
-              ),
+        );
+      },
+      bound: 0.05,
+      duration: const Duration(milliseconds: 100),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+              offset: Offset(0, 4),
+              blurRadius: 10,
+              spreadRadius: 3,
+              color: Color.fromRGBO(26, 42, 97, 0.06),
             ),
-            ListTile(
-              title: const Text(
-                "Дата рождения",
-              ),
-              trailing: Text(DateFormat("dd.MM.yyyy")
-                  .format(DateTime.fromMillisecondsSinceEpoch(user.birth!))),
-            ),
-            ListTile(
-              title: const Text("Пол"),
-              trailing:
-                  Text(user.gender!.contains("male") ? "Мужской" : "Женский"),
-            ),
-            ListTile(
-              title: const Text("E-mail"),
-              trailing: Text(user.login!.contains("@") ? user.login! : ""),
-            ),
-            ListTile(
-              title: const Text("Телефон"),
-              trailing: Text(user.login!.contains("@") ? "" : user.login!),
-            )
           ],
+        ),
+        child: Card(
+          elevation: 0,
+          child: Column(
+            children: [
+              const ListTile(
+                dense: true,
+                title: Text(
+                  "Профиль",
+                  style: TextStyle(color: Colors.grey, fontSize: 15),
+                ),
+              ),
+              ListTile(
+                title: const Text(
+                  "Дата рождения",
+                ),
+                trailing: user.birth != null
+                    ? Text(DateFormat("dd.MM.yyyy").format(
+                        DateTime.fromMillisecondsSinceEpoch(user.birth!)))
+                    : Text('Не указана'),
+              ),
+              ListTile(
+                title: Text("Пол"),
+                trailing: Text(user.gender != null
+                    ? user.gender == "male"
+                        ? "Мужской"
+                        : "Женский"
+                    : 'Не указан'),
+              ),
+              ListTile(
+                title: const Text("E-mail"),
+                trailing: Text(user.email ?? ''),
+              ),
+              ListTile(
+                title: const Text("Телефон"),
+                trailing: Text(user.phone == null ? "Не указан" : user.phone!),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -199,12 +282,13 @@ class ProfileCarsData extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 8),
               child: TextButton(
-                  onPressed: () =>
-                      pushNewScreen(context, screen: const AddCarWidget()),
-                  child: const Text(
-                    "Добавить автомобиль",
-                    style: TextStyle(color: kPrimaryColor),
-                  )),
+                onPressed: () =>
+                    pushNewScreen(context, screen: const AddCarWidget()),
+                child: const Text(
+                  "Добавить автомобиль",
+                  style: TextStyle(color: kPrimaryColor),
+                ),
+              ),
             )
           ],
         ),

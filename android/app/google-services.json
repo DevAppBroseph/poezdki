@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1012550997572",
+    "project_id": "poezdka",
+    "storage_bucket": "poezdka.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012550997572:android:9b11d118f1466166260e11",
+        "android_client_info": {
+          "package_name": "com.broseph.poezdka"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012550997572-83609t012aubv55autl5o1n8d8l6fecb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.broseph.poezdka",
+            "certificate_hash": "4a3b7c8c106a5bc43acf7a529d5771a5cb8ddac2"
+          }
+        },
+        {
+          "client_id": "1012550997572-17f91inko3dpv7aj88322rnulnckak1g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCi7KZdqK_2IY4FWSiJ--Z2zkt9po4cAw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012550997572-17f91inko3dpv7aj88322rnulnckak1g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1012550997572-mm53nmjqa0cta50kabrdv2f6rs2q98i0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.broseph.poezdka"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

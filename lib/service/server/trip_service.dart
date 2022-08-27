@@ -23,8 +23,6 @@ class TripService {
       bool? twoPlacesInBehind,
       bool? conditioner,
       String? gender}) async {
-    print(departure);
-    print(destination);
     Map<String, dynamic> filter = {
       if (departure != null) "departure": departure,
       if (destination != null) "destination": destination,
@@ -37,7 +35,7 @@ class TripService {
       "two_places_in_behind": twoPlacesInBehind,
       "conditioner": conditioner
     };
-    print(filter);
+
     Response response;
     var dio = Dio();
 
@@ -47,12 +45,15 @@ class TripService {
         "Content-type": "application/json",
         "Accept": "application/json"
       };
-      response = await dio.post(getAllTripsUrl,
-          data: json.encode(filter), options: Options(headers: userHeader));
+      response = await dio.post(
+        getAllTripsUrl,
+        data: json.encode(filter),
+        options: Options(
+            headers: userHeader, validateStatus: (status) => status! >= 200),
+      );
       if (response.statusCode == 200) {
         final body = response.data;
         final list = body['all_trips'] as List;
-        print(response.data);
 
         List<TripModel> trips = [];
         list.map((e) {
@@ -60,10 +61,11 @@ class TripService {
         }).toList();
         return trips;
       } else {
-        throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
+        print('error: ' + response.data);
+        // throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
       }
     } catch (e) {
-      errorDialog.showError(e.toString());
+      // errorDialog.showError(e.toString());
       return null;
     }
   }
@@ -98,6 +100,7 @@ class TripService {
           await dio.post(getAllDriverTripsUrl, data: json.encode(filter));
 
       if (response.statusCode == 200) {
+        print(response.data);
         final list = response.data['all_trips'] as List;
 
         List<TripModel> trips = [];
@@ -109,7 +112,7 @@ class TripService {
         throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
       }
     } catch (e) {
-      // errorDialog.showError(e.toString());
+      errorDialog.showError(e.toString());
       return null;
     }
   }
@@ -218,6 +221,7 @@ class TripService {
     };
     try {
       final token = await SecureStorage.instance.getToken();
+      print('$bookingTripUrl$tripId');
       response = await dio.post(
         "$bookingTripUrl$tripId",
         data: json.encode(data),
@@ -291,13 +295,16 @@ class TripService {
     var dio = Dio();
 
     try {
-      print(tripId);
       final token = await SecureStorage.instance.getToken();
-      res = await dio.delete("$cancelBookingTripUrl$tripId",
-          options: Options(
-              headers: {"Authorization": token},
-              responseType: ResponseType.json));
-      print(res);
+      res = await dio.delete(
+        "$cancelBookingTripUrl$tripId",
+        options: Options(
+          validateStatus: ((status) => status! >= 200),
+          headers: {"Authorization": token},
+          responseType: ResponseType.json,
+        ),
+      );
+      print(res.data);
     } catch (e) {
       errorDialog.showError(e.toString());
     }
@@ -310,11 +317,15 @@ class TripService {
     try {
       final token = await SecureStorage.instance.getToken();
       final options = Options(
-          headers: {"Authorization": token}, responseType: ResponseType.json);
+          headers: {"Authorization": token},
+          responseType: ResponseType.json,
+          validateStatus: (status) => status! >= 200);
+
       responses = await Future.wait([
         dio.get(getDriverTripsUrl, options: options),
         dio.get(getDriverPastTripsUrl, options: options),
       ]);
+      print(responses.first.data);
       return [
         _getTripsFromRequest(responses[0]),
         _getTripsFromRequest(responses[1]),
@@ -357,8 +368,35 @@ class TripService {
     try {
       final token = await SecureStorage.instance.getToken();
       final options = Options(
-          headers: {"Authorization": token}, responseType: ResponseType.json);
-      await dio.delete("$deleteTripUrl$tripId", options: options);
+          headers: {"Authorization": token},
+          responseType: ResponseType.json,
+          validateStatus: (status) => status! >= 200);
+      var result = await dio.delete("$deleteTripUrl$tripId", options: options);
+      print(result.data);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> addReview(int id, String message, int mark) async {
+    final dio = Dio();
+    try {
+      final token = await SecureStorage.instance.getToken();
+      final options = Options(
+          headers: {"Authorization": token},
+          responseType: ResponseType.json,
+          validateStatus: (status) => status! >= 200);
+      var result = await dio.post(
+        "$serverURL/users/review$id",
+        options: options,
+        data: jsonEncode(
+          {
+            "message": message,
+            "mark": mark,
+          },
+        ),
+      );
+      print(result.data);
     } catch (e) {
       print(e.toString());
     }

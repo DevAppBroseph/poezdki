@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:app_poezdka/model/new_message.dart';
 import 'package:app_poezdka/model/send_message.dart';
 import 'package:app_poezdka/service/server/chat_service.dart';
+import 'package:app_poezdka/widget/dialog/message_dialog.dart';
+import 'package:vibration/vibration.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
@@ -17,13 +20,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final chatService = ChatService();
 
   ChatBloc() : super(ChatInitial()) {
-    ///Example
+    //Example
     testController.stream.listen((event) {
-      // print('object');
-      // print(event.length);
-      // print(event.last.replyTo?.user.id);
-      // print(event.first.text);
-      // print(event.first.user.id);
       if (event.last.replyTo?.user.id != null) {
         channel?.sink.add(jsonEncode({
           "to": event.last.replyTo?.user.id,
@@ -55,28 +53,62 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   void _startSocket(StartSocket event, Emitter<ChatState> emit) async {
     // if (channel == null) {
     final token = await SecureStorage.instance.getToken();
-    // print(token);
     channel = WebSocketChannel.connect(
       Uri.parse('ws://194.87.145.140:80/ws/$token'),
     );
-    print('is inited');
+
     channel?.stream.listen(
-      (event) {
+      (event) async {
         // setState(() {
-        messages.add(
-          ChatMessage(
-            user: ChatUser(
-                id: SendMessage.fromJson(jsonDecode(event)).from.toString()),
-            createdAt: DateTime.now(),
-            text: SendMessage.fromJson(jsonDecode(event)).message,
-          ),
-        );
-        testController.sink.add(messages);
         print(event);
-        add(UpdateChat(messages: messages));
-        // });
+        try {
+          var newMessage = NewMessageAnswer.fromJson(jsonDecode(event));
+          if (newMessage.fromName == 'BAZA' && newMessage.from == '-1') {
+            MessageDialogs().showMessage(
+              NewMessageAnswer.fromJson(jsonDecode(event)).fromName,
+              NewMessageAnswer.fromJson(jsonDecode(event)).message,
+            );
+          } else {
+            MessageDialogs().showMessage(
+              NewMessageAnswer.fromJson(jsonDecode(event)).fromName,
+              NewMessageAnswer.fromJson(jsonDecode(event)).message,
+            );
+            messages.add(
+              ChatMessage(
+                user: ChatUser(
+                    id: SendMessage.fromJson(jsonDecode(event))
+                        .from
+                        .toString()),
+                createdAt: DateTime.now(),
+                text: SendMessage.fromJson(jsonDecode(event)).message,
+              ),
+            );
+            testController.sink.add(messages);
+
+            add(UpdateChat(messages: messages));
+          }
+        } catch (e) {
+          print(e);
+          messages.add(
+            ChatMessage(
+              user: ChatUser(
+                id: SendMessage.fromJson(jsonDecode(event)).from.toString(),
+              ),
+              createdAt: DateTime.now(),
+              text: SendMessage.fromJson(jsonDecode(event)).message,
+            ),
+          );
+          testController.sink.add(messages);
+
+          add(UpdateChat(messages: messages));
+        }
+        var vibrator = await Vibration.hasVibrator();
+        if (vibrator ?? false) {
+          Vibration.vibrate();
+        }
       },
       onDone: () {
+        // _startSocket(event, emit);
         debugPrint('ws channel closed');
       },
       cancelOnError: false,

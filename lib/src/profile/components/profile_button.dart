@@ -1,5 +1,6 @@
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import 'sign_out.dart';
 
@@ -18,8 +19,14 @@ class ProfileBtn extends StatelessWidget {
     return ListTile(
       onTap: onPressed as void Function()?,
       minLeadingWidth: 5,
-      leading: Image.asset(
-        "$path/$icon.png",
+      leading: SizedBox(
+        width: 24,
+        child: SvgPicture.asset(
+          "$path/$icon.svg",
+          height: 23,
+          // width: ,
+          color: Colors.black,
+        ),
       ),
       title: Text(
         title,
@@ -45,7 +52,11 @@ class SignOutButton extends StatelessWidget {
             child: const SignOutSheet());
       },
       minLeadingWidth: 10,
-      leading: Image.asset("$path/logoutlogout.png"),
+      leading: SizedBox(
+        width: 24,
+        child: SvgPicture.asset("$path/logout.svg"),
+        height: 23,
+      ),
       title: const Text(
         "Выход",
         style: TextStyle(

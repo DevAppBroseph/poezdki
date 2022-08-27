@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:scale_button/scale_button.dart';
 
@@ -12,7 +13,8 @@ class ReviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const boldText = TextStyle(fontWeight: FontWeight.bold);
+    const boldText = TextStyle(
+        fontWeight: FontWeight.w600, fontSize: 14, color: Colors.black);
     return ScaleButton(
       bound: 0.05,
       duration: const Duration(milliseconds: 200),
@@ -47,28 +49,39 @@ class ReviewCard extends StatelessWidget {
                 style: const TextStyle(color: Colors.black),
               ),
             ),
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                TextButton.icon(
-                    onPressed: null,
-                    icon: const Icon(Icons.star_outline, size: 18),
-                    label: Text(
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/img/star.svg',
+                      width: 18,
+                      height: 18,
+                    ),
+                    const SizedBox(width: 7.33),
+                    Text(
                       "$mark/5",
                       style: boldText,
-                    )),
-                TextButton.icon(
-                  onPressed: null,
-                  icon: const Icon(
-                    Ionicons.share_outline,
-                    size: 18,
-                  ),
-                  label: const Text(
-                    "Пост",
-                    style: boldText,
-                  ),
-                )
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    SvgPicture.asset(
+                      'assets/img/export.svg',
+                      width: 18,
+                      height: 18,
+                    ),
+                    const SizedBox(width: 7.33),
+                    const Text(
+                      "Пост",
+                      style: boldText,
+                    ),
+                  ],
+                ),
               ],
             )
           ],

@@ -126,7 +126,7 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.asset("$iconPath$img"),
+        Image.asset("$iconPath/$img"),
         const SizedBox(
           width: 14,
         ),

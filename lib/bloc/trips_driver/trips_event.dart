@@ -36,6 +36,15 @@ class UpdateTripsList extends TripsEvent {
   UpdateTripsList(this.trips);
 }
 
+class AddReview extends TripsEvent {
+  final BuildContext context;
+  final int id;
+  final String message;
+  final int mark;
+
+  AddReview(this.context, this.id, this.message, this.mark);
+}
+
 class CreateUserTrip extends TripsEvent {
   final BuildContext context;
   final TripModel trip;

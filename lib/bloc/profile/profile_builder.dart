@@ -30,7 +30,10 @@ class PersonalDataBuilder extends StatelessWidget {
               title: "Личные данные",
               isLeading: true,
               body: Center(
-                child: Text("Ooops! Возникла ошибка.\nУже исправляем =)"),
+                child: Text(
+                  "Ooops! Возникла ошибка.\nУже исправляем =)",
+                  textAlign: TextAlign.center,
+                ),
               ),
             );
           }
