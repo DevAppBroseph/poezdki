@@ -57,7 +57,7 @@ class TripService {
 
         List<TripModel> trips = [];
         list.map((e) {
-          trips.add(TripModel.fromJson(e));
+          trips.add(TripModel.fromJson(e, true));
         }).toList();
         return trips;
       } else {
@@ -105,7 +105,7 @@ class TripService {
 
         List<TripModel> trips = [];
         list.map((e) {
-          trips.add(TripModel.fromJson(e));
+          trips.add(TripModel.fromJson(e, false));
         }).toList();
         return trips;
       } else {
@@ -359,7 +359,7 @@ class TripService {
   List<TripModel> _getTripsFromRequest(Response response) {
     return [
       if (response.statusCode == 200)
-        for (var i in response.data['trips']) TripModel.fromJson(i),
+        for (var i in response.data['trips']) TripModel.fromJson(i, false),
     ];
   }
 

@@ -129,7 +129,7 @@ class ProfileInfo extends StatelessWidget {
                           ),
                         ),
                       )
-                    : null,
+                    : const Icon(Icons.add_a_photo, color: Colors.white, size: 50),
               ),
             ),
             const SizedBox(

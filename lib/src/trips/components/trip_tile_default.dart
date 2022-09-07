@@ -58,10 +58,17 @@ class TripTileDefault extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.clip,
               ),
-              subtitle: Text(
-                "${trip.price} ₽",
-                maxLines: 1,
-                overflow: TextOverflow.clip,
+              subtitle: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${trip.price} ₽",
+                    maxLines: 1,
+                    overflow: TextOverflow.clip,
+                  ),
+                  Text(trip.passenger! ? 'Ищу поездку': 'Подвезу')
+                ],
               ),
               trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
             ),

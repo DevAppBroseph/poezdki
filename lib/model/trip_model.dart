@@ -1,6 +1,7 @@
 import 'package:app_poezdka/model/passenger_model.dart';
 
 class TripModel {
+  bool? passenger;
   bool? isPremium;
   int? tripId;
   Owner? owner;
@@ -21,7 +22,8 @@ class TripModel {
   String? ownerGender;
 
   TripModel(
-      {this.isPremium,
+      {this.passenger = false,
+      this.isPremium,
       this.tripId,
       this.owner,
       this.car,
@@ -40,7 +42,8 @@ class TripModel {
       this.conditioner,
       this.ownerGender});
 
-  TripModel.fromJson(Map<String, dynamic> json) {
+  TripModel.fromJson(Map<String, dynamic> json, bool state) {
+    passenger = state;
     isPremium = json['is_premium'];
     tripId = json['trip_id'];
     owner = json['owner'] != null ? Owner.fromJson(json['owner']) : null;

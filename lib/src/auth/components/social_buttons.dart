@@ -99,7 +99,7 @@ class SocialAuthButtons extends StatelessWidget {
     final res = await vk.logIn(
       scope: [
         VKScope.email,
-        VKScope.phone,
+        // VKScope.phone,
       ],
     );
 
@@ -116,6 +116,7 @@ class SocialAuthButtons extends StatelessWidget {
         final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
         final email = await vk.getUserEmail();
         final profile = (await vk.getUserProfile()).asValue!.value!;
+        VKUserProfile ;
         // Logged in
 
         if (email == null) {
@@ -140,7 +141,7 @@ class SocialAuthButtons extends StatelessWidget {
 
         // Get profile data
         print('Hello, ${profile.firstName}! You ID: ${profile.userId}');
-        print('Hello, ${profile.phone}! You ID: ${profile.userId}');
+        // print('Hello, ${profile.phone}! You ID: ${profile.userId}');
 
         // Get email (since we request email permissions)
         print('And your email is $email');

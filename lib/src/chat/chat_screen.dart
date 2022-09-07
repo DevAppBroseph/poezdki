@@ -11,6 +11,8 @@ import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -91,17 +93,24 @@ class _ChatScreenState extends State<ChatScreen> {
       title: "Чат с водителем",
       actions: [
         IconButton(
-          onPressed: () {},
+          onPressed: () async {
+            const url = "tel:1234567";   
+            if (await canLaunch(url)) {
+              await launch(url);
+            } else {
+              throw 'Could not launch $url';
+            }
+          },
           icon: Image.asset(
             "$iconPath/call-calling.png",
           ),
         ),
-        IconButton(
-          onPressed: () {},
-          icon: Image.asset(
-            "$iconPath/more-circle.png",
-          ),
-        )
+        // IconButton(
+        //   onPressed: () {},
+        //   icon: Image.asset(
+        //     "$iconPath/more-circle.png",
+        //   ),
+        // )
       ],
       body: BlocConsumer<ChatBloc, ChatState>(listener: (context, state) {
         if (state is TestState) {
@@ -142,7 +151,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 _controller.clear();
                 // setState(() {});
               },
-              icon: Image.asset("$iconPath/send-2.png"),
+              icon: SvgPicture.asset("$svgPath/send.svg"),
             ),
             trailing: [
               IconButton(
