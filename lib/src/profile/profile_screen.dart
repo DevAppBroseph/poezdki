@@ -55,11 +55,11 @@ class ProfileScreen extends StatelessWidget {
               //     onPressed: () => pushNewScreen(context, screen: const Blog()),
               //     title: "Блог",
               //     icon: 'book'),
-              const ProfileBtn(title: "О проекте", icon: 'mouse'),
-              const ProfileBtn(
-                title: "Пользовательское соглашение",
-                icon: 'document-text',
-              ),
+              // const ProfileBtn(title: "О проекте", icon: 'mouse'),
+              // const ProfileBtn(
+              //   title: "Пользовательское соглашение",
+              //   icon: 'document-text',
+              // ),
               ProfileBtn(
                 onPressed: () {
                   pushNewScreen(context, screen: const WebViewPage());
@@ -67,7 +67,7 @@ class ProfileScreen extends StatelessWidget {
                 title: "Политика конфиденциальности",
                 icon: 'document-favorite',
               ),
-              const ProfileBtn(title: "Публичная оферта", icon: 'public_ofert'),
+              // const ProfileBtn(title: "Публичная оферта", icon: 'public_ofert'),
               const SignOutButton(),
             ],
           ),

@@ -99,7 +99,10 @@ dependencies:
   flutter_image_compress: ^1.1.1
   google_sign_in: ^5.4.1
   sign_in_with_apple: ^4.1.0
+  apple_sign_in_safety: ^0.0.6
   pinput: ^2.2.12
+  
+  masked_text_field: ^1.0.1
 
 dev_dependencies:
   flutter_test:

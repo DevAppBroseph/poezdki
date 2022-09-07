@@ -1,6 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
 
-import 'package:app_poezdka/bloc/auth/auth_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/user_model.dart';
@@ -21,6 +21,19 @@ class SocialAuthButtons extends StatelessWidget {
     const path = "assets/img";
     return Column(
       children: [
+        if (Platform.isIOS)
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 20,
+              right: 20,
+              top: 0,
+              bottom: 10,
+            ),
+            child: SignInWithAppleButton(
+              style: SignInWithAppleButtonStyle.black,
+              onPressed: () => signInWithApple(context),
+            ),
+          ),
         FullWidthElevButtonChild(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           color: kPrimaryWhite,
@@ -29,11 +42,15 @@ class SocialAuthButtons extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset("$path/vk.png"),
-              const Text(
-                "   Вконтакте",
-                style: TextStyle(fontWeight: FontWeight.w600),
-              )
+              Image.asset(
+                "$path/vk_login.png",
+                width: 104,
+                height: 24,
+              ),
+              // const Text(
+              //   "   Вконтакте",
+              //   style: TextStyle(fontWeight: FontWeight.w600),
+              // )
             ],
           ),
           onPressed: () {
@@ -43,20 +60,27 @@ class SocialAuthButtons extends StatelessWidget {
         FullWidthElevButtonChild(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           color: kPrimaryWhite,
-          child: Image.asset("$path/google.png"),
+          child: Image.asset(
+            "$path/google_login.png",
+            width: 136,
+            height: 24,
+          ),
           onPressed: () {
             _signWithGoogle(context);
           },
         ),
-        // if (Platform.isIOS)
-        //   FullWidthElevButtonChild(
-        //     margin: const EdgeInsets.symmetric(horizontal: 10),
-        //     color: kPrimaryWhite,
-        //     child: Image.asset("$path/apple.png"),
-        //     onPressed: () {
-        //       _signWithApple();
-        //     },
+        // FullWidthElevButtonChild(
+        //   margin: const EdgeInsets.symmetric(horizontal: 10),
+        //   color: kPrimaryWhite,
+        //   child: Image.asset(
+        //     "$path/apple_login.png",
+        //     width: 89,
+        //     height: 29.49,
         //   ),
+        //   onPressed: () {
+        //     signInWithApple(context);
+        //   },
+        // ),
         // FullWidthElevButtonChild(
         //   margin: const EdgeInsets.symmetric(horizontal: 10),
         //   color: kPrimaryWhite,
@@ -142,31 +166,39 @@ class SocialAuthButtons extends StatelessWidget {
     print(user.email);
     print(user);
     authBloc.add(SignInWithGoogle(user, context));
-
-    // _btnGoogle.success();
-
-    // await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  void _signWithApple() async {
+  void signInWithApple(BuildContext context) async {
+    final rawNonce = generateNonce();
+
     try {
-      final appleId = await SignInWithApple.getAppleIDCredential(
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
+        // nonce: nonce,
       );
 
-      print(appleId.email);
-      print(appleId.familyName);
-      print(appleId.givenName);
-      print(appleId.userIdentifier);
-      print(appleId.identityToken);
-      // _btnApple.success();
+      if (appleCredential.email != null) {
+        BlocProvider.of<AuthBloc>(context).add(
+          SignInWithVk(
+            UserModel(
+              email: appleCredential.email,
+              firstname: appleCredential.givenName,
+              lastname: appleCredential.familyName,
+            ),
+            context,
+          ),
+        );
+      }
+      final displayName =
+          '${appleCredential.givenName} ${appleCredential.familyName}';
+      final userEmail = '${appleCredential.email}';
 
-      // await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch (e) {
-      // _btnApple.error();
+      print(displayName);
+    } catch (exception) {
+      print(exception);
     }
   }
 }

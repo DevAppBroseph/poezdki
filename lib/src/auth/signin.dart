@@ -4,6 +4,7 @@ import 'package:app_poezdka/src/auth/reset_password.dart';
 import 'package:app_poezdka/src/auth/signup.dart';
 import 'package:app_poezdka/src/policy/policy.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
+import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:app_poezdka/widget/divider/row_divider.dart';
 import 'package:app_poezdka/widget/text_field/custom_password_text_field.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
@@ -87,7 +88,11 @@ class _SignInScreenState extends State<SignInScreen> {
       margin: const EdgeInsets.fromLTRB(10, 60, 10, 5),
       title: "Войти",
       onPressed: () {
-        authBloc.add(LoggedIn(context, email.text, pw.text));
+        if (email.text.isEmpty && pw.text.isEmpty) {
+          ErrorDialogs().showError('Поля не заполнены.');
+        } else {
+          authBloc.add(LoggedIn(context, email.text, pw.text));
+        }
       },
     );
   }
@@ -121,38 +126,5 @@ class _SignInScreenState extends State<SignInScreen> {
         style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),
       ),
     );
-  }
-
-  void _signWithGoogle() async {
-    final google = GoogleSignIn();
-    final user = await google.signIn();
-
-    if (user == null) {
-      // _btnGoogle.error();
-      return;
-    }
-
-    final googleAuth = await user.authentication;
-
-    // _btnGoogle.success();
-
-    // await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
-  void _signWithApple() async {
-    try {
-      final appleId = await SignInWithApple.getAppleIDCredential(
-        scopes: [
-          AppleIDAuthorizationScopes.email,
-          AppleIDAuthorizationScopes.fullName,
-        ],
-      );
-
-      // _btnApple.success();
-
-      // await FirebaseAuth.instance.signInWithCredential(credential);
-    } catch (e) {
-      // _btnApple.error();
-    }
   }
 }

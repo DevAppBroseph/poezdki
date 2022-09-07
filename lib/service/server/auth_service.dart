@@ -142,6 +142,8 @@ class AuthService {
         final resp = ResponceAuth.fromJson(response.body);
         if (resp.token.isNotEmpty) {
           return resp;
+        } else {
+          errorDialog.showError('Неправильно указал E-Mail или пароль');
         }
       } else {
         return throw Exception(

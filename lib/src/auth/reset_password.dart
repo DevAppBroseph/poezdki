@@ -192,7 +192,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         );
       });
     } catch (e) {
-      errorDialog.showError('Такого пользователя не существует.');
+      errorDialog.showError('Введите E-Mail.');
     }
   }
 

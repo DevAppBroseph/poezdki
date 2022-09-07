@@ -5,6 +5,7 @@ import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddCarWidget extends StatefulWidget {
@@ -60,7 +61,11 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                             inputAction: TextInputAction.done,
                           ),
                           KFormField(
-                            hintText: 'Гос. номер',
+                            validateFunction: Validations.validateTitle,
+                            hintText: 'с777сс799',
+                            formatters: [
+                              LengthLimitingTextInputFormatter(9),
+                            ],
                             textEditingController: carNumber,
                             inputAction: TextInputAction.next,
                           ),

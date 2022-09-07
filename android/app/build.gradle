@@ -47,7 +47,7 @@ android {
         applicationId "com.broseph.poezdka"
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion
-        versionCode 4
+        versionCode 9
         versionName flutterVersionName
     }
 

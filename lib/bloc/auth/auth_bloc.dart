@@ -1,6 +1,7 @@
 import 'package:app_poezdka/model/server_responce.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/service/server/auth_service.dart';
+import 'package:app_poezdka/src/app_screens.dart';
 
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:bloc/bloc.dart';
@@ -131,8 +132,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         result.token!,
         result.id!,
       );
-      Navigator.pop(event.context);
-      print('okkkey');
+      Navigator.pushAndRemoveUntil(
+        event.context,
+        MaterialPageRoute(builder: (context) => AppScreens()),
+        (route) => false,
+      );
       add(AppInit());
     }
     add(AppInit());
@@ -148,8 +152,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         result.token!,
         result.id!,
       );
-      Navigator.pop(event.context);
-      Navigator.pop(event.context);
+      Navigator.pushAndRemoveUntil(
+        event.context,
+        MaterialPageRoute(builder: (context) => AppScreens()),
+        (route) => false,
+      );
       print('okkkey');
       add(AppInit());
     }

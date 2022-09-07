@@ -22,6 +22,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.10.0"
+  apple_sign_in_safety:
+    dependency: "direct main"
+    description:
+      name: apple_sign_in_safety
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.6"
   args:
     dependency: transitive
     description:
@@ -826,6 +833,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  masked_text_field:
+    dependency: "direct main"
+    description:
+      name: masked_text_field
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   matcher:
     dependency: transitive
     description:

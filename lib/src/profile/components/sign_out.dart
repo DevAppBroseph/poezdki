@@ -1,3 +1,4 @@
+import 'package:app_poezdka/bloc/auth/auth_builder.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
@@ -11,7 +12,6 @@ class SignOutSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final authBloc = BlocProvider.of<AuthBloc>(context);
     return BottomSheetChildren(children: [
-     
       const Padding(
         padding: EdgeInsets.symmetric(vertical: 20),
         child: Text(
@@ -42,8 +42,13 @@ class SignOutSheet extends StatelessWidget {
             Flexible(
               child: FullWidthElevButton(
                 onPressed: () {
-                  
-                  Navigator.pop(context);
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AppInitBuilder(),
+                    ),
+                    (route) => false,
+                  );
                   authBloc.add(LoggedOut());
                 },
                 title: "Да, выйти",
