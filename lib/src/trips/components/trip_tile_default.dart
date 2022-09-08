@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/trips/components/trip_details_sheet.dart';
@@ -60,16 +59,22 @@ class TripTileDefault extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.clip,
               ),
-              subtitle: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+              subtitle: Row(
                 children: [
+                  Text(trip.passenger! ? 'Ищу поездку': 'Подвезу'),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    child: Container(
+                      height: 5, 
+                      width: 5,
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), 
+                      color: const Color.fromRGBO(191,212,228, 1))),
+                  ),
                   Text(
                     "${trip.price} ₽",
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                   ),
-                  Text(trip.passenger! ? 'Ищу поездку': 'Подвезу')
                 ],
               ),
               trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
@@ -114,7 +119,7 @@ class TripTileDefault extends StatelessWidget {
             alignment: Alignment.topCenter,
             margin: const EdgeInsets.only(left: 15),
             width: 30,
-            height: 160,
+            height: 105,
             child: _tripRoutIcon()),
         Expanded(
           child: Column(
@@ -149,16 +154,6 @@ class TripTileDefault extends StatelessWidget {
                   DateFormat("dd MMMM, HH:mm", "RU").format(endTime).toString(),
                 ),
               ),
-              ListTile(
-                minVerticalPadding: 0,
-                minLeadingWidth: 30,
-                title: const Text(
-                  'Расстояние',
-                  maxLines: 1,
-                ),
-                subtitle: Text(distance.toStringAsFixed(2) + 'км')
-              ),
-              // Text('Расстояние: ${distance.toStringAsFixed(2)} км'),
             ],
           ),
         ),
@@ -187,18 +182,6 @@ class TripTileDefault extends StatelessWidget {
           FontAwesome5Regular.dot_circle,
           size: 20,
           color: Colors.grey,
-        ),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        Icon(
-          Icons.near_me,
-          size: 20,
-          color: kPrimaryColor,
         ),
       ],
     );

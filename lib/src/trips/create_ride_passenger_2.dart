@@ -125,7 +125,7 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(right: 5),
+              padding: const EdgeInsets.only(left: 15, right: 5),
               child: KeyboardActions(
                 config: KeyboardActionsConfig(
                     defaultDoneWidget: const Text("Готово"),

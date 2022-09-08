@@ -2,6 +2,7 @@ import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class SignUpPersonalInfo extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -28,6 +29,7 @@ class SignUpPersonalInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    dob.text = DateFormat.yMMMMd('ru').format(selectedDate);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: Form(

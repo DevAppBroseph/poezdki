@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -11,22 +12,20 @@ class RideDetailsTrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double distance = 0;
+    
+    distance += calculateDistance(tripData.departure!.coords!.lat!, tripData.departure!.coords!.lon!, tripData.stops![0].coords!.lat!, tripData.stops![0].coords!.lon!);
+    for(int i = 1; i < tripData.stops!.length - 1; i++) {
+      distance += calculateDistance(tripData.stops![i].coords!.lat!, tripData.stops![i].coords!.lon!, tripData.stops![i+1].coords!.lat!, tripData.stops![i+1].coords!.lon!);
+    }
+    distance += (distance * 20)/100;
+
     final startTime =
         DateTime.fromMicrosecondsSinceEpoch(tripData.timeStart ?? 0);
     final endTime = DateTime.fromMicrosecondsSinceEpoch(
         tripData.stops?.last.approachTime?.toInt() ?? 0);
     return Row(
       children: [
-        // Align(
-        //   alignment: Alignment.topCenter,
-        //   child: Container(
-        //     alignment: Alignment.topCenter,
-        //     margin: const EdgeInsets.only(left: 15),
-        //     width: 30,
-        //     // height: 130,
-        //     child: _tripRoutIcon(),
-        //   ),
-        // ),
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -37,7 +36,7 @@ class RideDetailsTrip extends StatelessWidget {
                 child: ListTile(
                   leading: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
+                    children: const [
                       Icon(
                         FontAwesome5Regular.dot_circle,
                         size: 20,
@@ -67,44 +66,28 @@ class RideDetailsTrip extends StatelessWidget {
                   ),
                 ),
               ),
-              // const Padding(
-              //   padding: EdgeInsets.only(left: 15.0, top: 15, bottom: 15),
-              //   child: Text(
-              //     " ",
-              //     textAlign: TextAlign.start,
-              //     style: TextStyle(
-              //       color: Colors.grey,
-              //       fontFamily: '.SF Pro Display',
-              //     ),
-              //   ),
-              // ),
-              // if (tripData.stops?.length == 1)
-              //   SizedBox(
-              //     height: 63,
-              //     child: ListTile(
-              //       minVerticalPadding: 0,
-              //       minLeadingWidth: 30,
-              //       leading: Column(
-              //         mainAxisAlignment: MainAxisAlignment.start,
-              //         children: [
-              //           DivEnd(),
-              //           DivEnd(),
-              //           DivEnd(),
-              //           Icon(
-              //             FontAwesome5Regular.dot_circle,
-              //             size: 20,
-              //             color: Colors.grey,
-              //           ),
-              //         ],
-              //       ),
-              //       title: Text(
-              //         tripData.stops?.last.name ?? " ",
-              //         maxLines: 1,
-              //       ),
-              //       subtitle: Text(DateFormat("dd MMMM").format(endTime)),
-              //     ),
-              //   )
-              // else
+              SizedBox(
+                height: 63,
+                child: ListTile(
+                minVerticalPadding: 0,
+                minLeadingWidth: 30,
+                leading: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: const [
+                      SizedBox(width: 20, height: 20),
+                      DivEnd(),
+                      DivEnd(),
+                      DivEnd(),
+                    ],
+                  ),
+                title: Text(
+                  distance.toInt().toString() + ' км',
+                  maxLines: 1,
+                  style: const TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+                // subtitle: Text(distance.toStringAsFixed(2) + 'км')
+              ),
+              ),
               SizedBox(
                 height: tripData.stops!.length.toDouble() * 70,
                 child: ListView.builder(
@@ -121,18 +104,18 @@ class RideDetailsTrip extends StatelessWidget {
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              DivEnd(),
-                              DivEnd(),
-                              if (index != tripData.stops!.length - 1) DivEnd(),
-                              DivEnd(),
-                              Icon(
+                              const DivEnd(),
+                              const DivEnd(),
+                              if (index != tripData.stops!.length - 1) const DivEnd(),
+                              const DivEnd(),
+                              const Icon(
                                 FontAwesome5Regular.dot_circle,
                                 size: 20,
                                 color: Colors.grey,
                               ),
-                              if (index != tripData.stops!.length - 1) DivEnd(),
-                              if (index != tripData.stops!.length - 1) DivEnd(),
-                              if (index != tripData.stops!.length - 1) DivEnd(),
+                              if (index != tripData.stops!.length - 1) const DivEnd(),
+                              if (index != tripData.stops!.length - 1) const DivEnd(),
+                              if (index != tripData.stops!.length - 1) const DivEnd(),
                             ],
                           ),
                           const SizedBox(width: 25),
@@ -162,31 +145,6 @@ class RideDetailsTrip extends StatelessWidget {
                           ),
                         ],
                       ),
-                      //  ListTile(
-                      //   minVerticalPadding: 0,
-                      //   minLeadingWidth: 30,
-                      //   leading: Column(
-                      //     mainAxisAlignment: MainAxisAlignment.start,
-                      //     children: [
-                      //       DivEnd(),
-                      //       if (index != tripData.stops!.length - 1) DivEnd(),
-                      //       DivEnd(),
-                      //       Icon(
-                      //         FontAwesome5Regular.dot_circle,
-                      //         size: 20,
-                      //         color: Colors.grey,
-                      //       ),
-                      //       if (index != tripData.stops!.length - 1) DivEnd(),
-                      //       if (index != tripData.stops!.length - 1) DivEnd(),
-                      //       // if (index != tripData.stops!.length - 1) DivEnd(),
-                      //     ],
-                      //   ),
-                      //   title: Text(
-                      //     tripData.stops?[index].name ?? " ",
-                      //     maxLines: 1,
-                      //   ),
-                      //   subtitle: Text(DateFormat("dd MMMM").format(endTime)),
-                      // ),
                     );
                   },
                   itemCount: tripData.stops?.length,
@@ -197,6 +155,15 @@ class RideDetailsTrip extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  double calculateDistance(lat1, lon1, lat2, lon2){
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 +
+        c(lat1 * p) * c(lat2 * p) *
+            (1 - c((lon2 - lon1) * p))/2;
+    return 12742 * asin(sqrt(a));
   }
 
   Widget _tripRoutIcon() {

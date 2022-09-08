@@ -327,8 +327,8 @@ class TripService {
       ]);
       print(responses.first.data);
       return [
-        _getTripsFromRequest(responses[0]),
-        _getTripsFromRequest(responses[1]),
+        _getTripsFromRequest(responses[0], false),
+        _getTripsFromRequest(responses[1], false),
       ];
     } catch (e) {
       return [];
@@ -348,18 +348,18 @@ class TripService {
         dio.get(getPassPastTripsUrl, options: options),
       ]);
       return [
-        _getTripsFromRequest(responses[0]),
-        _getTripsFromRequest(responses[1]),
+        _getTripsFromRequest(responses[0], true),
+        _getTripsFromRequest(responses[1], true),
       ];
     } catch (e) {
       return [];
     }
   }
 
-  List<TripModel> _getTripsFromRequest(Response response) {
+  List<TripModel> _getTripsFromRequest(Response response, bool passenger) {
     return [
       if (response.statusCode == 200)
-        for (var i in response.data['trips']) TripModel.fromJson(i, false),
+        for (var i in response.data['trips']) TripModel.fromJson(i, passenger),
     ];
   }
 

@@ -102,10 +102,24 @@ class _TripTileState extends State<TripTile> {
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
-                subtitle: Text(
-                  "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''} ${widget.trip.price} ₽",
-                  maxLines: 1,
-                  overflow: TextOverflow.clip,
+                subtitle: Row(
+                  children: [
+                    Text(widget.trip.passenger! ? 'Ищу поездку': 'Подвезу'),
+                    Text(
+                      " ${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
+                      maxLines: 1,
+                      overflow: TextOverflow.clip,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 5),
+                      child: Container(
+                        height: 5, 
+                        width: 5,
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), 
+                        color: const Color.fromRGBO(191,212,228, 1))),
+                    ),
+                    Text('${widget.trip.price} ₽')
+                  ],
                 ),
                 trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
               ),
@@ -162,7 +176,7 @@ class _TripTileState extends State<TripTile> {
             alignment: Alignment.topCenter,
             margin: const EdgeInsets.only(left: 15),
             width: 30,
-            height: 160,
+            height: 105,
             child: _tripRoutIcon()),
         Expanded(
           child: Column(
@@ -198,15 +212,6 @@ class _TripTileState extends State<TripTile> {
                 subtitle: Text(DateFormat("dd MMMM, HH:mm", "RU")
                     .format(endTime)
                     .toString()),
-              ),
-              ListTile(
-                minVerticalPadding: 0,
-                minLeadingWidth: 30,
-                title: const Text(
-                  'Расстояние',
-                  maxLines: 1,
-                ),
-                subtitle: Text(distance.toStringAsFixed(2) + 'км')
               ),
             ],
           ),
@@ -245,18 +250,6 @@ class _TripTileState extends State<TripTile> {
           FontAwesome5Regular.dot_circle,
           size: 20,
           color: Colors.grey,
-        ),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        Icon(
-          Icons.near_me,
-          size: 20,
-          color: kPrimaryColor,
         ),
       ],
     );

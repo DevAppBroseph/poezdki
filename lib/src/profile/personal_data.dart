@@ -117,7 +117,8 @@ class ProfileInfo extends StatelessWidget {
               },
               child: CircleAvatar(
                 radius: 60,
-                child: imageUrl != null
+                child: 
+                imageUrl != null
                     ? ClipRRect(
                         borderRadius: BorderRadius.circular(100),
                         child: SizedBox(
@@ -129,7 +130,7 @@ class ProfileInfo extends StatelessWidget {
                           ),
                         ),
                       )
-                    : const Icon(Icons.add_a_photo, color: Colors.white, size: 50),
+                    : const Icon(Icons.image, color: Colors.white, size: 50),
               ),
             ),
             const SizedBox(

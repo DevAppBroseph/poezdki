@@ -141,7 +141,7 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(right: 5),
+              padding: const EdgeInsets.only(left: 15,right: 5),
               child: KeyboardActions(
                 config: KeyboardActionsConfig(actions: [
                   KeyboardActionsItem(
