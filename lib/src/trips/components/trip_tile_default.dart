@@ -1,3 +1,5 @@
+import 'dart:math';
+import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/trips/components/trip_details_sheet.dart';
@@ -85,8 +87,25 @@ class TripTileDefault extends StatelessWidget {
     );
   }
 
+  double calculateDistance(lat1, lon1, lat2, lon2){
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 +
+        c(lat1 * p) * c(lat2 * p) *
+            (1 - c((lon2 - lon1) * p))/2;
+    return 12742 * asin(sqrt(a));
+  }
+
   Widget _trip(TripModel? tripData) {
-    final startTime = DateTime.fromMicrosecondsSinceEpoch(tripData!.timeStart!);
+    double distance = 0;
+    
+    distance += calculateDistance(tripData!.departure!.coords!.lat!, tripData.departure!.coords!.lon!, tripData.stops![0].coords!.lat!, tripData.stops![0].coords!.lon!);
+    for(int i = 1; i < tripData.stops!.length - 1; i++) {
+      distance += calculateDistance(tripData.stops![i].coords!.lat!, tripData.stops![i].coords!.lon!, tripData.stops![i+1].coords!.lat!, tripData.stops![i+1].coords!.lon!);
+    }
+    distance += (distance * 20)/100;
+
+    final startTime = DateTime.fromMicrosecondsSinceEpoch(tripData.timeStart!);
     final endTime = DateTime.fromMicrosecondsSinceEpoch(
         tripData.stops?.last.approachTime?.toInt() ?? 0);
     return Row(
@@ -95,7 +114,7 @@ class TripTileDefault extends StatelessWidget {
             alignment: Alignment.topCenter,
             margin: const EdgeInsets.only(left: 15),
             width: 30,
-            height: 105,
+            height: 160,
             child: _tripRoutIcon()),
         Expanded(
           child: Column(
@@ -130,6 +149,16 @@ class TripTileDefault extends StatelessWidget {
                   DateFormat("dd MMMM, HH:mm", "RU").format(endTime).toString(),
                 ),
               ),
+              ListTile(
+                minVerticalPadding: 0,
+                minLeadingWidth: 30,
+                title: const Text(
+                  'Расстояние',
+                  maxLines: 1,
+                ),
+                subtitle: Text(distance.toStringAsFixed(2) + 'км')
+              ),
+              // Text('Расстояние: ${distance.toStringAsFixed(2)} км'),
             ],
           ),
         ),
@@ -158,6 +187,18 @@ class TripTileDefault extends StatelessWidget {
           FontAwesome5Regular.dot_circle,
           size: 20,
           color: Colors.grey,
+        ),
+        DivEnd(),
+        DivEnd(),
+        DivEnd(),
+        DivEnd(),
+        DivEnd(),
+        DivEnd(),
+        DivEnd(),
+        Icon(
+          Icons.near_me,
+          size: 20,
+          color: kPrimaryColor,
         ),
       ],
     );
