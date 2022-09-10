@@ -9,12 +9,14 @@ class ChatsBuilder extends StatelessWidget {
   final int senderId;
   final String token;
   final int receiverId;
+  final String? phone;
   const ChatsBuilder({
     Key? key,
     required this.ownerId,
     required this.senderId,
     required this.token,
     required this.receiverId,
+    required this.phone,
   }) : super(key: key);
 
   @override
@@ -41,6 +43,7 @@ class ChatsBuilder extends StatelessWidget {
             senderId: senderId,
             ownerId: ownerId,
             message: state.messages,
+            phone: phone,
             channel: chatBloc.channel!,
           );
         }

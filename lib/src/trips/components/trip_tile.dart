@@ -106,7 +106,9 @@ class _TripTileState extends State<TripTile> {
                   children: [
                     Text(widget.trip.passenger! ? 'Ищу поездку': 'Подвезу'),
                     Text(
-                      " ${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
+                      widget.trip.car == null 
+                      ? ''
+                      : " ${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
                       maxLines: 1,
                       overflow: TextOverflow.clip,
                     ),

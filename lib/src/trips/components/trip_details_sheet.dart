@@ -432,7 +432,7 @@ class TripDetailsSheet extends StatelessWidget {
                   )
                 : const SizedBox(),
             IconButton(
-              onPressed: () => chatToDriver(context, id: trip.owner?.id),
+              onPressed: () => chatToDriver(context, id: trip.owner?.id, phone: trip.owner?.phone),
               icon: SvgPicture.asset("$svgPath/messages-2.svg"),
             )
           ],
@@ -495,7 +495,7 @@ class TripDetailsSheet extends StatelessWidget {
     }
   }
 
-  void chatToDriver(context, {int? id}) async {
+  void chatToDriver(context, {int? id, String? phone}) async {
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
     final userId = await userRepo.getUserId();
@@ -511,6 +511,7 @@ class TripDetailsSheet extends StatelessWidget {
               ownerId: trip.owner!.id!,
               senderId: int.parse(userId!),
               token: token,
+              phone: phone!,
               receiverId: trip.owner!.id!,
             ),
           );
@@ -527,6 +528,7 @@ class TripDetailsSheet extends StatelessWidget {
               ownerId: id,
               senderId: int.parse(userId),
               token: token,
+              phone: phone,
               receiverId: id,
             ),
           );

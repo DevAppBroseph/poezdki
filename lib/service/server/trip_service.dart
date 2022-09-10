@@ -183,7 +183,8 @@ class TripService {
       "smoke": trip.smoke,
       "animals": trip.animals,
       "two_places_in_behind": trip.twoPlacesInBehind,
-      "conditioner": trip.conditioner
+      "conditioner": trip.conditioner,
+      "seats": trip.seats
     };
 
     try {

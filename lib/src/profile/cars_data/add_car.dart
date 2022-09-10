@@ -61,8 +61,8 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                             inputAction: TextInputAction.done,
                           ),
                           KFormField(
-                            validateFunction: Validations.validateTitle,
-                            hintText: 'с777сс799',
+                            validateFunction: Validations.validateNumber,
+                            hintText: 'С777СС799',
                             formatters: [
                               LengthLimitingTextInputFormatter(9),
                             ],

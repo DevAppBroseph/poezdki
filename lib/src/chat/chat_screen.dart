@@ -19,12 +19,14 @@ class ChatScreen extends StatefulWidget {
   final int senderId;
   final int ownerId;
   final List<ChatMessage> message;
+  final String? phone;
   final WebSocketChannel channel;
   const ChatScreen({
     Key? key,
     required this.senderId,
     required this.ownerId,
     required this.message,
+    required this.phone,
     required this.channel,
   }) : super(key: key);
 
@@ -86,15 +88,17 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // print('object ${widget.phone}');
     return KScaffoldScreen(
       backgroundColor: Colors.white,
       isLeading: true,
       resizeToAvoidBottomInset: true,
       title: "Чат с водителем",
       actions: [
-        IconButton(
+        widget.phone != null 
+        ? IconButton(
           onPressed: () async {
-            const url = "tel:1234567";   
+            final url = "tel:${widget.phone}";   
             if (await canLaunch(url)) {
               await launch(url);
             } else {
@@ -104,7 +108,8 @@ class _ChatScreenState extends State<ChatScreen> {
           icon: Image.asset(
             "$iconPath/call-calling.png",
           ),
-        ),
+        )
+        : SizedBox()
         // IconButton(
         //   onPressed: () {},
         //   icon: Image.asset(

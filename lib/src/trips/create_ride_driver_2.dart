@@ -4,6 +4,9 @@ import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/trip_model.dart';
+import 'package:app_poezdka/service/local/secure_storage.dart';
+import 'package:app_poezdka/src/trips/components/book_reserved.dart';
+import 'package:app_poezdka/src/trips/components/book_trip.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
@@ -13,6 +16,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import '../../const/colors.dart';
 
 class CreateRideDriverInfo extends StatefulWidget {
@@ -48,8 +52,13 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
   bool _isSmoking = false;
   bool _isPetTransfer = false;
   bool _isPickUpFromHome = false;
+  var tripBloc;
+  var tripDriverBloc;
+
   @override
   Widget build(BuildContext context) {
+    tripBloc = BlocProvider.of<TripsBloc>(context);
+    tripDriverBloc = BlocProvider.of<UserTripsDriverBloc>(context);
     return KScaffoldScreen(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
@@ -278,12 +287,38 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                     animals: _isPetTransfer,
                     price: int.parse(priceController.text.trim()));
 
-                if (priceController.text.isNotEmpty) {
-                  tripBloc.add(CreateUserTrip(context, trip));
-                  tripDriverBloc.add(LoadUserTripsList());
-                }
+                // if (priceController.text.isNotEmpty) {
+                //   tripBloc.add(CreateUserTrip(context, trip));
+                //   tripDriverBloc.add(LoadUserTripsList());
+                // }
+
+                bookTrip(context, trip);
               },
             ),
           );
+  }
+
+  void bookTrip(context, TripModel trip) async {
+    final userRepo = SecureStorage.instance;
+    final token = await userRepo.getToken();
+    final userId = await userRepo.getUserId();
+    final passengers = trip.passengers;
+    if (token != null) {
+      // if (passengers!.any((p) => p.id == int.parse(userId!))) {
+      //   null;
+      // } else {
+      pushNewScreen(
+        context,
+        screen: BookTripReserves(
+          tripData: trip,
+        ),
+      ).then((value) {
+        if (priceController.text.isNotEmpty) {
+                  // tripBloc.add(CreateUserTrip(context, trip));
+                  // tripDriverBloc.add(LoadUserTripsList());
+                }
+      });
+      // }
+    }
   }
 }

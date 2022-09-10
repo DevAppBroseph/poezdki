@@ -7,7 +7,6 @@ import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
-import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
@@ -17,15 +16,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-class BookTrip extends StatefulWidget {
+class BookTripReserves extends StatefulWidget {
   final TripModel tripData;
-  const BookTrip({Key? key, required this.tripData}) : super(key: key);
+  const BookTripReserves({Key? key, required this.tripData}) : super(key: key);
 
   @override
-  State<BookTrip> createState() => _BookTripState();
+  State<BookTripReserves> createState() => _BookTripState();
 }
 
-class _BookTripState extends State<BookTrip> {
+class _BookTripState extends State<BookTripReserves> {
   CarPlace seat1 = CarPlace(seatNumber: 1, isEmpty: true, isSelected: false);
   CarPlace seat2 = CarPlace(seatNumber: 2, isEmpty: true, isSelected: false);
   CarPlace seat3 = CarPlace(seatNumber: 3, isEmpty: true, isSelected: false);
@@ -74,7 +73,7 @@ class _BookTripState extends State<BookTrip> {
                 height: 40,
               ),
               const Text(
-                "Выберите места в салоне автомобиля",
+                "Выберите занятые места в салоне автомобиля",
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w600,
@@ -95,7 +94,7 @@ class _BookTripState extends State<BookTrip> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
       child: FullWidthElevButton(
-          title: "Забронировать",
+          title: "Подтвердить",
           onPressed: () async {
             final state = BlocProvider.of<ProfileBloc>(context).state;
             final List<int> seats = [];
@@ -130,15 +129,12 @@ class _BookTripState extends State<BookTrip> {
                   }
                 );
               } else {
-                if (selectedSeats.isEmpty) {
-                  ErrorDialogs().showError("Необходимо выбрать место");
-                } else {
-                  for (var element in selectedSeats) {
+                  for (var element in selectedSeats) 
                     seats.add(element.seatNumber);
-                  }
-                  tripBloc
-                      .add(BookThisTrip(context, seats, widget.tripData.tripId!));
-                }
+                  widget.tripData.seats = seats;
+                  tripBloc.add(CreateUserTrip(context, widget.tripData));
+                  Navigator.pop(context, true);
+                  Navigator.pop(context, true);
               }
             }
           }),
@@ -154,7 +150,7 @@ class _BookTripState extends State<BookTrip> {
           firstname: state.user.firstname,
           email: state.user.email,
           lastname: state.user.lastname,
-          phone: 'phoneController.text',
+          phone: phoneController.text,
           gender: state.user.gender,
           birth: state.user.birth,
           cars: state.user.cars,

@@ -32,4 +32,20 @@ class Validations {
     }
     return null;
   }
+
+  static String? validateNumber(String? value) {
+    final alphanumeric = RegExp(r'[А-Я]{1}[0-9]{3}[А-Я]{2}[0-9]{2,3}');
+    if (!alphanumeric.hasMatch(value!)) {
+      return 'Неверный формат.';
+    }
+    return null;
+  }
+
+  static String? validatePhone(String? value) {
+    final alphanumeric = RegExp(r'[+][0-9]{11}');
+    if (!alphanumeric.hasMatch(value!)) {
+      return 'Неверный формат.';
+    }
+    return null;
+  }
 }

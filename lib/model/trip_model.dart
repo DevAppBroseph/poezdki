@@ -20,6 +20,7 @@ class TripModel {
   List<PassengerModel>? passengers;
   bool? conditioner;
   String? ownerGender;
+  List<int>? seats = [];
 
   TripModel(
       {this.passenger = false,
@@ -40,7 +41,8 @@ class TripModel {
       this.twoPlacesInBehind,
       this.passengers,
       this.conditioner,
-      this.ownerGender});
+      this.ownerGender,
+      this.seats = const[]});
 
   TripModel.fromJson(Map<String, dynamic> json, bool state) {
     passenger = state;

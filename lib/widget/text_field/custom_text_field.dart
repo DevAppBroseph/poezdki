@@ -8,7 +8,7 @@ class KFormField extends StatelessWidget {
   final FocusNode? focusNode;
   final TextInputAction? inputAction;
   final String hintText;
-  final IconData? icon;
+  final Icon? icon;
   final ValueChanged<String>? onChanged;
   final TextEditingController textEditingController;
   final Color? mainColor;
@@ -21,6 +21,7 @@ class KFormField extends StatelessWidget {
   final Widget? suffix;
   final Widget? suffixIcon;
   final String? suffixText;
+  final Widget? prefixicon;
   const KFormField(
       {Key? key,
       this.onTap,
@@ -40,7 +41,8 @@ class KFormField extends StatelessWidget {
       this.validateFunction,
       this.suffix,
       this.suffixIcon,
-      this.suffixText})
+      this.suffixText,
+      this.prefixicon})
       : super(key: key);
 
   @override
@@ -68,6 +70,8 @@ class KFormField extends StatelessWidget {
         keyboardType: textInputType,
         style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
+            icon: icon,
+            prefixIcon: prefixicon,
             suffixText: suffixText,
             suffix: suffix,
             suffixIcon: suffixIcon,

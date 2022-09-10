@@ -1,12 +1,20 @@
+import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/const/server/server_user.dart';
 import 'package:app_poezdka/model/trip_model.dart';
+import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
+import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
+import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
-
 import '../../widget/bottom_sheet/btm_builder.dart';
 import '../../widget/button/full_width_elevated_button.dart';
 import 'components/pick_city.dart';
@@ -31,6 +39,8 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
   Departure? to;
   DateTime? date;
   TimeOfDay? time;
+
+  TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +140,63 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
               }
             }
           } else {
-            InfoDialog().show(
+            final state = BlocProvider.of<ProfileBloc>(context).state;
+            if (state is ProfileLoaded) {
+              if(state.user.phone == null || state.user.phone == '') {
+                phoneController.text = '';
+                InfoDialog().show(
+                  buttonTitle: 'Подтвердить',
+                  title: 'Введите ваш номер',
+                  children: [
+                    KFormField(
+                      hintText: '+79876543210',
+                      textInputType: TextInputType.phone,
+                      textEditingController: phoneController,
+                      validateFunction: Validations.validatePhone,
+                      inputAction: TextInputAction.done,
+                      formatters: [
+                        LengthLimitingTextInputFormatter(12),
+                      ],
+                    ),
+                  ],
+                  onPressed: () {
+                    final validate = Validations.validatePhone(phoneController.text);
+                    if(validate == null) {
+                      final dio = Dio();
+                      dio.options.headers["Authorization"] = state.user.token;
+                      dio.put(addPhone, data: {'phone_number': phoneController.text}).then((value) {
+                        _editUser(state);
+                        SmartDialog.dismiss();
+                      });
+                    } 
+                  }
+                );
+              } else {
+                InfoDialog().show(
+                  customIcon: const Icon(
+                    CupertinoIcons.info_circle,
+                    size: 90,
+                    color: kPrimaryColor,
+                  ),
+                  title: "Что то не так:",
+                  children: [
+                    const ListTile(
+                      title: Text("Необходимо указать:"),
+                    ),
+                    _infoChecker(title: "Откуда поедете", object: from),
+                    _infoChecker(title: "Куда держите путь", object: to),
+                    _infoChecker(
+                      title: "Дата поездки",
+                      object: date,
+                    ),
+                    _infoChecker(
+                      title: "Время выезда",
+                      object: time,
+                    ),
+                  ]);
+              }
+            } else {
+              InfoDialog().show(
                 customIcon: const Icon(
                   CupertinoIcons.info_circle,
                   size: 90,
@@ -152,8 +218,28 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
                     object: time,
                   ),
                 ]);
+            }
           }
         },
+      ),
+    );
+  }
+
+  void _editUser(ProfileLoaded state) {
+    print('1212');
+    BlocProvider.of<ProfileBloc>(context).add(
+      UpdateProfile(
+        UserModel(
+          photo: state.user.photo,
+          firstname: state.user.firstname,
+          email: state.user.email,
+          lastname: state.user.lastname,
+          phone: phoneController.text,
+          gender: state.user.gender,
+          birth: state.user.birth,
+          cars: state.user.cars,
+        ),
+        // context,
       ),
     );
   }

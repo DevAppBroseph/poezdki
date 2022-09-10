@@ -12,7 +12,8 @@ class InfoDialog {
       required String title,
       String? description,
       List<Widget>? children,
-      Function? onPressed}) {
+      Function? onPressed,
+      String buttonTitle = 'Хорошо'}) {
     SmartDialog.show(
       maskColor: Color.fromRGBO(6, 22, 46, 0.67),
       builder: (context) => Align(
@@ -73,7 +74,7 @@ class InfoDialog {
                         height: 10,
                       ),
                       FullWidthElevButton(
-                        title: "Хорошо",
+                        title: buttonTitle,
                         onPressed: onPressed != null
                             ? onPressed as void Function()?
                             : () => SmartDialog.dismiss(),
