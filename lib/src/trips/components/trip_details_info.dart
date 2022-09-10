@@ -12,14 +12,6 @@ class RideDetailsTrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double distance = 0;
-    
-    distance += calculateDistance(tripData.departure!.coords!.lat!, tripData.departure!.coords!.lon!, tripData.stops![0].coords!.lat!, tripData.stops![0].coords!.lon!);
-    for(int i = 1; i < tripData.stops!.length - 1; i++) {
-      distance += calculateDistance(tripData.stops![i].coords!.lat!, tripData.stops![i].coords!.lon!, tripData.stops![i+1].coords!.lat!, tripData.stops![i+1].coords!.lon!);
-    }
-    distance += (distance * 20)/100;
-
     final startTime =
         DateTime.fromMicrosecondsSinceEpoch(tripData.timeStart ?? 0);
     final endTime = DateTime.fromMicrosecondsSinceEpoch(
@@ -27,134 +19,129 @@ class RideDetailsTrip extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 63,
-                child: ListTile(
-                  leading: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: const [
-                      Icon(
-                        FontAwesome5Regular.dot_circle,
-                        size: 20,
-                        color: Colors.grey,
-                      ),
-                      DivEnd(),
-                      DivEnd(),
-                      DivEnd(),
-                    ],
-                  ),
-                  minLeadingWidth: 30,
-                  title: Text(
-                    tripData.departure?.name ?? "",
-                    maxLines: 1,
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  subtitle: Text(
-                    DateFormat(
-                      "dd MMMM, HH:mm",
-                      'RU',
-                    ).format(startTime),
-                    maxLines: 1,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 63,
-                child: ListTile(
-                minVerticalPadding: 0,
-                minLeadingWidth: 30,
-                leading: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: const [
-                      SizedBox(width: 20, height: 20),
-                      DivEnd(),
-                      DivEnd(),
-                      DivEnd(),
-                    ],
-                  ),
-                title: Text(
-                  distance.toInt().toString() + ' км',
-                  maxLines: 1,
-                  style: const TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-                // subtitle: Text(distance.toStringAsFixed(2) + 'км')
-              ),
-              ),
-              SizedBox(
-                height: tripData.stops!.length.toDouble() * 70,
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return SizedBox(
-                      height: 70,
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(width: 16),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              const DivEnd(),
-                              const DivEnd(),
-                              if (index != tripData.stops!.length - 1) const DivEnd(),
-                              const DivEnd(),
-                              const Icon(
-                                FontAwesome5Regular.dot_circle,
-                                size: 20,
-                                color: Colors.grey,
-                              ),
-                              if (index != tripData.stops!.length - 1) const DivEnd(),
-                              if (index != tripData.stops!.length - 1) const DivEnd(),
-                              if (index != tripData.stops!.length - 1) const DivEnd(),
-                            ],
+          child: SizedBox(
+            height: 150,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 53,
+                    child: ListTile(
+                      leading: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: const [
+                          Icon(
+                            FontAwesome5Regular.dot_circle,
+                            size: 20,
+                            color: Colors.grey,
                           ),
-                          const SizedBox(width: 25),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                tripData.stops?[index].name ?? " ",
-                                maxLines: 1,
-                                style: const TextStyle(fontSize: 16),
-                              ),
-                              Text(
-                                DateFormat("dd MMMM, HH:mm", 'RU').format(
-                                  DateTime.fromMicrosecondsSinceEpoch(
-                                    tripData.stops?[index].approachTime
-                                            ?.toInt() ??
-                                        0,
-                                  ),
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey,
-                                ),
-                              )
-                            ],
-                          ),
+                          DivEnd(),
+                          DivEnd(),
+                          DivEnd(),
                         ],
                       ),
-                    );
-                  },
-                  itemCount: tripData.stops?.length,
-                ),
-              )
-            ],
+                      minLeadingWidth: 30,
+                      title: Text(
+                        tripData.departure?.name ?? "",
+                        maxLines: 1,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                      subtitle: Text(
+                        DateFormat(
+                          "dd MMMM, HH:mm",
+                          'RU',
+                        ).format(startTime),
+                        maxLines: 1,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: tripData.stops!.length.toDouble() * 70,
+                    child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        String? distanceRoute = distance(index);
+                        return SizedBox(
+                          width: double.infinity,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const SizedBox(width: 16),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: const [
+                                  DivEnd(),
+                                  DivEnd(),
+                                  DivEnd(),
+                                  Icon(
+                                    FontAwesome5Regular.dot_circle,
+                                    size: 20,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(width: 25),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const DivEnd(),
+                                  distanceRoute!=null 
+                                  ? SizedBox(height: 20, child: Text('$distanceRoute км', style: TextStyle(color: Colors.grey)))
+                                  : const SizedBox(),
+                                  const DivEnd(),
+                                  Text(
+                                    tripData.stops?[index].name ?? " ",
+                                    maxLines: 1,
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                  Text(
+                                    DateFormat("dd MMMM, HH:mm", 'RU').format(
+                                      DateTime.fromMicrosecondsSinceEpoch(
+                                        tripData.stops?[index].approachTime
+                                                ?.toInt() ??
+                                            0,
+                                      ),
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                      itemCount: tripData.stops?.length,
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ],
     );
+  }
+
+  String? distance(int index) {
+    double distance = 0;
+    if(index == 0) {
+      distance += calculateDistance(tripData.departure!.coords!.lat!, tripData.departure!.coords!.lon!, tripData.stops![0].coords!.lat!, tripData.stops![0].coords!.lon!);
+    } else {
+      distance += calculateDistance(tripData.stops![index-1].coords!.lat!, tripData.stops![index-1].coords!.lon!, tripData.stops![index].coords!.lat!, tripData.stops![index].coords!.lon!);
+    }
+    distance += (distance * 20)/100;
+    return '${distance.toInt()}';
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2){
