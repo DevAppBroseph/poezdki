@@ -133,7 +133,7 @@ class _BookTripState extends State<BookTripReserves> {
                     seats.add(element.seatNumber);
                   widget.tripData.seats = seats;
                   tripBloc.add(CreateUserTrip(context, widget.tripData));
-                  Navigator.pop(context, true);
+                  // Navigator.pop(context, true);
                   Navigator.pop(context, true);
               }
             }
