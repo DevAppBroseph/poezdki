@@ -85,6 +85,8 @@ class ProfileInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // print('asdasdasd $imageUrl');
     return Center(
       child: SizedBox(
         height: 230,
@@ -98,9 +100,10 @@ class ProfileInfo extends StatelessWidget {
               onTap: () async {
                 final ImagePicker _picker = ImagePicker();
                 // Pick an image
-                final XFile? image = await _picker
+                await _picker
                     .pickImage(source: ImageSource.gallery)
                     .then((value) async {
+                      print('adasdasdsadsad${value}');
                   if (value is XFile) {
                     var compressedFile = await compressFile(File(value.path));
                     var mime = lookupMimeType(value.path);
@@ -155,14 +158,11 @@ class ProfileInfo extends StatelessWidget {
 
     // Create output file path
     // eg:- "Volume/VM/abcd_out.jpeg"
-    final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
-    final splitted = filePath.substring(0, (lastIndex));
-    final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
-    var result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      outPath,
-      quality: 30,
-    );
+    // var lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
+    // if(lastIndex == -1) lastIndex = filePath.lastIndexOf(RegExp(r'.png'));
+    // final splitted = filePath.substring(0, (lastIndex));
+    // final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+    var result = File(file.absolute.path);
     return result;
   }
 }
