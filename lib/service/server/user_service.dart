@@ -142,7 +142,8 @@ class UserService {
       var response = await http.get(Uri.parse(info));
 
       if (response.statusCode == 200) {
-        return response.body;
+        final json = jsonDecode(response.body);
+        return json['info']['text'];
       }
     } catch (e) {
       errorDialog.showError(e.toString());
@@ -155,7 +156,8 @@ class UserService {
       var response = await http.get(Uri.parse(offer));
 
       if (response.statusCode == 200) {
-        return response.body;
+        final json = jsonDecode(response.body);
+        return json['info']['text'];
       }
     } catch (e) {
       errorDialog.showError(e.toString());
@@ -168,7 +170,8 @@ class UserService {
       var response = await http.get(Uri.parse(politic));
 
       if (response.statusCode == 200) {
-        return response.body;
+        final json = jsonDecode(response.body);
+        return json['info']['text'];
       }
     } catch (e) {
       errorDialog.showError(e.toString());

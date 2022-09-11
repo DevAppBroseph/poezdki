@@ -1,10 +1,12 @@
 import 'package:app_poezdka/bloc/profile/profile_builder.dart';
 import 'package:app_poezdka/src/policy/policy.dart';
-import 'package:app_poezdka/src/profile/blog.dart';
+import 'package:app_poezdka/src/profile/about_project.dart';
 import 'package:app_poezdka/src/profile/components/profile_button.dart';
 import 'package:app_poezdka/src/profile/faq.dart';
+import 'package:app_poezdka/src/profile/offert.dart';
 import 'package:app_poezdka/src/profile/rating.dart';
 import 'package:app_poezdka/src/profile/review.dart';
+import 'package:app_poezdka/src/profile/users_confirm.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
@@ -55,8 +57,12 @@ class ProfileScreen extends StatelessWidget {
               //     onPressed: () => pushNewScreen(context, screen: const Blog()),
               //     title: "Блог",
               //     icon: 'book'),
-              const ProfileBtn(title: "О проекте", icon: 'mouse'),
-              const ProfileBtn(
+              ProfileBtn(
+                onPressed: () => pushNewScreen(context, screen: const AboutProject()),
+                title: "О проекте", 
+                icon: 'mouse'),
+              ProfileBtn(
+                onPressed: () => pushNewScreen(context, screen: const UsersConfirm()),
                 title: "Пользовательское соглашение",
                 icon: 'document-text',
               ),
@@ -67,7 +73,10 @@ class ProfileScreen extends StatelessWidget {
                 title: "Политика конфиденциальности",
                 icon: 'document-favorite',
               ),
-              const ProfileBtn(title: "Публичная оферта", icon: 'public_ofert'),
+              ProfileBtn(
+                onPressed: () => pushNewScreen(context, screen: const Offert()),
+                title: "Публичная оферта", 
+                icon: 'public_ofert'),
               const SignOutButton(),
             ],
           ),
