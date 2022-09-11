@@ -132,10 +132,10 @@ class _TripTileState extends State<TripTile> {
                         color: kPrimaryRed,
                         title: "Отменить бронь",
                         onPressed: () {
-                          tripsPassangerBloc
-                              .add(CancelBookTrip(widget.trip.tripId!));
+                          tripsPassangerBloc.add(CancelBookTrip(widget.trip.tripId!));
                           tripsBloc.add(LoadAllTripsList());
-                        },
+                          Future.delayed(const Duration(seconds: 1), () => BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList()));
+                        }
                       )
                     : const SizedBox(),
               if (!widget.last)
@@ -144,9 +144,9 @@ class _TripTileState extends State<TripTile> {
                         title: "Отменить поездку",
                         onPressed: () {
                           tripsBloc.add(DeleteTrip(widget.trip.tripId!));
-                          // tripsBloc.add(LoadAllTripsList());
                           tripsDriverBloc.add(LoadUserTripsList());
-                        },
+                          Future.delayed(const Duration(seconds: 1), () => BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList()));
+                        }
                       )
                     : const SizedBox()
               // isUpcoming!

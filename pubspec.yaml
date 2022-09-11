@@ -104,6 +104,9 @@ dependencies:
   
   masked_text_field: ^1.0.1
 
+  #share
+  share_plus: ^4.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

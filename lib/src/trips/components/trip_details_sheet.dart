@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/bloc/chat/chat_builder.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
@@ -7,7 +9,6 @@ import 'package:app_poezdka/export/services.dart';
 import 'package:app_poezdka/model/passenger_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/auth/signin.dart';
-import 'package:app_poezdka/src/chat/chat_screen.dart';
 import 'package:app_poezdka/src/trips/components/book_trip.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
@@ -15,12 +16,14 @@ import 'package:app_poezdka/widget/cached_image/user_image.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 import 'trip_details_info.dart';
 
@@ -434,11 +437,24 @@ class TripDetailsSheet extends StatelessWidget {
             IconButton(
               onPressed: () => chatToDriver(context, id: trip.owner?.id, phone: trip.owner?.phone),
               icon: SvgPicture.asset("$svgPath/messages-2.svg"),
+            ),
+            IconButton(
+              onPressed: share,
+              icon: const Icon(Icons.ios_share_sharp, color: kPrimaryColor),
             )
           ],
         ),
       ),
     );
+  }
+
+  void share() async {
+    ByteData bytes = await rootBundle.load('assets/img/label.png');
+    Uint8List image = bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
+    final temp = await getTemporaryDirectory();
+    final path = '${temp.path}/image.jpg';
+    File(path).writeAsBytesSync(image);
+    Share.shareFiles([path], text: '${trip.departure?.name}-${trip.stops!.last.name}');
   }
 
   Widget _div() {
