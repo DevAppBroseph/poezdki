@@ -120,7 +120,7 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                         })),
                 _priceField(),
                 const SizedBox(
-                  height: 50,
+                  height: 250,
                 )
               ],
             ),

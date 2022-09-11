@@ -49,6 +49,7 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
       body: Stack(
         children: [
           SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(
@@ -96,6 +97,9 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
                             _isPetTransfer = value;
                           })),
                   _priceField(),
+                  const SizedBox(
+                    height: 250,
+                  )
                 ],
               ),
             ),

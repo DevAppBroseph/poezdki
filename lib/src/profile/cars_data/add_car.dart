@@ -1,4 +1,6 @@
 import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
+import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/model/cars.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
@@ -18,11 +20,42 @@ class AddCarWidget extends StatefulWidget {
 class _AddCarWidgetState extends State<AddCarWidget> {
   final GlobalKey<FormState> _carKeyForm = GlobalKey<FormState>();
 
-  TextEditingController carMade = TextEditingController();
-  TextEditingController carModel = TextEditingController();
   TextEditingController carColor = TextEditingController();
   TextEditingController carNumber = TextEditingController();
   TextEditingController carSeats = TextEditingController();
+
+  String selectMark = '';
+  String selectModel = '';
+
+  List<String>? mark = [];
+  List<String>? model = [];
+
+  CarsModel? cars;
+
+  void loadDB() async {
+    String jsCode = await rootBundle.loadString('assets/car/cars1.json');
+    cars = carsFromJson(jsCode);
+    loadMarks();
+  }
+
+  void loadMarks() {
+    for (var element in cars!.list.keys) {
+      mark!.add(element);
+    }
+    setState(() {});
+  }
+
+  void loadModel(String key) {
+    model = cars!.list[key];
+    setState(() { });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadDB();
+  }
+
   @override
   Widget build(BuildContext context) {
     final profileBloc = BlocProvider.of<ProfileBloc>(context, listen: false);
@@ -43,18 +76,51 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                           horizontal: 15, vertical: 10),
                       child: Column(
                         children: [
-                          KFormField(
-                            validateFunction: Validations.validateTitle,
-                            hintText: 'Марка автомобиля',
-                            textEditingController: carMade,
-                            inputAction: TextInputAction.next,
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                            decoration: BoxDecoration(color: kPrimaryWhite, borderRadius: BorderRadius.circular(10)),
+                            width: MediaQuery.of(context).size.width,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                menuMaxHeight: 250,
+                                hint: Text(selectMark),
+                                items: mark!.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  selectMark = value!;
+                                  selectModel = '';
+                                  loadModel(value);
+                                },
+                              ),
+                            ),
                           ),
-                          KFormField(
-                            validateFunction: Validations.validateTitle,
-                            hintText: 'Модель автомобиля',
-                            textEditingController: carModel,
-                            inputAction: TextInputAction.next,
+                          const SizedBox(height: 15),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                            decoration: BoxDecoration(color: kPrimaryWhite, borderRadius: BorderRadius.circular(10)),
+                            width: MediaQuery.of(context).size.width,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                menuMaxHeight: 250,
+                                hint: Text(selectModel),
+                                items: model!.map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  selectModel = value!;
+                                  setState(() {});
+                                },
+                              ),
+                            ),
                           ),
+                          const SizedBox(height: 15),
                           KFormField(
                             hintText: 'Цвет',
                             textEditingController: carColor,
@@ -91,17 +157,13 @@ class _AddCarWidgetState extends State<AddCarWidget> {
               margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
               title: "Добавить",
               onPressed: () {
-                if (
-                    // carMade.text.isEmpty &&
-                    //   carModel.text.isNotEmpty &&
-                    //   carSeats.text.isEmpty &&
-                    _carKeyForm.currentState!.validate()) {
+                if (_carKeyForm.currentState!.validate() && selectMark != '' && selectModel != '') {
                   profileBloc.add(
                     CreateCar(
                       context,
                       Car(
-                        mark: carMade.text.trim(),
-                        model: carModel.text.trim(),
+                        mark: selectMark,
+                        model: selectModel,
                         color: carColor.text.trim(),
                         vehicleNumber: carNumber.text.trim(),
                         countOfPassengers: 4,
