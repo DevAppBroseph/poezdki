@@ -1,5 +1,6 @@
 import 'package:app_poezdka/model/blog.dart';
 import 'package:app_poezdka/model/questions.dart';
+import 'package:app_poezdka/model/rating.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:dio/dio.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -115,6 +116,59 @@ class UserService {
         return user;
       } else {
         throw Exception('Ошибка авторизации, попробуйте еще раз, позже.');
+      }
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      return null;
+    }
+  }
+
+  Future<Rating?> getRatingUser({required String token}) async {
+    try {
+      var response = await http.get(Uri.parse(rating), headers: {"Authorization": token});
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> body = json.decode(response.body);
+        return Rating.fromJson(body);
+      }
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      return null;
+    }
+  }
+
+  Future<String?> getInfo() async {
+    try {
+      var response = await http.get(Uri.parse(info));
+
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      return null;
+    }
+  }
+
+  Future<String?> getOffer() async {
+    try {
+      var response = await http.get(Uri.parse(offer));
+
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      return null;
+    }
+  }
+
+  Future<String?> getPolitic() async {
+    try {
+      var response = await http.get(Uri.parse(politic));
+
+      if (response.statusCode == 200) {
+        return response.body;
       }
     } catch (e) {
       errorDialog.showError(e.toString());

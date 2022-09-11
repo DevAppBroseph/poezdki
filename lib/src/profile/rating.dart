@@ -1,10 +1,27 @@
+import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
+import 'package:app_poezdka/service/server/user_service.dart';
+import 'package:app_poezdka/model/rating.dart' as ratinguser;
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'components/rating_level.dart';
 
-class Rating extends StatelessWidget {
+class Rating extends StatefulWidget {
   const Rating({Key? key}) : super(key: key);
+  @override
+  State<Rating> createState() => _RatingState();
+}
+
+class _RatingState extends State<Rating> {
+  ratinguser.Rating? userPerson;
+
+  @override
+  void initState() {
+    super.initState();
+    getRating();
+  }
+
+  List<String> images = ['tarantula', 'cat1', 'axolot', 'cat', 'turtule', 'dog1', 'dog'];
 
   @override
   Widget build(BuildContext context) {
@@ -14,40 +31,27 @@ class Rating extends StatelessWidget {
         title: "Рейтинг",
         body: SingleChildScrollView(
           child: Column(
-            children: const [
-              RatingLevel(
-                img: 'turtule',
-                level: "1 Уровень",
-                goal: "Проехать 100 км.",
-                award: "100 баллов",
-              ),
-              RatingLevel(
-                img: 'tarantula',
-                level: "2 Уровень",
-                goal: "Проехать 500 км.",
-                award: "200 баллов",
-              ),
-              RatingLevel(
-                img: 'cat1',
-                level: "3 Уровень",
-                goal: "Проехать 1000 км.",
-                award: "300 баллов",
-              ),
-              RatingLevel(
-                img: 'dog1',
-                level: "4 Уровень",
-                goal: "Проехать 2000 км.",
-                award: "400 баллов",
-              ),
-              RatingLevel(
-                img: 'dog',
-                isLastLevel: true,
-                level: "5 Уровень",
-                goal: "Проехать 3000 км.",
-                award: "500 баллов",
-              ),
+            children: [
+              userPerson != null
+              ? RatingLevel(
+                  img: images[userPerson!.level%7],
+                  level: "${userPerson!.level} Уровень",
+                  goal: "Проехать ${100*userPerson!.level} км.",
+                  award: "100 баллов",
+              )
+              : const SizedBox()
             ],
           ),
         ));
+  }
+
+  void getRating() {
+    final profileBloc = BlocProvider.of<ProfileBloc>(context);
+    profileBloc.userRepository.getToken().then((token) {
+      UserService().getRatingUser(token: token!).then((value) {
+        userPerson = value;
+        setState(() {});
+      });
+    });
   }
 }
