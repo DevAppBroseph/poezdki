@@ -205,6 +205,10 @@ class TripDetailsSheet extends StatelessWidget {
               // padding: EdgeInsets.all(5),
               itemCount: trip.passengers?.length,
               itemBuilder: (context, int index) {
+                if(trip.owner!.id == trip.passengers![index].id || trip.passengers![index].id == 0) {
+                  return const SizedBox();
+                }
+
                 return Container(
                   margin: const EdgeInsets.all(15),
                   decoration: BoxDecoration(
@@ -239,26 +243,35 @@ class TripDetailsSheet extends StatelessWidget {
                           leading: UserCachedImage(
                             img: trip.passengers![index].photo,
                           ),
-                          title: Text(
-                            trip.passengers![index].id != 0
-                                ? trip.passengers![index].firstname! +
-                                    ' ' +
-                                    trip.passengers![index].lastname!
-                                : '1 посылка',
+                          title: Text(trip.passengers![index].firstname!,
                             style: const TextStyle(
                                 fontFamily: '.SF Pro Display', fontSize: 15),
                           ),
                           subtitle: trip.passengers![index].id != 0
-                              ? Text(
-                                  _getSeat(
-                                    trip.passengers![index].seat!
-                                        .where((element) => element != 0)
-                                        .length,
-                                  ),
-                                  style: const TextStyle(
-                                    fontFamily: '.SF Pro Display',
-                                  ),
-                                )
+                              ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                      _getSeat(
+                                        trip.passengers![index].seat!
+                                            .where((element) => element != 0)
+                                            .length,
+                                      ),
+                                      style: const TextStyle(
+                                        fontFamily: '.SF Pro Display',
+                                      ),
+                                    ),
+                                  Text(
+                                    trip.passengers![index].seat!.contains(0)
+                                        ? 'посылка'
+                                        : '',
+                                    style: const TextStyle(
+                                        fontFamily: '.SF Pro Display', fontSize: 15),
+                                  )
+                                ],
+                              )
                               : null,
                         ),
                       ),
@@ -275,7 +288,7 @@ class TripDetailsSheet extends StatelessWidget {
     return BottomSheetChildren(
       children: [
         SizedBox(
-          height: 200,
+          height: 300,
           child: Padding(
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: Column(
@@ -382,6 +395,54 @@ class TripDetailsSheet extends StatelessWidget {
                             "assets/img/star.png",
                             color: kPrimaryColor,
                           ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 65,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () async {
+                        final url = "tel:${trip.passengers![index].phone_number}";   
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          throw 'Could not launch $url';
+                        }
+                      },
+                      child: Center(
+                        child: ListTile(
+                          title: const Text('Позвонить'),
+                          trailing: SvgPicture.asset("$svgPath/call-calling.svg"),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 65,
+                  child: Material(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.white,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(15),
+                      onTap: () async {
+                        // final url = "tel:${trip.passengers![index].phone_number}";   
+                        // if (await canLaunch(url)) {
+                        //   await launch(url);
+                        // } else {
+                        //   throw 'Could not launch $url';
+                        // }
+                      },
+                      child: const Center(
+                        child: ListTile(
+                          title: Text('Удалить'),
+                          trailing: Icon(Icons.delete, color: Colors.red,),
                         ),
                       ),
                     ),

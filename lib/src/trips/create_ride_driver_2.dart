@@ -190,8 +190,6 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
   }
 
   Widget _createRide() {
-    final tripBloc = BlocProvider.of<TripsBloc>(context);
-    final tripDriverBloc = BlocProvider.of<UserTripsDriverBloc>(context);
     return WidgetsBinding.instance.window.viewInsets.bottom > 0.0
         ? const SizedBox()
         : Align(
