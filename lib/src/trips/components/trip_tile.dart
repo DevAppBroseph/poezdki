@@ -145,7 +145,8 @@ class _TripTileState extends State<TripTile> {
                           tripsPassangerBloc.add(CancelBookTrip(widget.trip.tripId!));
                           tripsBloc.add(LoadAllTripsList());
                           Future.delayed(const Duration(seconds: 1), () {
-                            BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList());
+                            BlocProvider.of<UserTripsDriverBloc>(context).add(LoadUserTripsList());
+                            // BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList());
                             // print('object cancel бронь');
                             // setState(() {
                               
