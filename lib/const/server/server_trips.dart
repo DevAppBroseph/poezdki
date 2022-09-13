@@ -22,5 +22,5 @@ const getPassPastTripsUrl =
   const bookTripUrl = '$serverURL/booking'; // бронирование 
 const bookingTripUrl = '$bookTripUrl/book'; // бронирование ( /add:ID)
 const cancelBookingTripUrl = '$bookTripUrl/cancel'; // бронирование ( /cancel:ID)
-
+const cancelPassengerTripUrl = '$bookTripUrl/driver_cancel';
 

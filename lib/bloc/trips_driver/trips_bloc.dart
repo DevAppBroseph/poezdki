@@ -15,6 +15,7 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     on<BookThisTrip>(_bookTrip);
     on<BookThisPackage>(_bookPackage);
     on<DeleteTrip>(_deleteTrip);
+    on<DeletePassengerInTrip>(_deletePassengerInTrip);
     on<AddReview>(_addReview);
     on<ThrowAllTripsError>(_throwTripsError);
   }
@@ -66,6 +67,11 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
 
   void _deleteTrip(DeleteTrip event, Emitter<TripsState> emit) async {
     await tripService.deleteTrip(event.tripId);
+    add(LoadAllTripsList());
+  }
+
+  void _deletePassengerInTrip(DeletePassengerInTrip event, Emitter<TripsState> emit) async {
+    await tripService.cancelPassengerInTrip(tripId: event.tripId, userId: event.userId);
     add(LoadAllTripsList());
   }
 

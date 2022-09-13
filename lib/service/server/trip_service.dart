@@ -311,6 +311,29 @@ class TripService {
     }
   }
 
+  Future<void> cancelPassengerInTrip({
+    required int tripId, required int userId
+  }) async {
+    Response res;
+    var dio = Dio();
+
+    try {
+      final token = await SecureStorage.instance.getToken();
+      res = await dio.delete(
+        cancelPassengerTripUrl,
+        data: {'trip_id': tripId, 'user_id': userId},
+        options: Options(
+          validateStatus: ((status) => status! >= 200),
+          headers: {"Authorization": token},
+          responseType: ResponseType.json,
+        ),
+      );
+      print(res.data);
+    } catch (e) {
+      errorDialog.showError(e.toString());
+    }
+  }
+
   Future<List<List<TripModel>>> loadUserDriverTrips() async {
     List<Response> responses;
     var dio = Dio();

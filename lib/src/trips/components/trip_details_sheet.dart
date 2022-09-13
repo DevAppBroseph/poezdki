@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/bloc/chat/chat_builder.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/export/services.dart';
@@ -229,7 +230,10 @@ class TripDetailsSheet extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
-                      onTap: () {
+                      onTap: () async {
+                        final tripsBloc = BlocProvider.of<TripsBloc>(context, listen: false);
+                        tripsBloc.add(DeletePassengerInTrip(trip.tripId!, trip.passengers![index].id!));
+
                         final btmSheet = BottomSheetCall();
                         btmSheet.show(
                           topRadius: const Radius.circular(50),
@@ -432,8 +436,8 @@ class TripDetailsSheet extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () async {
-                        print('object userid ${trip.owner!.id}');
-                        print('object tripid ${trip.tripId}');
+                        Navigator.of(context)..pop()..pop();
+                        BlocProvider.of<UserTripsDriverBloc>(context).add(LoadUserTripsList());
                       },
                       child: const Center(
                         child: ListTile(

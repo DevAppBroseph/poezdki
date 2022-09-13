@@ -74,4 +74,11 @@ class DeleteTrip extends TripsEvent {
   DeleteTrip(this.tripId);
 }
 
+class DeletePassengerInTrip extends TripsEvent {
+  final int tripId;
+  final int userId;
+
+  DeletePassengerInTrip(this.tripId, this.userId);
+}
+
 class ThrowAllTripsError extends TripsEvent {}
