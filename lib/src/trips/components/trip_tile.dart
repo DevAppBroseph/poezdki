@@ -102,24 +102,34 @@ class _TripTileState extends State<TripTile> {
                   maxLines: 1,
                   overflow: TextOverflow.clip,
                 ),
-                subtitle: Row(
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(widget.trip.passenger! ? 'Ищу поездку': 'Подвезу'),
-                    Text(
+                    widget.trip.car == null
+                    ? const SizedBox()
+                    : Text(
                       widget.trip.car == null 
                       ? ''
-                      : " ${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
+                      : "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
                       maxLines: 1,
                       overflow: TextOverflow.clip,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5, right: 5),
-                      child: Container(
-                        height: 5, 
-                        width: 5,
-                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), 
-                        color: const Color.fromRGBO(191,212,228, 1))),
-                    ),
+                    // Text(
+                    //   widget.trip.car == null 
+                    //   ? ''
+                    //   : "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
+                    //   maxLines: 1,
+                    //   overflow: TextOverflow.clip,
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 5, right: 5),
+                    //   child: Container(
+                    //     height: 5, 
+                    //     width: 5,
+                    //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), 
+                    //     color: const Color.fromRGBO(191,212,228, 1))),
+                    // ),
                     Text('${widget.trip.price} ₽')
                   ],
                 ),
@@ -134,7 +144,13 @@ class _TripTileState extends State<TripTile> {
                         onPressed: () {
                           tripsPassangerBloc.add(CancelBookTrip(widget.trip.tripId!));
                           tripsBloc.add(LoadAllTripsList());
-                          Future.delayed(const Duration(seconds: 1), () => BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList()));
+                          Future.delayed(const Duration(seconds: 1), () {
+                            BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList());
+                            // print('object cancel бронь');
+                            // setState(() {
+                              
+                            // });
+                          });
                         }
                       )
                     : const SizedBox(),

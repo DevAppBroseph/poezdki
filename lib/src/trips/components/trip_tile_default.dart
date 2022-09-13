@@ -59,17 +59,18 @@ class TripTileDefault extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.clip,
               ),
-              subtitle: Row(
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(trip.passenger! ? 'Ищу поездку': 'Подвезу'),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5, right: 5),
-                    child: Container(
-                      height: 5, 
-                      width: 5,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), 
-                      color: const Color.fromRGBO(191,212,228, 1))),
-                  ),
+                  Text(trip.passenger! ? 'Подвезу' : 'Ищу поездку'),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 5, right: 5),
+                  //   child: Container(
+                  //     height: 5, 
+                  //     width: 5,
+                  //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), 
+                  //     color: const Color.fromRGBO(191,212,228, 1))),
+                  // ),
                   Text(
                     "${trip.price} ₽",
                     maxLines: 1,

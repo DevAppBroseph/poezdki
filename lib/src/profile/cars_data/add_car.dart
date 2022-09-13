@@ -24,8 +24,8 @@ class _AddCarWidgetState extends State<AddCarWidget> {
   TextEditingController carNumber = TextEditingController();
   TextEditingController carSeats = TextEditingController();
 
-  String selectMark = '';
-  String selectModel = '';
+  String? selectMark;
+  String? selectModel;
 
   List<String>? mark = [];
   List<String>? model = [];
@@ -83,7 +83,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
                                 menuMaxHeight: 250,
-                                hint: Text(selectMark),
+                                hint: Text(selectMark != null ? selectMark! : 'Марка'),
                                 items: mark!.map((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
@@ -92,7 +92,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                                 }).toList(),
                                 onChanged: (value) {
                                   selectMark = value!;
-                                  selectModel = '';
+                                  selectModel = null;
                                   loadModel(value);
                                 },
                               ),
@@ -106,7 +106,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
                                 menuMaxHeight: 250,
-                                hint: Text(selectModel),
+                                hint: Text(selectModel != null ? selectModel! : 'Модель'),
                                 items: model!.map((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,

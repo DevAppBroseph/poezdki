@@ -432,12 +432,8 @@ class TripDetailsSheet extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () async {
-                        // final url = "tel:${trip.passengers![index].phone_number}";   
-                        // if (await canLaunch(url)) {
-                        //   await launch(url);
-                        // } else {
-                        //   throw 'Could not launch $url';
-                        // }
+                        print('object userid ${trip.owner!.id}');
+                        print('object tripid ${trip.tripId}');
                       },
                       child: const Center(
                         child: ListTile(
@@ -496,7 +492,7 @@ class TripDetailsSheet extends StatelessWidget {
                   )
                 : const SizedBox(),
             IconButton(
-              onPressed: () => chatToDriver(context, id: trip.owner?.id, phone: trip.owner?.phone),
+              onPressed: () => chatToDriver(context, id: trip.owner?.id, phone: trip.owner!.phone_number),
               icon: SvgPicture.asset("$svgPath/messages-2.svg"),
             ),
             IconButton(
@@ -573,6 +569,7 @@ class TripDetailsSheet extends StatelessWidget {
   }
 
   void chatToDriver(context, {int? id, String? phone}) async {
+    print('object ${phone}');
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
     final userId = await userRepo.getUserId();
