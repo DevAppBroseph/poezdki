@@ -62,7 +62,7 @@ class TripTileDefault extends StatelessWidget {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(trip.passenger! ? 'Подвезу' : 'Ищу поездку'),
+                  Text(trip.passenger! ? 'Я Подвезу Вас' : 'Ищу поездку'),
                   // Padding(
                   //   padding: const EdgeInsets.only(left: 5, right: 5),
                   //   child: Container(

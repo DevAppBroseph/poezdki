@@ -105,7 +105,7 @@ class _TripTileState extends State<TripTile> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.trip.passenger! ? 'Ищу поездку': 'Подвезу'),
+                    Text(widget.trip.passenger! ? 'Ищу поездку': 'Я Подвезу Вас'),
                     widget.trip.car == null
                     ? const SizedBox()
                     : Text(

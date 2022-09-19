@@ -26,7 +26,7 @@ class RatingLevel extends StatelessWidget {
         children: [
           _levelIcon(),
           Expanded(child: _levelInfo(level, goal)),
-          _awardInfo(award)
+          // _awardInfo(award)
         ],
       ),
     );

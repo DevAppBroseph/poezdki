@@ -36,7 +36,7 @@ class _PickCityState extends State<PickCity> {
   void initState() {
     loadJson();
     focusNode = FocusNode();
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       FocusScope.of(context).requestFocus(focusNode);
     });
 
@@ -66,6 +66,7 @@ class _PickCityState extends State<PickCity> {
     } else {
       setState(() {
         citySearchList.clear();
+        citySearchList.addAll(citiesList);
       });
     }
   }

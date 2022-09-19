@@ -9,6 +9,7 @@ import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 class AddCarWidget extends StatefulWidget {
   const AddCarWidget({Key? key}) : super(key: key);
@@ -20,6 +21,7 @@ class AddCarWidget extends StatefulWidget {
 class _AddCarWidgetState extends State<AddCarWidget> {
   final GlobalKey<FormState> _carKeyForm = GlobalKey<FormState>();
 
+  TextEditingController carYear = TextEditingController();
   TextEditingController carColor = TextEditingController();
   TextEditingController carNumber = TextEditingController();
   TextEditingController carSeats = TextEditingController();
@@ -77,53 +79,70 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                       child: Column(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                            height: 65,
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
                             decoration: BoxDecoration(color: kPrimaryWhite, borderRadius: BorderRadius.circular(10)),
                             width: MediaQuery.of(context).size.width,
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                menuMaxHeight: 250,
-                                hint: Text(selectMark != null ? selectMark! : 'Марка'),
-                                items: mark!.map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  selectMark = value!;
-                                  selectModel = null;
-                                  loadModel(value);
-                                },
+                            child: DropdownSearch<String>(
+                              dropdownSearchDecoration: const InputDecoration(
+                                fillColor: Colors.transparent,
+                                border: InputBorder.none,
+                                filled: true,
                               ),
+                              enabled: mark!.isEmpty ? false : true,
+                              mode: Mode.BOTTOM_SHEET,
+                              showSearchBox: true,
+                              hint: selectMark != null ? selectMark! : 'Марка',
+                              items: mark!.map((String value) {
+                                return value;
+                              }).toList(),
+                              onChanged: (value) {
+                                selectMark = value!;
+                                selectModel = null;
+                                loadModel(value);
+                              },
                             ),
                           ),
                           const SizedBox(height: 15),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                            height: 65,
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
                             decoration: BoxDecoration(color: kPrimaryWhite, borderRadius: BorderRadius.circular(10)),
                             width: MediaQuery.of(context).size.width,
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                menuMaxHeight: 250,
-                                hint: Text(selectModel != null ? selectModel! : 'Модель'),
-                                items: model!.map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (value) {
-                                  selectModel = value!;
-                                  setState(() {});
-                                },
+                            child: DropdownSearch<String>(
+                              dropdownSearchDecoration: const InputDecoration(
+                                fillColor: Colors.transparent,
+                                border: InputBorder.none,
+                                filled: true,
                               ),
+                              enabled: model!.isEmpty ? false : true,
+                              mode: Mode.BOTTOM_SHEET,
+                              showSearchBox: true,
+                              hint: selectModel != null ? selectModel! : 'Модель',
+                              items: model!.map((String value) {
+                                return value;
+                              }).toList(),
+                              onChanged: (value) {
+                                selectModel = value!;
+                                setState(() {});
+                              },
                             ),
                           ),
                           const SizedBox(height: 15),
                           KFormField(
+                            validateFunction: Validations.validateYear,
+                            hintText: 'Год',
+                            formatters: [
+                              LengthLimitingTextInputFormatter(4),
+                            ],
+                            textInputType: TextInputType.number,
+                            textEditingController: carYear,
+                            inputAction: TextInputAction.done,
+                          ),
+                          KFormField(
                             hintText: 'Цвет',
                             textEditingController: carColor,
+                            validateFunction: Validations.validateTitle,
                             inputAction: TextInputAction.done,
                           ),
                           KFormField(

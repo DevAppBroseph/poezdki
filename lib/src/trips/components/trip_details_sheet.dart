@@ -560,13 +560,13 @@ class TripDetailsSheet extends StatelessWidget {
     final token = await userRepo.getToken();
     final userId = await userRepo.getUserId();
     if (token != null) {
-      final passengers = trip.passengers;
-      if (passengers!.any((p) => p.id == int.parse(userId!))) {
+      // final passengers = trip.passengers;
+      // if (passengers!.any((p) => p.id == int.parse(userId!))) {
         launchUrl(Uri(scheme: 'tel', path: '${trip.owner?.phone}'));
-      } else {
-        ErrorDialogs()
-            .showError("Только пассажиры могут связаться с водителем.");
-      }
+      // } else {
+        // ErrorDialogs()
+            // .showError("Только пассажиры могут связаться с водителем.");
+      // }
     } else {
       pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
     }

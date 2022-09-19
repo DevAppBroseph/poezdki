@@ -48,4 +48,12 @@ class Validations {
     }
     return null;
   }
+
+  static String? validateYear(String? value) {
+    final alphanumeric = RegExp(r'[0-9]{4}');
+    if (!alphanumeric.hasMatch(value!) || (int.parse(value) < 1980  || int.parse(value) > DateTime.now().year)) {
+      return 'Неверный формат.';
+    }
+    return null;
+  }
 }
