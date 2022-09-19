@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
@@ -515,7 +516,15 @@ class TripDetailsSheet extends StatelessWidget {
     final temp = await getTemporaryDirectory();
     final path = '${temp.path}/image.jpg';
     File(path).writeAsBytesSync(image);
-    Share.shareFiles([path], text: '${trip.departure?.name}-${trip.stops!.last.name}');
+
+    DateTime date = DateTime.fromMicrosecondsSinceEpoch(trip.timeStart!);
+    var format = DateFormat("yyyy/MM/dd hh:mm");
+    var dateString = format.format(date);
+
+    String linkApp = Platform.isAndroid 
+      ? 'https://play.google.com/store/apps/details?id=com.broseph.poezdka' 
+      : 'https://apps.apple.com/by/app/%D0%BF%D0%BE%D0%B5%D0%B7%D0%B4%D0%BA%D0%B0-%D0%B1%D1%80%D0%BE%D0%BD%D0%B8%D1%80%D1%83%D0%B9-%D0%BF%D0%BE%D0%B5%D0%B7%D0%B4%D0%BA%D1%83/id1640484502';
+    Share.shareFiles([path], text: '${trip.departure?.name}-${trip.stops!.last.name}\n$linkApp\n$dateString');
   }
 
   Widget _div() {

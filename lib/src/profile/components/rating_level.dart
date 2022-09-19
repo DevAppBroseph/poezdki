@@ -20,13 +20,18 @@ class RatingLevel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
         children: [
-          _levelIcon(),
-          Expanded(child: _levelInfo(level, goal)),
-          // _awardInfo(award)
+          const Text('Пока приложение бесплатное баллы не монетизируются', style: TextStyle(fontWeight: FontWeight.w500), textAlign: TextAlign.center,),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _levelIcon(),
+              Expanded(child: _levelInfo(level, goal)),
+              _awardInfo(award)
+            ],
+          ),
         ],
       ),
     );
