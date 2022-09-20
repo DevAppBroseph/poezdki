@@ -130,10 +130,13 @@ class TripDetailsSheet extends StatelessWidget {
       children: [
         ListTile(
           title: const Text("Автомобиль"),
-          trailing: Text(
-            "${trip.car?.mark ?? ""} ${trip.car?.model ?? ""} ${trip.car?.color ?? ""} ",
-            maxLines: 1,
-            overflow: TextOverflow.clip,
+          trailing: SizedBox(
+            width: 150,
+            child: Text(
+              "${trip.car?.mark ?? ""} ${trip.car?.model ?? ""} ${trip.car?.color ?? ""} ",
+              maxLines: 2,
+              overflow: TextOverflow.clip,
+            ),
           ),
         ),
         ListView.builder(
@@ -486,6 +489,8 @@ class TripDetailsSheet extends StatelessWidget {
           (trip.owner?.firstname != null ? trip.owner!.firstname! : '') +
               ' ' +
               (trip.owner?.lastname != null ? trip.owner!.lastname! : ''),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,

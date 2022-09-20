@@ -152,10 +152,13 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                             trailing: TextButton(
                               onPressed: () => pickCar(context),
                               child: selectedCar != null
-                                  ? Text(
-                                      "${selectedCar!.mark} ${selectedCar!.model} ${selectedCar!.color}",
-                                      style: carStyle,
-                                    )
+                                  ? SizedBox(
+                                    width: 150,
+                                    child: Text(
+                                        "${selectedCar!.mark} ${selectedCar!.model} ${selectedCar!.color}",
+                                        style: carStyle,
+                                      ),
+                                  )
                                   : const Text(
                                       "Выберите автомобиль",
                                       style: pickerStyle,

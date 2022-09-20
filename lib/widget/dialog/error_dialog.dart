@@ -10,7 +10,7 @@ class ErrorDialogs {
         builder: (context) => Padding(
               padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
               child: Container(
-                decoration: BoxDecoration(boxShadow: const [
+                decoration: const BoxDecoration(boxShadow: [
                   BoxShadow(
                     offset: Offset(0, 4),
                     blurRadius: 10,

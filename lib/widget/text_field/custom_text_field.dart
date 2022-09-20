@@ -64,11 +64,11 @@ class KFormField extends StatelessWidget {
         onChanged: onChanged,
         cursorColor: kPrimaryColor,
         obscureText: obscureText ?? false,
-        maxLines: maxLines,
+        maxLines: 1,
         minLines: 1,
         inputFormatters: formatters,
         keyboardType: textInputType,
-        style: const TextStyle(color: Colors.black),
+        style: const TextStyle(color: Colors.black, overflow: TextOverflow.ellipsis),
         decoration: InputDecoration(
             icon: icon,
             prefixIcon: prefixicon,
@@ -76,6 +76,7 @@ class KFormField extends StatelessWidget {
             suffix: suffix,
             suffixIcon: suffixIcon,
             suffixStyle: TextStyle(
+              overflow: TextOverflow.ellipsis,
               fontSize: 14,
               color: hintTextColor,
               fontWeight: FontWeight.w400,
@@ -110,6 +111,7 @@ class KFormField extends StatelessWidget {
               ),
             ),
             hintStyle: TextStyle(
+              overflow: TextOverflow.ellipsis,
               fontSize: 14,
               color: hintTextColor,
               fontWeight: FontWeight.w400,

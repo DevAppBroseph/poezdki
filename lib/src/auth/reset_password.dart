@@ -192,7 +192,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         );
       });
     } catch (e) {
-      errorDialog.showError('Введите E-Mail.');
+      errorDialog.showError('Введите Телефон или E-Mail.');
     }
   }
 

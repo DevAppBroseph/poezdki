@@ -29,7 +29,7 @@ class SignUpPersonalInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    dob.text = DateFormat.yMMMMd('ru').format(selectedDate);
+    dob.text = DateFormat.yMd('ru').format(selectedDate);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: Form(

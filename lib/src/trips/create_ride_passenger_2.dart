@@ -129,48 +129,64 @@ class _CreateRidePassenger2State extends State<CreateRidePassenger2> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 15, right: 5),
-              child: KeyboardActions(
-                config: KeyboardActionsConfig(
-                    defaultDoneWidget: const Text("Готово"),
-                    actions: [
-                      KeyboardActionsItem(
-                        displayArrows: false,
-                        focusNode: _nodeText1,
-                        onTapAction: () => _nodeText1.unfocus(),
-                        // footerBuilder: (context) => PreferredSize(
-                        //     child: ListTile(
-                        //       trailing: Image.asset("$iconPath/ruble.png"),
-                        //       title: TextField(
-                        //         decoration: const InputDecoration(
-                        //           border: InputBorder.none
-                        //         ),
-                        //         readOnly: true,
-                        //         textAlign: TextAlign.end,
-                        //         controller: priceController),
-                        //     ),
-                        //     preferredSize:
-                        //         Size(MediaQuery.of(context).size.width, 50))
-                      ),
-                    ]),
-                child: TextFormField(
-                  focusNode: _nodeText1,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    // suffixText: "1000",
-                    hintStyle: TextStyle(wordSpacing: 5),
-                    contentPadding: EdgeInsets.only(right: 5.0, top: 10),
-                  ),
-                  textAlign: TextAlign.end,
-                  controller: priceController,
-                  onChanged: (val) => setState(() {}),
+              padding: const EdgeInsets.only(left: 15, right: 5, bottom: 10),
+              child: TextFormField(
+                focusNode: _nodeText1,
+                keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  hintStyle: TextStyle(wordSpacing: 5),
+                  contentPadding: EdgeInsets.only(right: 5.0, top: 10),
                 ),
+                textAlign: TextAlign.end,
+                controller: priceController,
+                onChanged: (val) => setState(() {}),
               ),
+              // child: KeyboardActions(
+              //   config: KeyboardActionsConfig(
+              //       defaultDoneWidget: const Text("Готово"),
+              //       actions: [
+              //         KeyboardActionsItem(
+              //           displayArrows: false,
+              //           focusNode: _nodeText1,
+              //           onTapAction: () => _nodeText1.unfocus(),
+              //           // footerBuilder: (context) => PreferredSize(
+              //           //     child: ListTile(
+              //           //       trailing: Image.asset("$iconPath/ruble.png"),
+              //           //       title: TextField(
+              //           //         decoration: const InputDecoration(
+              //           //           border: InputBorder.none
+              //           //         ),
+              //           //         readOnly: true,
+              //           //         textAlign: TextAlign.end,
+              //           //         controller: priceController),
+              //           //     ),
+              //           //     preferredSize:
+              //           //         Size(MediaQuery.of(context).size.width, 50))
+              //         ),
+              //       ]),
+              //   child: TextFormField(
+              //     focusNode: _nodeText1,
+              //     keyboardType: TextInputType.number,
+              //     textInputAction: TextInputAction.done,
+              //     inputFormatters: [
+              //       FilteringTextInputFormatter.digitsOnly,
+              //     ],
+              //     decoration: const InputDecoration(
+              //       border: InputBorder.none,
+              //       // suffixText: "1000",
+              //       hintStyle: TextStyle(wordSpacing: 5),
+              //       contentPadding: EdgeInsets.only(right: 5.0, top: 10),
+              //     ),
+              //     textAlign: TextAlign.end,
+              //     controller: priceController,
+              //     onChanged: (val) => setState(() {}),
+              //   ),
+              // ),
             ),
           ),
           const Icon(

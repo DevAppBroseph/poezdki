@@ -135,7 +135,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                         children: const [
                           ListTile(
                             title: Text(
-                                "1) Убедитесь что вы корректно ввели E-mail",
+                                "1) Убедитесь что вы корректно ввели Телефон или E-mail",
                                 style: TextStyle(fontSize: 14)),
                           ),
                           ListTile(
@@ -227,7 +227,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
         firstDate: DateTime(1900, 8),
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate) {
-      final dateFormat = DateFormat.yMMMMd('ru').format(picked);
+      final dateFormat = DateFormat.yMd('ru').format(picked);
       setState(() {
         selectedDate = picked;
         dob.text = dateFormat;
