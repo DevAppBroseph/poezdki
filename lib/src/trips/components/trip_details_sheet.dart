@@ -2,30 +2,37 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/bloc/chat/chat_builder.dart';
+import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
+import 'package:app_poezdka/const/server/server_user.dart';
 import 'package:app_poezdka/export/services.dart';
 import 'package:app_poezdka/model/passenger_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
+import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/src/trips/components/book_trip.dart';
+import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/cached_image/user_image.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
+import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter, rootBundle;
 
 import 'trip_details_info.dart';
 
@@ -34,6 +41,8 @@ class TripDetailsSheet extends StatelessWidget {
   bool isMyTrips;
   TripDetailsSheet({Key? key, required this.trip, this.isMyTrips = false})
       : super(key: key);
+
+  TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -261,22 +270,30 @@ class TripDetailsSheet extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text(
-                                      _getSeat(
-                                        trip.passengers![index].seat!
-                                            .where((element) => element != 0)
-                                            .length,
+                                  trip.car == null
+                                  ? const Text('водитель')
+                                  : Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                        _getSeat(
+                                          trip.passengers![index].seat!
+                                              .where((element) => element != 0)
+                                              .length,
+                                        ),
+                                        style: const TextStyle(
+                                          fontFamily: '.SF Pro Display',
+                                        ),
                                       ),
-                                      style: const TextStyle(
-                                        fontFamily: '.SF Pro Display',
-                                      ),
-                                    ),
-                                  Text(
-                                    trip.passengers![index].seat!.contains(0)
-                                        ? 'посылка'
-                                        : '',
-                                    style: const TextStyle(
-                                        fontFamily: '.SF Pro Display', fontSize: 15),
+                                      Text(
+                                        trip.passengers![index].seat!.contains(0)
+                                            ? 'посылка'
+                                            : '',
+                                        style: const TextStyle(
+                                            fontFamily: '.SF Pro Display', fontSize: 15),
+                                      )
+                                    ],
                                   )
                                 ],
                               )
@@ -549,6 +566,7 @@ class TripDetailsSheet extends StatelessWidget {
   }
 
   void bookTrip(context) async {
+    final tripBloc = BlocProvider.of<TripsBloc>(context, listen: false);
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
     final userId = await userRepo.getUserId();
@@ -557,16 +575,74 @@ class TripDetailsSheet extends StatelessWidget {
       // if (passengers!.any((p) => p.id == int.parse(userId!))) {
       //   null;
       // } else {
-      pushNewScreen(
-        context,
-        screen: BookTrip(
-          tripData: trip,
-        ),
-      );
+      if(trip.car == null) {
+        final state = BlocProvider.of<ProfileBloc>(context).state;
+            final List<int> seats = [];
+            if (state is ProfileLoaded) {
+              if(state.user.phone == null || state.user.phone == '') {
+                phoneController.text = '';
+                InfoDialog().show(
+                  buttonTitle: 'Подтвердить',
+                  title: 'Введите ваш номер',
+                  children: [
+                    KFormField(
+                      hintText: '+79876543210',
+                      textInputType: TextInputType.phone,
+                      textEditingController: phoneController,
+                      validateFunction: Validations.validatePhone,
+                      inputAction: TextInputAction.done,
+                      formatters: [
+                        LengthLimitingTextInputFormatter(12),
+                      ],
+                    ),
+                  ],
+                  onPressed: () {
+                    final validate = Validations.validatePhone(phoneController.text);
+                    if(validate == null) {
+                      final dio = Dio();
+                      dio.options.headers["Authorization"] = state.user.token;
+                      dio.put(addPhone, data: {'phone_number': phoneController.text}).then((value) {
+                        _editUser(state, context);
+                        // SmartDialog.dismiss();
+                      });
+                  }
+                  }
+                );
+              } else {
+                  tripBloc.add(BookThisTrip(context, [], trip.tripId!));
+              }
+            }
+      } else {
+        pushNewScreen(
+          context,
+          screen: BookTrip(
+            tripData: trip,
+          ),
+        );
+      }
       // }
     } else {
       pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
     }
+  }
+
+  void _editUser(ProfileLoaded state, context) {
+    print('1212');
+    BlocProvider.of<ProfileBloc>(context).add(
+      UpdateProfile(
+        UserModel(
+          photo: state.user.photo,
+          firstname: state.user.firstname,
+          email: state.user.email,
+          lastname: state.user.lastname,
+          phone: phoneController.text,
+          gender: state.user.gender,
+          birth: state.user.birth,
+          cars: state.user.cars,
+        ),
+        // context,
+      ),
+    );
   }
 
   void callToDriver(context) async {

@@ -241,7 +241,7 @@ class TripService {
             onPressed: () {
               SmartDialog.dismiss();
               Navigator.pop(context);
-              Navigator.pop(context);
+              // Navigator.pop(context);
             });
         return responceData.success;
       } else {

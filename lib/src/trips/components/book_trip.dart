@@ -154,7 +154,7 @@ class _BookTripState extends State<BookTrip> {
           firstname: state.user.firstname,
           email: state.user.email,
           lastname: state.user.lastname,
-          phone: 'phoneController.text',
+          phone: phoneController.text,
           gender: state.user.gender,
           birth: state.user.birth,
           cars: state.user.cars,
