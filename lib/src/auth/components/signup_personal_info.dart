@@ -1,8 +1,8 @@
 import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:app_poezdka/widget/text_field/date_burthday_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class SignUpPersonalInfo extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -13,7 +13,7 @@ class SignUpPersonalInfo extends StatelessWidget {
   final String? gender;
   final DateTime selectedDate;
   final Function onPickGender;
-  final Function onPickDob;
+  // final Function onPickDob;
   const SignUpPersonalInfo(
       {Key? key,
       required this.formKey,
@@ -23,13 +23,13 @@ class SignUpPersonalInfo extends StatelessWidget {
       required this.selectedDate,
       required this.genderCrl,
       required this.onPickGender,
-      required this.onPickDob,
+      // required this.onPickDob,
       required this.dob})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    dob.text = DateFormat.yMd('ru').format(selectedDate);
+    // dob.text = DateFormat.yMd('ru').format(selectedDate);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
       child: Form(
@@ -76,31 +76,10 @@ class SignUpPersonalInfo extends StatelessWidget {
                 ],
               ),
             ),
-            KFormField(
-              onTap: onPickDob,
-              readOnly: true,
-              hintText: 'ДД.ММ.ГГ*',
-              suffixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Text(
-                    "Дата рождения",
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                ],
-              ),
-              textEditingController: dob,
-              validateFunction: (value) {
-                if (value!.isNotEmpty) return null;
-                return "error";
-              },
-            ),
+            DateBirthdayTextField(
+              dob: dob,
+              hintText: 'ДД.ММ.ГГГГ',
+            )
           ],
         ),
       ),

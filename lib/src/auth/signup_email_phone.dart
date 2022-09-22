@@ -108,7 +108,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                   selectedDate: selectedDate,
                   genderCrl: gender,
                   onPickGender: () => _pickGender(),
-                  onPickDob: () => _pickDate(),
+                  // onPickDob: () => _pickDate(),
                   dob: dob,
                 )
               ],
@@ -159,6 +159,9 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                       });
                     } else if (currentPage == 1 &&
                         _regFormPersonal.currentState!.validate()) {
+                          final parseDate = dob.text.split('.');
+                          final date = DateTime.parse('${parseDate[2]}-${parseDate[1]}-${parseDate[0]} 00:00:00.000');
+
                       authBloc.add(
                         SignUp(
                           context: context,
@@ -167,7 +170,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                           firstName: name.text,
                           lastName: surname.text,
                           gender: selectedGender!,
-                          birth: selectedDate.millisecondsSinceEpoch,
+                          birth: date.millisecondsSinceEpoch,
                         ),
                       );
 

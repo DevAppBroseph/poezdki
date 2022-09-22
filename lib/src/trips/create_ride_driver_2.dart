@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
@@ -151,7 +152,33 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(left: 15,right: 5, bottom: 10),
-              child: TextFormField(
+              child: Platform.isAndroid
+              ? TextFormField(
+                  scrollPadding: const EdgeInsets.only(bottom: 100),
+                  focusNode: _nodeText1,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    // suffixText: "1000",
+                    hintStyle: TextStyle(wordSpacing: 5),
+                    contentPadding: EdgeInsets.only(right: 5.0, top: 10),
+                  ),
+                  textAlign: TextAlign.end,
+                  controller: priceController,
+                  onChanged: (val) => setState(() {}),
+                )
+              : KeyboardActions(
+                config: KeyboardActionsConfig(actions: [
+                  KeyboardActionsItem(
+                    focusNode: _nodeText1,
+                    onTapAction: () => _nodeText1.unfocus(),
+                  ),
+                ]),
+                child: TextFormField(
                   scrollPadding: const EdgeInsets.only(bottom: 100),
                   focusNode: _nodeText1,
                   keyboardType: TextInputType.number,
@@ -169,32 +196,7 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                   controller: priceController,
                   onChanged: (val) => setState(() {}),
                 ),
-              // child: KeyboardActions(
-              //   config: KeyboardActionsConfig(actions: [
-              //     KeyboardActionsItem(
-              //       focusNode: _nodeText1,
-              //       onTapAction: () => _nodeText1.unfocus(),
-              //     ),
-              //   ]),
-              //   child: TextFormField(
-              //     scrollPadding: const EdgeInsets.only(bottom: 100),
-              //     focusNode: _nodeText1,
-              //     keyboardType: TextInputType.number,
-              //     textInputAction: TextInputAction.done,
-              //     inputFormatters: [
-              //       FilteringTextInputFormatter.digitsOnly,
-              //     ],
-              //     decoration: const InputDecoration(
-              //       border: InputBorder.none,
-              //       // suffixText: "1000",
-              //       hintStyle: TextStyle(wordSpacing: 5),
-              //       contentPadding: EdgeInsets.only(right: 5.0, top: 10),
-              //     ),
-              //     textAlign: TextAlign.end,
-              //     controller: priceController,
-              //     onChanged: (val) => setState(() {}),
-              //   ),
-              // ),
+              )
             ),
           ),
           const Icon(

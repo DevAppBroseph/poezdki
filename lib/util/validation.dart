@@ -56,4 +56,12 @@ class Validations {
     }
     return null;
   }
+
+  static String? validateDateBirthday(String? value) {
+    final alphanumeric = RegExp(r'[0-9]{2}.[0-9]{2}.[0-9]{4}');
+    if (!alphanumeric.hasMatch(value!)) {
+      return 'Неверный формат.';
+    }
+    return null;
+  }
 }

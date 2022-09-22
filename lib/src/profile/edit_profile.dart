@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/user_model.dart';
@@ -52,6 +50,17 @@ class _EditProfileState extends State<EditProfile> {
     selectedDate = DateTime.fromMillisecondsSinceEpoch(widget.user.birth ?? 0);
     email.text = widget.user.email ?? '';
 
+    final date = DateTime.fromMillisecondsSinceEpoch(widget.user.birth ?? 0);
+
+    String time = '';
+    for(int i = 0; i < 10; i++) {
+      time += date.toString()[i];
+    }
+
+    final splitTime = time.split('-');
+
+    dob.text = splitTime[2] + '.' + splitTime[1] + '.' + splitTime[0];
+
     super.initState();
   }
 
@@ -75,7 +84,7 @@ class _EditProfileState extends State<EditProfile> {
                       selectedDate: selectedDate,
                       genderCrl: gender,
                       onPickGender: () => _pickGender(context),
-                      onPickDob: () => _pickDate(context),
+                      // onPickDob: () => _pickDate(context),
                       dob: dob,
                     ),
                     Padding(
@@ -105,7 +114,6 @@ class _EditProfileState extends State<EditProfile> {
               title: "Сохранить изменения",
               onPressed: () {
                 _editUser();
-                print('1212');
               },
             ),
           ),
@@ -115,7 +123,8 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   void _editUser() {
-    print('1212');
+    final parseDate = dob.text.split('.');
+    final date = DateTime.parse('${parseDate[2]}-${parseDate[1]}-${parseDate[0]} 00:00:00.000');
     BlocProvider.of<ProfileBloc>(context).add(
       EditProfileValues(
         UserModel(
@@ -125,7 +134,7 @@ class _EditProfileState extends State<EditProfile> {
           lastname: surname.text,
           phone: phone.text,
           gender: selectedGender,
-          birth: selectedDate.millisecondsSinceEpoch,
+          birth: date.millisecondsSinceEpoch,
           cars: widget.user.cars,
         ),
         context,
