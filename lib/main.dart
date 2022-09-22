@@ -33,12 +33,6 @@ void main() async {
     sound: true,
   );
 
-  print('key is' + (await FirebaseMessaging.instance.getToken()).toString());
-
-  // await Parse().initialize(keyApplicationId, keyParseServerUrl,
-  //     clientKey: keyClientKey,
-  //     autoSendSessionId: true,
-  //     coreStore: await CoreStoreSembastImp.getInstance());
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -78,7 +72,6 @@ class App extends StatelessWidget {
         ),
         BlocProvider<AuthBloc>(
           create: (context) {
-            print('auth');
             return AuthBloc(
               userRepository: userRepository,
               appRepository: appRepository,
@@ -87,7 +80,6 @@ class App extends StatelessWidget {
         ),
         BlocProvider<ChatBloc>(
           create: (context) {
-            print('chat');
             return ChatBloc()..add(StartSocket());
           },
         ),
@@ -103,7 +95,6 @@ class App extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: const [Locale('ru')],
-        // home: MultiBlocProvider(providers: [], child: const AppInitBuilder()),
         home: const AppInitBuilder(),
       ),
     );

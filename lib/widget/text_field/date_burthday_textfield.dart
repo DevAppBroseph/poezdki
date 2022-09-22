@@ -1,3 +1,4 @@
+import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/util/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -84,18 +85,17 @@ class _DateBirthdayTextFieldState extends State<DateBirthdayTextField> {
                   suffixStyle: const TextStyle(
                     overflow: TextOverflow.ellipsis,
                     fontSize: 14,
-                    // color: hintTextColor,
                     fontWeight: FontWeight.w400,
                   ),
                   errorStyle: const TextStyle(height: 0.0, fontSize: 0.0),
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   filled: true,
-                  // fillColor: Colors.grey,
+                  fillColor: kPrimaryWhite,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(
-                      color: Colors.grey,
+                      color: kPrimaryWhite,
                       width: 0.0,
                       style: BorderStyle.solid,
                     ),
@@ -103,7 +103,7 @@ class _DateBirthdayTextFieldState extends State<DateBirthdayTextField> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(
-                      color: Colors.grey,
+                      color: kPrimaryWhite,
                       width: 0.0,
                       style: BorderStyle.solid,
                     ),
@@ -111,7 +111,7 @@ class _DateBirthdayTextFieldState extends State<DateBirthdayTextField> {
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: const BorderSide(
-                      color: Colors.grey,
+                      color: kPrimaryWhite,
                       width: 0.0,
                       style: BorderStyle.solid,
                     ),

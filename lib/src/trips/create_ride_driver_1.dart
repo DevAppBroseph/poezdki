@@ -268,6 +268,10 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                       title: "Время выезда",
                       object: time,
                     ),
+                    _infoChecker(
+                      title: "Автомобиль",
+                      object: time,
+                    ),
                   ]);
               }
             } else {
@@ -292,6 +296,10 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                     title: "Время выезда",
                     object: time,
                   ),
+                  _infoChecker(
+                    title: "Автомобиль",
+                    object: time,
+                  ),
                 ]);
             }
           }
@@ -301,7 +309,6 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
   }
 
   void _editUser(ProfileLoaded state) {
-    print('1212');
     BlocProvider.of<ProfileBloc>(context).add(
       UpdateProfile(
         UserModel(

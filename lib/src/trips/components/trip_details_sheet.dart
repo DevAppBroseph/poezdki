@@ -25,7 +25,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -38,11 +37,11 @@ import 'trip_details_info.dart';
 
 class TripDetailsSheet extends StatelessWidget {
   final TripModel trip;
-  bool isMyTrips;
+  final bool isMyTrips;
   TripDetailsSheet({Key? key, required this.trip, this.isMyTrips = false})
       : super(key: key);
 
-  TextEditingController phoneController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -392,8 +391,6 @@ class TripDetailsSheet extends StatelessWidget {
                                   FullWidthElevButton(
                                     title: 'Отправить',
                                     onPressed: () {
-                                      print(ratingCount);
-                                      print(reviewController.text);
                                       BlocProvider.of<TripsBloc>(context).add(
                                         AddReview(
                                           context,
@@ -433,7 +430,7 @@ class TripDetailsSheet extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () async {
-                        final url = "tel:${trip.passengers![index].phone_number}";   
+                        final url = "tel:${trip.passengers![index].phoneNumber}";   
                         if (await canLaunch(url)) {
                           await launch(url);
                         } else {
@@ -519,7 +516,7 @@ class TripDetailsSheet extends StatelessWidget {
                   )
                 : const SizedBox(),
             IconButton(
-              onPressed: () => chatToDriver(context, id: trip.owner?.id, phone: trip.owner!.phone_number),
+              onPressed: () => chatToDriver(context, id: trip.owner?.id, phone: trip.owner!.phoneNumber),
               icon: SvgPicture.asset("$svgPath/messages-2.svg"),
             ),
             IconButton(
@@ -557,27 +554,20 @@ class TripDetailsSheet extends StatelessWidget {
   }
 
   void bookPackage(context) async {
-    final userRepo = SecureStorage.instance;
-    final token = await userRepo.getToken();
-    final userId = await userRepo.getUserId();
-    final passengers = trip.passengers;
-    final tripBloc = BlocProvider.of<TripsBloc>(context, listen: false)
-      ..add(BookThisPackage(context, [], trip.tripId!));
+    BlocProvider.of<TripsBloc>(context, listen: false)
+      .add(BookThisPackage(context, const [], trip.tripId!));
   }
 
   void bookTrip(context) async {
     final tripBloc = BlocProvider.of<TripsBloc>(context, listen: false);
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
-    final userId = await userRepo.getUserId();
-    final passengers = trip.passengers;
     if (token != null) {
       // if (passengers!.any((p) => p.id == int.parse(userId!))) {
       //   null;
       // } else {
       if(trip.car == null) {
         final state = BlocProvider.of<ProfileBloc>(context).state;
-            final List<int> seats = [];
             if (state is ProfileLoaded) {
               if(state.user.phone == null || state.user.phone == '') {
                 phoneController.text = '';
@@ -609,7 +599,7 @@ class TripDetailsSheet extends StatelessWidget {
                   }
                 );
               } else {
-                  tripBloc.add(BookThisTrip(context, [], trip.tripId!));
+                  tripBloc.add(BookThisTrip(context, const [], trip.tripId!));
               }
             }
       } else {
@@ -627,7 +617,6 @@ class TripDetailsSheet extends StatelessWidget {
   }
 
   void _editUser(ProfileLoaded state, context) {
-    print('1212');
     BlocProvider.of<ProfileBloc>(context).add(
       UpdateProfile(
         UserModel(
@@ -648,7 +637,6 @@ class TripDetailsSheet extends StatelessWidget {
   void callToDriver(context) async {
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
-    final userId = await userRepo.getUserId();
     if (token != null) {
       // final passengers = trip.passengers;
       // if (passengers!.any((p) => p.id == int.parse(userId!))) {
@@ -663,7 +651,6 @@ class TripDetailsSheet extends StatelessWidget {
   }
 
   void chatToDriver(context, {int? id, String? phone}) async {
-    print('object ${phone}');
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
     final userId = await userRepo.getUserId();

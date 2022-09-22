@@ -1,9 +1,8 @@
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/widget/divider/verical_dividers.dart';
-import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:app_poezdka/widget/text_field/form_location_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 enum WaypointType { start, empty, middle, end }
@@ -47,20 +46,10 @@ class WayPoints extends StatelessWidget {
         ),
         _wayPoint(
           type: WaypointType.start,
-          textField: KFormField(
-            readOnly: true,
-            onTap: pickDestinitionFrom,
-            hintText: "Откуда",
-            textEditingController: startWay,
-            suffixIcon: Padding(
-              padding: const EdgeInsets.all(12),
-              child: SvgPicture.asset(
-                'assets/img/gps.svg',
-                width: 20,
-                height: 20,
-              ),
-            ),
-          ),
+          textField: GestureDetector(
+            onTap: () => pickDestinitionFrom(),
+            child: LocationField(startWay: startWay, hintText: 'Откуда', icon: 'assets/img/gps.svg')
+          )
         ),
         midWays != null
             ? ListView.builder(
@@ -70,22 +59,9 @@ class WayPoints extends StatelessWidget {
                 itemBuilder: (context, int index) => _wayPoint(
                       onDelete: () {},
                       type: WaypointType.middle,
-                      textField: KFormField(
-                        onTap: () {
-                          // midwayControllers.add(TextEditingController());
-                          onTap!(index);
-                        },
-                        readOnly: true,
-                        hintText: "Куда",
-                        textEditingController: midwayControllers[index],
-                        suffixIcon: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: SvgPicture.asset(
-                            'assets/img/gps.svg',
-                            width: 20,
-                            height: 20,
-                          ),
-                        ),
+                      textField: GestureDetector(
+                        onTap: () => onTap!(index),
+                        child: LocationField(startWay: midwayControllers[index], hintText: 'Куда', icon: 'assets/img/gps.svg')
                       ),
                     ))
             : const SizedBox(),
@@ -122,19 +98,9 @@ class WayPoints extends StatelessWidget {
               ),
         _wayPoint(
           type: WaypointType.end,
-          textField: KFormField(
-            readOnly: true,
-            onTap: pickDestinitionTo,
-            hintText: "Куда",
-            textEditingController: endWay,
-            suffixIcon: Padding(
-              padding: const EdgeInsets.all(12),
-              child: SvgPicture.asset(
-                'assets/img/gps.svg',
-                width: 20,
-                height: 20,
-              ),
-            ),
+          textField: GestureDetector(
+            onTap: () => pickDestinitionTo(),
+            child: LocationField(startWay: endWay, hintText: 'Куда', icon: 'assets/img/gps.svg')
           ),
         ),
       ],
@@ -160,7 +126,6 @@ class WayPoints extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  // color: Colors.grey,
                   width: 60,
                   height: 55,
                   child: Center(
@@ -174,14 +139,6 @@ class WayPoints extends StatelessWidget {
               padding: const EdgeInsets.only(left: 20),
               child: textField,
             )),
-            // type == WaypointType.middle
-            //     ? IconButton(
-            //         onPressed: onDelete as void Function()?,
-            //         icon: Icon(
-            //           Icons.cancel,
-            //           color: Colors.red,
-            //         ))
-            //     : const SizedBox()
           ],
         ));
   }

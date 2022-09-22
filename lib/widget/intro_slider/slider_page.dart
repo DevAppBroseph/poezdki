@@ -14,7 +14,6 @@ class SliderPage extends StatelessWidget {
       color: Colors.black,
       fontWeight: FontWeight.bold,
     );
-    print(MediaQuery.of(context).size.height);
     return Scaffold(
       body: Container(
         color: Colors.white,

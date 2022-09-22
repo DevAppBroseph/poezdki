@@ -3,8 +3,6 @@ import 'package:app_poezdka/model/questions.dart';
 import 'package:app_poezdka/model/rating.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:dio/dio.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
 import '../../widget/dialog/error_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -23,7 +21,6 @@ class UserService {
       getCurrentUserUrl,
       headers: {"Authorization": token},
     );
-    print(response.body);
     if (response.statusCode == 200) {
       Map<String, dynamic> body = json.decode(response.body);
       final UserModel user = UserModel.fromJson(body);
@@ -63,7 +60,6 @@ class UserService {
     if (response.statusCode == 200) {
       Map<String, dynamic> body = json.decode(response.body);
       final BlogAnswer blog = BlogAnswer.fromJson(body);
-      print(response.body);
       return blog.blog;
     } else {
       throw Exception('Ошибка авторизации, попробуйте еще раз, позже.');
@@ -76,7 +72,6 @@ class UserService {
 
   Future<UserModel?> editUser(
       {required String token, required UserModel user}) async {
-    print(token);
     // try {
     Response res;
     var dio = Dio();
@@ -90,11 +85,7 @@ class UserService {
       ),
       data: user.toJson(),
     );
-    print(res.data);
     return UserModel.fromJson(res.data);
-    // } catch (e) {
-    //   errorDialog.showError(e.toString());
-    // }
   }
 
   Future<UserModel?> changeUserPhoto(
@@ -135,6 +126,7 @@ class UserService {
       errorDialog.showError(e.toString());
       return null;
     }
+    return null;
   }
 
   Future<String?> getInfo() async {
@@ -149,6 +141,7 @@ class UserService {
       errorDialog.showError(e.toString());
       return null;
     }
+    return null;
   }
 
   Future<String?> getOffer() async {
@@ -163,6 +156,7 @@ class UserService {
       errorDialog.showError(e.toString());
       return null;
     }
+    return null;
   }
 
   Future<String?> getPolitic() async {
@@ -177,5 +171,6 @@ class UserService {
       errorDialog.showError(e.toString());
       return null;
     }
+    return null;
   }
 }

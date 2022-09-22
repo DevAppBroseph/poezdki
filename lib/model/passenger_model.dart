@@ -1,18 +1,18 @@
 class PassengerModel {
   int? id;
   String? phone;
-  String? phone_number;
+  String? phoneNumber;
   String? photo;
   String? firstname;
   String? lastname;
   List<int>? seat;
   PassengerModel(
-      {this.id, this.phone, this.phone_number, this.firstname, this.lastname, this.seat});
+      {this.id, this.phone, this.phoneNumber, this.firstname, this.lastname, this.seat});
 
   PassengerModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     phone = json['phone'];
-    phone_number = json['phone_number'];
+    phoneNumber = json['phone_number'];
     photo = json['photo'];
     firstname = json['firstname'];
     lastname = json['lastname'];

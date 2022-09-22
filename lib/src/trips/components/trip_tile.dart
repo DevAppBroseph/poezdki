@@ -21,8 +21,8 @@ import 'package:scale_button/scale_button.dart';
 
 class TripTile extends StatefulWidget {
   final TripModel trip;
-  bool last;
-  TripTile({Key? key, required this.trip, required this.last})
+  final bool last;
+  const TripTile({Key? key, required this.trip, required this.last})
       : super(key: key);
 
   @override

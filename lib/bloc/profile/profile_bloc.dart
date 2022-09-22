@@ -43,7 +43,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoaded(event.user));
     });
     on<EditProfileValues>((event, emit) async {
-      print('123');
       final token = await userRepository.getToken();
       var result = await userService.editUser(token: token!, user: event.user);
 
@@ -66,7 +65,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<GetBlog>((event, emit) async {
       emit(BlogLoading());
       final List<Blog>? blogs = await userService.getBlog();
-      print(blogs);
       if (blogs != null) {
         emit(BlogLoaded(blogs));
       } else {

@@ -30,7 +30,7 @@ class BottomSheetCall {
           Radius? topRadius,
           required Widget child}) =>
       showCupertinoModalBottomSheet(
-          barrierColor: Color.fromRGBO(6, 22, 46, 0.67),
+          barrierColor: const Color.fromRGBO(6, 22, 46, 0.67),
           bounce: false,
           enableDrag: enableDrag ?? true,
           isDismissible: dismissible ?? true,

@@ -28,7 +28,7 @@ class AuthService {
       "lastname": lastName,
       "gender": gender,
       "birth": "$birth",
-      "fcm_token": "$fcmToken",
+      "fcm_token": fcmToken,
     };
 
     try {
@@ -40,7 +40,6 @@ class AuthService {
 
         return resp;
       } else {
-        print(response.body);
         if (response.body ==
             'Something goes wrong: UNIQUE constraint failed: users.login') {
           errorDialog.showError('Такой пользователь уже существует.');
@@ -54,11 +53,11 @@ class AuthService {
       errorDialog.showError(e.toString());
       return null;
     }
+    return null;
   }
 
   Future<UserModel?> signWithService(
       GoogleSignInAccount account, String fcmToken) async {
-    print('1231231231231231');
     // try {
     Response res;
     var dio = Dio();
@@ -76,39 +75,30 @@ class AuthService {
           fcmToken: fcmToken,
         ).toJson(),
       );
-      print(res.data);
       return UserModel.fromJson(res.data);
     } catch (e) {
       errorDialog.showError(e.toString());
     }
+    return null;
   }
 
   Future deleteUser({required String token}) async {
-    // try {
-    Response res;
     var dio = Dio();
 
-    // try {
-    res = await dio.delete(
+    await dio.delete(
       "http://194.87.145.140/users/delete_user",
       options: Options(
         validateStatus: ((status) => status! == 200),
         headers: {"Authorization": token},
       ),
     );
-    // } catch (e) {
-    //   errorDialog.showError(e.toString());
-    // }
   }
 
   Future<UserModel?> signWithVk(UserModel account, String fcmToken) async {
     account.fcmToken = fcmToken;
-    print(account);
-    // try {
     Response res;
     var dio = Dio();
 
-    // try {
     res = await dio.post(
       "http://194.87.145.140/users/oauth_user",
       options: Options(
@@ -116,11 +106,7 @@ class AuthService {
       ),
       data: account.toJson(),
     );
-    print(res.data);
     return UserModel.fromJson(res.data);
-    // } catch (e) {
-    //   errorDialog.showError(e.toString());
-    // }
   }
 
   Future<ResponceAuth?> signIn({

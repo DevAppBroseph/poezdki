@@ -15,7 +15,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class BookTrip extends StatefulWidget {
   final TripModel tripData;
@@ -207,39 +206,6 @@ class _BookTripState extends State<BookTrip> {
                 : const EmptySeat(),
       ),
     );
-  }
-
-  Widget _rangeSlider() {
-    return freeSeats >= 1
-        ? Padding(
-            padding: const EdgeInsets.only(top: 10.0),
-            child: SfSlider(
-              min: 0.0,
-              max: freeSeats,
-              value: freeSeats,
-              activeColor: kPrimaryColor,
-              inactiveColor: kPrimaryWhite,
-              dividerShape: const SfDividerShape(),
-              trackShape: const SfTrackShape(),
-              stepSize: 1,
-              interval: 1,
-              showTicks: true,
-              showLabels: true,
-              enableTooltip: false,
-              minorTicksPerInterval: 0,
-              onChanged: (dynamic value) {
-                // setState(() {
-                //   _sliderSwitchValue = value;
-                // });
-              },
-            ),
-          )
-        : const Padding(
-            padding: EdgeInsets.all(23.0),
-            child: Text(
-              "Свободных мест нет.",
-            ),
-          );
   }
 }
 

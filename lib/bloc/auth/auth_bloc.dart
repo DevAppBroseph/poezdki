@@ -34,9 +34,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<OnDevLogIn>(_devLogIn);
     on<DeleteProfile>((event, emit) async {
       emit(AuthLoading());
-      print('123');
-      final token = await userRepository.getToken();
-      var result = await authService.deleteUser(token: token!);
 
       await userRepository.deleteUserData();
       add(AppInit());
@@ -57,7 +54,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _initApp(AppInit event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     final hasToken = await userRepository.hasToken();
-    print(await userRepository.getToken());
 
     hasToken == true ? emit(AuthSuccess()) : emit(AuthUnauthenticated());
   }
@@ -134,7 +130,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       Navigator.pushAndRemoveUntil(
         event.context,
-        MaterialPageRoute(builder: (context) => AppScreens()),
+        MaterialPageRoute(builder: (context) => const AppScreens()),
         (route) => false,
       );
       add(AppInit());
@@ -154,10 +150,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       Navigator.pushAndRemoveUntil(
         event.context,
-        MaterialPageRoute(builder: (context) => AppScreens()),
+        MaterialPageRoute(builder: (context) => const AppScreens()),
         (route) => false,
       );
-      print('okkkey');
       add(AppInit());
     }
     add(AppInit());

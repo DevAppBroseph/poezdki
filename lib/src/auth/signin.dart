@@ -9,9 +9,7 @@ import 'package:app_poezdka/widget/divider/row_divider.dart';
 import 'package:app_poezdka/widget/text_field/custom_password_text_field.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -105,7 +103,7 @@ class _SignInScreenState extends State<SignInScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ResetPasswordPage(),
+              builder: (context) => const ResetPasswordPage(),
             ),
           );
         },

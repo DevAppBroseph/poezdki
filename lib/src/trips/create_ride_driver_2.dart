@@ -1,21 +1,16 @@
 import 'dart:io';
-import 'dart:math';
-
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
 import 'package:app_poezdka/src/trips/components/book_reserved.dart';
-import 'package:app_poezdka/src/trips/components/book_trip.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
-import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import '../../const/colors.dart';
@@ -319,8 +314,6 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
   void bookTrip(context, TripModel trip) async {
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
-    final userId = await userRepo.getUserId();
-    final passengers = trip.passengers;
     if (token != null) {
       // if (passengers!.any((p) => p.id == int.parse(userId!))) {
       //   null;

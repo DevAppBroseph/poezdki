@@ -6,6 +6,7 @@ import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:app_poezdka/widget/text_field/formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -152,12 +153,13 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                             hintText: 'С777СС799',
                             formatters: [
                               LengthLimitingTextInputFormatter(9),
+                              UpperCaseTextFormatter(),
                             ],
                             textEditingController: carNumber,
                             inputAction: TextInputAction.next,
                           ),
                           KFormField(
-                            hintText: 'Количество мест',
+                            hintText: 'Количество пассажирских мест',
                             textInputType: TextInputType.number,
                             textEditingController: carSeats,
                             validateFunction: Validations.validateTitle,

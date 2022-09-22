@@ -1,8 +1,5 @@
-import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
-import 'package:app_poezdka/export/blocs.dart';
-import 'package:app_poezdka/src/aaa_dev/main_dev.dart';
 import 'package:app_poezdka/src/profile/profile_screen.dart';
 import 'package:app_poezdka/src/trips/create_ride.dart';
 import 'package:app_poezdka/src/trips/search_trips.dart';

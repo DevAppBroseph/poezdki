@@ -1,10 +1,8 @@
-import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/trips/components/trip_tile.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserTripsList extends StatelessWidget {
@@ -51,10 +49,10 @@ class UserTripsList extends StatelessWidget {
           //   );
           // }),
           SliverToBoxAdapter(
-            child: pastList(pastTrips),
+            child: upcomingList(upcomingTrips),
           ),
           SliverToBoxAdapter(
-            child: upcomingList(upcomingTrips),
+            child: pastList(pastTrips),
           ),
           const SliverToBoxAdapter(
             child: SizedBox(

@@ -60,7 +60,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     channel?.stream.listen(
       (event) async {
         // setState(() {
-        print(event);
         try {
           var newMessage = NewMessageAnswer.fromJson(jsonDecode(event));
           if (newMessage.fromName == 'BAZA' && newMessage.from == '-1') {
@@ -88,7 +87,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             add(UpdateChat(messages: messages));
           }
         } catch (e) {
-          print(e);
           messages.add(
             ChatMessage(
               user: ChatUser(
@@ -112,7 +110,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         debugPrint('ws channel closed');
       },
       cancelOnError: false,
-      onError: (error) => print('error'),
     );
     // }
   }
@@ -126,7 +123,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     if (chats != null) {
       messages = [];
-      chats.forEach((element) {
+      for (var element in chats) {
         messages.add(
           ChatMessage(
             user: ChatUser(
@@ -136,8 +133,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             text: element.message,
           ),
         );
-      });
-      print(messages);
+      }
       add(UpdateChat(messages: messages));
     }
   }

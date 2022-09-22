@@ -32,17 +32,11 @@ class MainDev extends StatelessWidget {
             FullWidthElevButton(
               title: "Get Token",
               onPressed: () async {
-                final user = SecureStorage.instance;
-                final token = await user.getToken();
-                if (kDebugMode) {}
               },
             ),
             FullWidthElevButton(
               title: "Get Id",
               onPressed: () async {
-                final user = SecureStorage.instance;
-                final id = await user.getUserId();
-                if (kDebugMode) {}
               },
             )
           ],

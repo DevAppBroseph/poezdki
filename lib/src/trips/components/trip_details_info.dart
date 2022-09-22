@@ -14,8 +14,6 @@ class RideDetailsTrip extends StatelessWidget {
   Widget build(BuildContext context) {
     final startTime =
         DateTime.fromMicrosecondsSinceEpoch(tripData.timeStart ?? 0);
-    final endTime = DateTime.fromMicrosecondsSinceEpoch(
-        tripData.stops?.last.approachTime?.toInt() ?? 0);
     return Row(
       children: [
         Expanded(
@@ -94,7 +92,7 @@ class RideDetailsTrip extends StatelessWidget {
                                 children: [
                                   const DivEnd(),
                                   distanceRoute!=null 
-                                  ? SizedBox(height: 20, child: Text('$distanceRoute км', style: TextStyle(color: Colors.grey)))
+                                  ? SizedBox(height: 20, child: Text('$distanceRoute км', style: const TextStyle(color: Colors.grey)))
                                   : const SizedBox(),
                                   const DivEnd(),
                                   Text(
@@ -151,38 +149,5 @@ class RideDetailsTrip extends StatelessWidget {
         c(lat1 * p) * c(lat2 * p) *
             (1 - c((lon2 - lon1) * p))/2;
     return 12742 * asin(sqrt(a));
-  }
-
-  Widget _tripRoutIcon() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: const [
-        Icon(
-          FontAwesome5Regular.dot_circle,
-          size: 20,
-          color: Colors.grey,
-        ),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        DivEnd(),
-        Icon(
-          FontAwesome5Regular.dot_circle,
-          size: 20,
-          color: Colors.grey,
-        ),
-      ],
-    );
   }
 }

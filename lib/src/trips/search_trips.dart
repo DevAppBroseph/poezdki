@@ -8,7 +8,6 @@ import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/filter_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
-
 import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/src/trips/components/pick_city.dart';
 import 'package:app_poezdka/src/rides/components/waypoint.dart';
@@ -17,13 +16,10 @@ import 'package:app_poezdka/src/trips/components/search_trip_filter.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:app_poezdka/widget/text_field/form_location_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
-
-import '../../widget/text_field/custom_text_field.dart';
 
 class SearchRides extends StatefulWidget {
   final bool? isAuthorized;
@@ -61,8 +57,6 @@ class _SearchRidesState extends State<SearchRides>
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
-
-  Future _refresh() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -195,8 +189,7 @@ class _SearchRidesState extends State<SearchRides>
               children: [
                 WayPointField(
                   type: WaypointType.start,
-                  textField: KFormField(
-                    readOnly: true,
+                  textField: GestureDetector(
                     onTap: () => pickDestinition(
                       context,
                       startWay,
@@ -208,38 +201,7 @@ class _SearchRidesState extends State<SearchRides>
                         });
                       },
                     ),
-                    hintText: "Откуда",
-                    textEditingController: startWay,
-                    suffix: startWay.text.isNotEmpty
-                        ? IconButton(
-                            padding: const EdgeInsets.only(right: 0, top: 5),
-                            alignment: Alignment.centerRight,
-                            onPressed: () {
-                              setState(() {
-                                from = null;
-                                startWay.clear();
-                              });
-                              fetchTrips(context, page: searchPageIndex);
-                            },
-                            icon: const Icon(
-                              CupertinoIcons.clear_circled,
-                              size: 18,
-                              color: kPrimaryDarkGrey,
-                            ),
-                          )
-                        : const SizedBox(),
-                    suffixIcon: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: SvgPicture.asset(
-                        'assets/img/gps.svg',
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                    onChanged: (value) {
-                      setState(() {});
-                    },
-                  ),
+                    child: LocationField(startWay: startWay, hintText: 'Откуда', icon: 'assets/img/gps.svg')),
                 ),
                 const WayPointField(
                   type: WaypointType.empty,
@@ -248,47 +210,16 @@ class _SearchRidesState extends State<SearchRides>
                   ),
                 ),
                 WayPointField(
-                    type: WaypointType.end,
-                    textField: KFormField(
-                      onTap: () => pickDestinition(
+                  type: WaypointType.start,
+                  textField: GestureDetector(
+                    onTap: () => pickDestinition(
                           context, endWay, to, "Куда едем?", (destination) {
                         setState(() {
                           to = destination;
                         });
                       }),
-                      readOnly: true,
-                      hintText: "Куда",
-                      textEditingController: endWay,
-                      suffix: endWay.text.isNotEmpty
-                          ? IconButton(
-                              padding: const EdgeInsets.only(right: 0, top: 5),
-                              alignment: Alignment.centerRight,
-                              onPressed: () {
-                                setState(() {
-                                  to = null;
-                                  endWay.clear();
-                                });
-                                fetchTrips(context, page: searchPageIndex);
-                              },
-                              icon: const Icon(
-                                CupertinoIcons.clear_circled,
-                                size: 18,
-                                color: kPrimaryDarkGrey,
-                              ),
-                            )
-                          : const SizedBox(),
-                      suffixIcon: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: SvgPicture.asset(
-                          'assets/img/gps.svg',
-                          width: 20,
-                          height: 20,
-                        ),
-                      ),
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                    )),
+                    child: LocationField(startWay: endWay, hintText: 'Куда', icon: 'assets/img/gps.svg')),
+                ),
               ],
             ),
           ),

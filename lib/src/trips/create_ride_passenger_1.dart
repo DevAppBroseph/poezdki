@@ -226,7 +226,6 @@ class _CreateRidePassengerState extends State<CreateRidePassenger> {
   }
 
   void _editUser(ProfileLoaded state) {
-    print('1212');
     BlocProvider.of<ProfileBloc>(context).add(
       UpdateProfile(
         UserModel(

@@ -113,7 +113,7 @@ class TripModel {
 class Owner {
   int? id;
   String? phone;
-  String? phone_number;
+  String? phoneNumber;
   String? firstname;
   String? lastname;
   String? photo;
@@ -122,7 +122,7 @@ class Owner {
   Owner(
       {this.id,
       this.phone,
-      this.phone_number,
+      this.phoneNumber,
       this.firstname,
       this.lastname,
       this.photo,
@@ -131,7 +131,7 @@ class Owner {
   Owner.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     phone = json['phone'];
-    phone_number = json['phone_number'];
+    phoneNumber = json['phone_number'];
     firstname = json['firstname'];
     lastname = json['lastname'];
     photo = json['photo'];

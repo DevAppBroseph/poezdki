@@ -1,12 +1,7 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/export/blocs.dart';
-import 'package:app_poezdka/model/send_message.dart';
-import 'package:app_poezdka/service/local/secure_storage.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/cupertino.dart';
@@ -43,7 +38,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _sendMessage(String message) async {
-    var token = await SecureStorage.instance.getToken();
     // widget.channel.sink.add(
     //   jsonEncode({
     //     "to": widget.ownerId.toString(),

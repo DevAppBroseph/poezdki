@@ -61,7 +61,6 @@ class TripService {
         }).toList();
         return trips;
       } else {
-        print('error: ' + response.data);
         // throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
       }
     } catch (e) {
@@ -100,7 +99,6 @@ class TripService {
           await dio.post(getAllDriverTripsUrl, data: json.encode(filter));
 
       if (response.statusCode == 200) {
-        print(response.data);
         final list = response.data['all_trips'] as List;
 
         List<TripModel> trips = [];
@@ -222,7 +220,6 @@ class TripService {
     };
     try {
       final token = await SecureStorage.instance.getToken();
-      print('$bookingTripUrl$tripId');
       response = await dio.post(
         "$bookingTripUrl$tripId",
         data: json.encode(data),
@@ -305,7 +302,6 @@ class TripService {
           responseType: ResponseType.json,
         ),
       );
-      print(res.data);
     } catch (e) {
       errorDialog.showError(e.toString());
     }
@@ -328,7 +324,6 @@ class TripService {
           responseType: ResponseType.json,
         ),
       );
-      print(res.data);
     } catch (e) {
       errorDialog.showError(e.toString());
     }
@@ -349,7 +344,6 @@ class TripService {
         dio.get(getDriverTripsUrl, options: options),
         dio.get(getDriverPastTripsUrl, options: options),
       ]);
-      print(responses.first.data);
       return [
         _getTripsFromRequest(responses[0], false),
         _getTripsFromRequest(responses[1], false),
@@ -396,9 +390,7 @@ class TripService {
           responseType: ResponseType.json,
           validateStatus: (status) => status! >= 200);
       var result = await dio.delete("$deleteTripUrl$tripId", options: options);
-      print(result.data);
     } catch (e) {
-      print(e.toString());
     }
   }
 
@@ -420,9 +412,7 @@ class TripService {
           },
         ),
       );
-      print(result.data);
     } catch (e) {
-      print(e.toString());
     }
   }
 }

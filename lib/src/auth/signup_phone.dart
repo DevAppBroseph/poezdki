@@ -1,17 +1,10 @@
-import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/model/user_model.dart';
-import 'package:app_poezdka/src/auth/components/signup_account_info.dart';
-import 'package:app_poezdka/src/auth/components/signup_personal_info.dart';
 import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
-
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import '../../export/blocs.dart';
 
 class SignUpWithPhone extends StatefulWidget {

@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/user_model.dart';
@@ -164,8 +162,6 @@ class SocialAuthButtons extends StatelessWidget {
 
     final googleAuth = await user.authentication;
     final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
-    print(user.email);
-    print(user);
     authBloc.add(SignInWithGoogle(user, context));
   }
 

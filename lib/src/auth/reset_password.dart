@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
-
 import 'package:app_poezdka/bloc/auth/auth_builder.dart';
 import 'package:app_poezdka/const/theme.dart';
 import 'package:app_poezdka/model/is_correct.dart';
@@ -8,17 +6,14 @@ import 'package:app_poezdka/model/reset_password.dart';
 import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
-import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:dio/dio.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import '../../export/blocs.dart';
-
 class ResetPasswordPage extends StatefulWidget {
-  ResetPasswordPage({
+  const ResetPasswordPage({
     Key? key,
   }) : super(key: key);
 
@@ -54,8 +49,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
 
   @override
   Widget build(BuildContext context) {
-    final infoDialog = InfoDialog();
-    final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
     initializeDateFormatting('ru', null);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -134,7 +127,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
     return Column(
       children: [
         const Padding(
-          padding: const EdgeInsets.only(left: 100, right: 100, top: 80),
+          padding: EdgeInsets.only(left: 100, right: 100, top: 80),
           child: Text(
             'Введите новый пароль',
             textAlign: TextAlign.center,
@@ -181,7 +174,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
           "login": value,
         }),
       );
-      print(res.data);
       setState(() {
         resetPasswordOne = ResetPasswordOne.fromJson(res.data);
         currentPage++;
@@ -211,7 +203,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
           "code": code,
         }),
       );
-      print(res.data);
       setState(() {
         isCorrect = IsCorrect.fromJson(res.data);
         if (isCorrect!.isCorrect) {
@@ -248,7 +239,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
             "password": passwordFirst,
           }),
         );
-        print(res.data);
 
         Navigator.pushAndRemoveUntil(
           context,

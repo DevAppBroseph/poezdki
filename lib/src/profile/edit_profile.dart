@@ -154,7 +154,6 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           selectedDate = picked;
           dob.text = dateFormat;
-          // "${picked.day}.${picked.month}.${picked.year.toString().substring(2)}";
         });
       }
     } catch (e) {
@@ -168,7 +167,6 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           selectedDate = picked;
           dob.text = dateFormat;
-          // "${picked.day}.${picked.month}.${picked.year.toString().substring(2)}";
         });
       }
     }

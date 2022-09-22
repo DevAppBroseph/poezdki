@@ -50,7 +50,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
             onPressed: () {
               if (currentPage == 1) {
                 controller.animateTo(0,
-                    duration: Duration(milliseconds: 300), curve: Curves.ease);
+                    duration: const Duration(milliseconds: 300), curve: Curves.ease);
               } else {
                 Navigator.pop(context);
               }
