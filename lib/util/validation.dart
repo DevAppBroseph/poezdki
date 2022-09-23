@@ -42,7 +42,7 @@ class Validations {
   }
 
   static String? validatePhone(String? value) {
-    final alphanumeric = RegExp(r'[+][0-9]{11}');
+    final alphanumeric = RegExp(r'[0-9]{10}');
     if (!alphanumeric.hasMatch(value!)) {
       return 'Неверный формат.';
     }

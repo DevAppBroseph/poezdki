@@ -22,6 +22,7 @@ class KFormField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? suffixText;
   final Widget? prefixicon;
+  final String? prefixText;
   const KFormField(
       {Key? key,
       this.onTap,
@@ -42,7 +43,8 @@ class KFormField extends StatelessWidget {
       this.suffix,
       this.suffixIcon,
       this.suffixText,
-      this.prefixicon})
+      this.prefixicon,
+      this.prefixText})
       : super(key: key);
 
   @override
@@ -74,6 +76,8 @@ class KFormField extends StatelessWidget {
             prefixIcon: prefixicon,
             suffixText: suffixText,
             suffix: suffix,
+            prefixText: prefixText,
+            prefixStyle: const TextStyle(fontSize: 14.5, color: Colors.black, overflow: TextOverflow.ellipsis),
             suffixIcon: suffixIcon,
             suffixStyle: TextStyle(
               overflow: TextOverflow.ellipsis,

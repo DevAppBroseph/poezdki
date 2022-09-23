@@ -10,7 +10,7 @@ import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
-import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:app_poezdka/widget/text_field/phone_text_field.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -105,23 +105,24 @@ class _BookTripState extends State<BookTrip> {
                   buttonTitle: 'Подтвердить',
                   title: 'Введите ваш номер',
                   children: [
-                    KFormField(
-                      hintText: '+79876543210',
-                      textInputType: TextInputType.phone,
-                      textEditingController: phoneController,
-                      validateFunction: Validations.validatePhone,
-                      inputAction: TextInputAction.done,
-                      formatters: [
-                        LengthLimitingTextInputFormatter(12),
-                      ],
-                    ),
+                    PhoneTextField(
+                            hintText: 'Телефон',
+                            prefixIcon: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              child: Text('+7'),
+                            ),
+                            controller: phoneController,
+                            textInputType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                            validateFunction: Validations.validatePhone)
                   ],
                   onPressed: () {
                     final validate = Validations.validatePhone(phoneController.text);
                     if(validate == null) {
                       final dio = Dio();
                       dio.options.headers["Authorization"] = state.user.token;
-                      dio.put(addPhone, data: {'phone_number': phoneController.text}).then((value) {
+                      dio.put(addPhone, data: {'phone_number': '+7' + phoneController.text}).then((value) {
                         _editUser(state);
                         SmartDialog.dismiss();
                       });
@@ -145,7 +146,6 @@ class _BookTripState extends State<BookTrip> {
   }
 
   void _editUser(ProfileLoaded state) {
-    print('1212');
     BlocProvider.of<ProfileBloc>(context).add(
       UpdateProfile(
         UserModel(
@@ -153,7 +153,7 @@ class _BookTripState extends State<BookTrip> {
           firstname: state.user.firstname,
           email: state.user.email,
           lastname: state.user.lastname,
-          phone: phoneController.text,
+          phone: '+7' + phoneController.text,
           gender: state.user.gender,
           birth: state.user.birth,
           cars: state.user.cars,

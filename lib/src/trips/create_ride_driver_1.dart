@@ -270,7 +270,7 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                     ),
                     _infoChecker(
                       title: "Автомобиль",
-                      object: time,
+                      object: selectedCar,
                     ),
                   ]);
               }
@@ -298,7 +298,7 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                   ),
                   _infoChecker(
                     title: "Автомобиль",
-                    object: time,
+                    object: selectedCar,
                   ),
                 ]);
             }

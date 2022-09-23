@@ -1,22 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/server/server_data.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/profile/cars_data/add_car.dart';
 import 'package:app_poezdka/src/profile/edit_profile.dart';
-import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter/material.dart';
 import 'package:mime/mime.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:scale_button/scale_button.dart';
-
 import '../../bloc/profile/profile_bloc.dart';
 import '../../export/blocs.dart';
 
@@ -26,7 +22,6 @@ class PersonalData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final btm = BottomSheetCall();
     return KScaffoldScreen(
       backgroundColor: Colors.white,
       isLeading: true,
@@ -103,7 +98,6 @@ class ProfileInfo extends StatelessWidget {
                 await _picker
                     .pickImage(source: ImageSource.gallery)
                     .then((value) async {
-                      print('adasdasdsadsad${value}');
                   if (value is XFile) {
                     var compressedFile = await compressFile(File(value.path));
                     var mime = lookupMimeType(value.path);
@@ -218,10 +212,10 @@ class ProfileDataCard extends StatelessWidget {
                 trailing: user.birth != null
                     ? Text(DateFormat("dd.MM.yyyy").format(
                         DateTime.fromMillisecondsSinceEpoch(user.birth!)))
-                    : Text('Не указана'),
+                    : const Text('Не указана'),
               ),
               ListTile(
-                title: Text("Пол"),
+                title: const Text("Пол"),
                 trailing: Text(user.gender != null
                     ? user.gender == "male"
                         ? "Мужской"

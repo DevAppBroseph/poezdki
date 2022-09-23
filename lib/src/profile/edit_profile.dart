@@ -2,10 +2,13 @@ import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/auth/components/signup_personal_info.dart';
+import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:app_poezdka/widget/text_field/phone_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -44,8 +47,16 @@ class _EditProfileState extends State<EditProfile> {
         : widget.user.gender == 'male'
             ? 'Мужской'
             : 'Женский';
-
-    phone.text = widget.user.phone ?? '';
+    if(widget.user.phone != null) {
+      String phoneTemp = '';
+      for(int i = 2; i < widget.user.phone!.length; i++) {
+        phoneTemp += widget.user.phone![i];
+      }
+      phone.text = phoneTemp;
+    } else {
+      phone.text = '';
+    }
+    
     selectedGender = widget.user.gender;
     selectedDate = DateTime.fromMillisecondsSinceEpoch(widget.user.birth ?? 0);
     email.text = widget.user.email ?? '';
@@ -90,9 +101,20 @@ class _EditProfileState extends State<EditProfile> {
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 25, right: 25, top: 30),
-                      child: KFormField(
-                        hintText: 'Телефон',
-                        textEditingController: phone,
+                      child: Row(
+                        children: [
+                          PhoneTextField(
+                            hintText: 'Телефон',
+                            prefixIcon: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              child: Text('+7'),
+                            ),
+                            controller: phone,
+                            textInputType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            inputFormatters: [LengthLimitingTextInputFormatter(10)],
+                            validateFunction: Validations.validatePhone)
+                        ],
                       ),
                     ),
                     Padding(
@@ -132,7 +154,7 @@ class _EditProfileState extends State<EditProfile> {
           firstname: name.text,
           email: email.text,
           lastname: surname.text,
-          phone: phone.text,
+          phone: '+7' + phone.text,
           gender: selectedGender,
           birth: date.millisecondsSinceEpoch,
           cars: widget.user.cars,
