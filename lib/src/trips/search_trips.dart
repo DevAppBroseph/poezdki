@@ -17,6 +17,7 @@ import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:app_poezdka/widget/text_field/form_location_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
@@ -201,7 +202,30 @@ class _SearchRidesState extends State<SearchRides>
                         });
                       },
                     ),
-                    child: LocationField(startWay: startWay, hintText: 'Откуда', icon: 'assets/img/gps.svg')),
+                    child: LocationField(
+                      startWay: startWay, 
+                      hintText: 'Откуда', 
+                      icon: 'assets/img/gps.svg', 
+                      iconClear: startWay.text.isNotEmpty
+                      ? IconButton(
+                        padding: const EdgeInsets.only(right: 0, top: 5),
+                        alignment: Alignment.centerRight,
+                        onPressed: () {
+                          setState(() {
+                            from = null;
+                            startWay.clear();
+                          });
+                          fetchTrips(context, page: searchPageIndex);
+                        },
+                        icon: const Icon(
+                          CupertinoIcons.clear_circled,
+                          size: 18,
+                          color: kPrimaryDarkGrey,
+                        ),
+                      )
+                      : const SizedBox()
+                    )
+                  ),
                 ),
                 const WayPointField(
                   type: WaypointType.empty,
@@ -218,7 +242,30 @@ class _SearchRidesState extends State<SearchRides>
                           to = destination;
                         });
                       }),
-                    child: LocationField(startWay: endWay, hintText: 'Куда', icon: 'assets/img/gps.svg')),
+                    child: LocationField(
+                      startWay: endWay, 
+                      hintText: 'Куда', 
+                      icon: 'assets/img/gps.svg', 
+                      iconClear: endWay.text.isNotEmpty
+                      ? IconButton(
+                        padding: const EdgeInsets.only(right: 0, top: 5),
+                        alignment: Alignment.centerRight,
+                        onPressed: () {
+                          setState(() {
+                            to = null;
+                            endWay.clear();
+                          });
+                          fetchTrips(context, page: searchPageIndex);
+                        },
+                        icon: const Icon(
+                          CupertinoIcons.clear_circled,
+                          size: 18,
+                          color: kPrimaryDarkGrey,
+                        ),
+                      )
+                      : const SizedBox()
+                    )
+                  ),
                 ),
               ],
             ),

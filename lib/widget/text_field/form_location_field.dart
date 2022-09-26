@@ -6,8 +6,9 @@ class LocationField extends StatelessWidget {
   final TextEditingController startWay;
   final String hintText;
   final String icon;
+  final Widget? iconClear;
 
-  const LocationField({Key? key, required this.startWay, required this.hintText, required this.icon}) : super(key: key);
+  const LocationField({Key? key, required this.startWay, required this.hintText, required this.icon, this.iconClear}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -16,16 +17,18 @@ class LocationField extends StatelessWidget {
                 color: kPrimaryWhite
               ),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                     child: SizedBox(
-                      width: 150,
+                      width: 100,
                       child: Text(startWay.text.isNotEmpty ? startWay.text : hintText, 
                             style: TextStyle(color: startWay.text.isNotEmpty ? Colors.black : Colors.grey, fontWeight: FontWeight.w400, fontSize: 16, overflow: TextOverflow.ellipsis)),
                     ),
                   ),
                   const Spacer(),
+                  iconClear ?? const SizedBox(),
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: SvgPicture.asset(icon, width: 25, height: 25),
