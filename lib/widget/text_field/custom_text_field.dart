@@ -57,7 +57,7 @@ class KFormField extends StatelessWidget {
 
     var widthOfScreen = MediaQuery.of(context).size.width;
     return SizedBox(
-      height: 100,
+      height: 75,
       width: widthOfScreen,
       child: Platform.isAndroid
         ? TextFormField(
