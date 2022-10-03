@@ -36,7 +36,7 @@ class Validations {
   static String? validateNumber(String? value) {
     final alphanumeric = RegExp(r'[А-Я]{1}[0-9]{3}[А-Я]{2}[0-9]{2,3}');
     if (!alphanumeric.hasMatch(value!)) {
-      return 'Неверный формат.';
+      return 'Неверный формат. С777СС799';
     }
     return null;
   }
@@ -51,8 +51,11 @@ class Validations {
 
   static String? validateYear(String? value) {
     final alphanumeric = RegExp(r'[0-9]{4}');
-    if (!alphanumeric.hasMatch(value!) || (int.parse(value) < 1980  || int.parse(value) > DateTime.now().year)) {
+    if (!alphanumeric.hasMatch(value!)) {
       return 'Неверный формат.';
+    }
+    if (int.parse(value) < 1980  || int.parse(value) > DateTime.now().year) {
+      return 'Год не может быть меньше 1980 и больше ${DateTime.now().year}.';
     }
     return null;
   }
@@ -67,8 +70,11 @@ class Validations {
       year += value[i];
     }
     int? yearInt = int.tryParse(year);
-    if(yearInt == null || yearInt < 1922 || yearInt > DateTime.now().year) {
-      return 'Неверный формат.';
+    if(yearInt == null) {
+      return 'Введите год.';
+    }
+    if (yearInt < DateTime.now().year - 100 || yearInt > DateTime.now().year) {
+      return 'Год не может быть меньше ${DateTime.now().year - 100} и больше ${DateTime.now().year}.';
     }
     return null;
   }
