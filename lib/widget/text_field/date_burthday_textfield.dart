@@ -87,7 +87,7 @@ class _DateBirthdayTextFieldState extends State<DateBirthdayTextField> {
                     fontSize: 14,
                     fontWeight: FontWeight.w400,
                   ),
-                  errorStyle: const TextStyle(height: 0.0, fontSize: 0.0),
+                  errorStyle: const TextStyle(fontSize: 10.0),
                   contentPadding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   filled: true,

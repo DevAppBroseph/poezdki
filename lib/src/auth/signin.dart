@@ -1,11 +1,9 @@
 import 'package:app_poezdka/export/blocs.dart';
-import 'package:app_poezdka/src/auth/components/social_buttons.dart';
 import 'package:app_poezdka/src/auth/reset_password.dart';
 import 'package:app_poezdka/src/auth/signup.dart';
 import 'package:app_poezdka/src/policy/policy.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
-import 'package:app_poezdka/widget/divider/row_divider.dart';
 import 'package:app_poezdka/widget/text_field/custom_password_text_field.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +47,6 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 250),
             // const KDivider(text: "Войти через"),
             // SocialAuthButtons(),
             _singInButton(context),

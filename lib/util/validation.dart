@@ -62,6 +62,14 @@ class Validations {
     if (!alphanumeric.hasMatch(value!)) {
       return 'Неверный формат.';
     }
+    String year = '';
+    for (int i = 6; i <= 9; i++) {
+      year += value[i];
+    }
+    int? yearInt = int.tryParse(year);
+    if(yearInt == null || yearInt < 1922 || yearInt > DateTime.now().year) {
+      return 'Неверный формат.';
+    }
     return null;
   }
 }

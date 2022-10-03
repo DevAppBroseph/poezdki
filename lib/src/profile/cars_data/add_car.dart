@@ -10,7 +10,7 @@ import 'package:app_poezdka/widget/text_field/formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:dropdown_search2/dropdown_search2.dart';
 
 class AddCarWidget extends StatefulWidget {
   const AddCarWidget({Key? key}) : super(key: key);

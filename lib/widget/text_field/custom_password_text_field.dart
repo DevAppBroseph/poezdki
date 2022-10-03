@@ -118,7 +118,7 @@ class KPasswordFieldState extends State<KPasswordField> {
               border: border(context),
               enabledBorder: border(context),
               focusedBorder: focusBorder(context),
-              errorStyle: const TextStyle(height: 0.0, fontSize: 0.0),
+              errorStyle: const TextStyle(height: 0.0, fontSize: 10.0),
             ),
           ),
         ),

@@ -20,7 +20,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<LoadProfile>((event, emit) async {
       emit(ProfileLoading());
       final token = await userRepository.getToken();
-      final UserModel? user = await userService.getCurrentUser(token: token!);
+      final UserModel? user = token == null ? null : await userService.getCurrentUser(token: token);
       user != null ? add(UpdateProfile(user)) : add(ErrorProfileLoaded(""));
     });
     on<CreateCar>((event, emit) async {
