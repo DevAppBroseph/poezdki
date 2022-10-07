@@ -11,7 +11,7 @@ class IsCorrect {
   });
 
   bool isCorrect;
-  String token;
+  String? token;
 
   factory IsCorrect.fromJson(Map<String, dynamic> json) => IsCorrect(
         isCorrect: json["is_correct"],

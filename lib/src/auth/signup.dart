@@ -1,6 +1,5 @@
 import 'package:app_poezdka/const/colors.dart';
-import 'package:app_poezdka/src/auth/components/social_buttons.dart';
-import 'package:app_poezdka/src/auth/signup_email_phone.dart';
+import 'package:app_poezdka/src/auth/confirm_phone_email.dart';
 import 'package:app_poezdka/widget/button/full_width_leveated_button_child.dart';
 import 'package:flutter/material.dart';
 
@@ -65,7 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const SignUpWithEmailPhone())),
+                  builder: (context) => const ConfirmPhoneEmailPage())),
         ),
         // SocialAuthButtons(),
       ],

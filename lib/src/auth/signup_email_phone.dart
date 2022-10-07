@@ -12,7 +12,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../export/blocs.dart';
 
 class SignUpWithEmailPhone extends StatefulWidget {
-  const SignUpWithEmailPhone({Key? key}) : super(key: key);
+  const SignUpWithEmailPhone({Key? key, required this.phoneEmail})
+      : super(key: key);
+  final String phoneEmail;
 
   @override
   State<SignUpWithEmailPhone> createState() => _SignUpWithEmailPhoneState();
@@ -39,6 +41,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
 
   @override
   Widget build(BuildContext context) {
+    email.text = widget.phoneEmail;
     final infoDialog = InfoDialog();
     final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
     initializeDateFormatting('ru', null);
@@ -50,7 +53,8 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
             onPressed: () {
               if (currentPage == 1) {
                 controller.animateTo(0,
-                    duration: const Duration(milliseconds: 300), curve: Curves.ease);
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease);
               } else {
                 Navigator.pop(context);
               }
@@ -159,8 +163,9 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                       });
                     } else if (currentPage == 1 &&
                         _regFormPersonal.currentState!.validate()) {
-                          final parseDate = dob.text.split('.');
-                          final date = DateTime.parse('${parseDate[2]}-${parseDate[1]}-${parseDate[0]} 00:00:00.000');
+                      final parseDate = dob.text.split('.');
+                      final date = DateTime.parse(
+                          '${parseDate[2]}-${parseDate[1]}-${parseDate[0]} 00:00:00.000');
 
                       authBloc.add(
                         SignUp(

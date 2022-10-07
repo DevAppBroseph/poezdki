@@ -25,6 +25,7 @@ class KFormField extends StatelessWidget {
   final String? suffixText;
   final Widget? prefixicon;
   final String? prefixText;
+  final bool? enabled;
   const KFormField(
       {Key? key,
       this.onTap,
@@ -46,7 +47,8 @@ class KFormField extends StatelessWidget {
       this.suffixIcon,
       this.suffixText,
       this.prefixicon,
-      this.prefixText})
+      this.prefixText,
+      this.enabled})
       : super(key: key);
 
   @override
@@ -60,146 +62,156 @@ class KFormField extends StatelessWidget {
       height: 75,
       width: widthOfScreen,
       child: Platform.isAndroid
-        ? TextFormField(
-          focusNode: focusNode,
-          onTap: onTap as void Function()?,
-          validator: validateFunction,
-          readOnly: readOnly ?? false,
-          textInputAction: inputAction,
-          controller: textEditingController,
-          onChanged: onChanged,
-          cursorColor: kPrimaryColor,
-          obscureText: obscureText ?? false,
-          maxLines: 1,
-          minLines: 1,
-          inputFormatters: formatters,
-          keyboardType: textInputType,
-          style: const TextStyle(color: Colors.black, overflow: TextOverflow.ellipsis),
-          decoration: InputDecoration(
-              icon: icon,
-              prefixIcon: prefixicon,
-              suffixText: suffixText,
-              suffix: suffix,
-              prefixText: prefixText,
-              prefixStyle: const TextStyle(fontSize: 14.5, color: Colors.black, overflow: TextOverflow.ellipsis),
-              suffixIcon: suffixIcon,
-              suffixStyle: TextStyle(
-                overflow: TextOverflow.ellipsis,
-                fontSize: 14,
-                color: hintTextColor,
-                fontWeight: FontWeight.w400,
-              ),
-              errorStyle: const TextStyle(fontSize: 10.0),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              filled: true,
-              fillColor: kPrimaryWhite,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: textFieldBorderColor,
-                  width: 0.0,
-                  style: BorderStyle.solid,
+          ? TextFormField(
+              enabled: enabled,
+              focusNode: focusNode,
+              onTap: onTap as void Function()?,
+              validator: validateFunction,
+              readOnly: readOnly ?? false,
+              textInputAction: inputAction,
+              controller: textEditingController,
+              onChanged: onChanged,
+              cursorColor: kPrimaryColor,
+              obscureText: obscureText ?? false,
+              maxLines: 1,
+              minLines: 1,
+              inputFormatters: formatters,
+              keyboardType: textInputType,
+              style: const TextStyle(
+                  color: Colors.black, overflow: TextOverflow.ellipsis),
+              decoration: InputDecoration(
+                  icon: icon,
+                  prefixIcon: prefixicon,
+                  suffixText: suffixText,
+                  suffix: suffix,
+                  prefixText: prefixText,
+                  prefixStyle: const TextStyle(
+                      fontSize: 14.5,
+                      color: Colors.black,
+                      overflow: TextOverflow.ellipsis),
+                  suffixIcon: suffixIcon,
+                  suffixStyle: TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 14,
+                    color: hintTextColor,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  errorStyle: const TextStyle(fontSize: 10.0),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  filled: true,
+                  fillColor: kPrimaryWhite,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: textFieldBorderColor,
+                      width: 0.0,
+                      style: BorderStyle.solid,
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: textFieldBorderColor,
+                      width: 0.0,
+                      style: BorderStyle.solid,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(
+                      color: textFieldBorderColor,
+                      width: 0.0,
+                      style: BorderStyle.solid,
+                    ),
+                  ),
+                  hintStyle: TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 14,
+                    color: hintTextColor,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  hintText: hintText),
+            )
+          : KeyboardActions(
+              config: KeyboardActionsConfig(actions: [
+                KeyboardActionsItem(
+                  focusNode: nodeText,
+                  onTapAction: () => nodeText.unfocus(),
                 ),
+              ]),
+              child: TextFormField(
+                enabled: enabled,
+                focusNode: nodeText,
+                onTap: onTap as void Function()?,
+                validator: validateFunction,
+                readOnly: readOnly ?? false,
+                textInputAction: inputAction,
+                controller: textEditingController,
+                onChanged: onChanged,
+                cursorColor: kPrimaryColor,
+                obscureText: obscureText ?? false,
+                maxLines: 1,
+                minLines: 1,
+                inputFormatters: formatters,
+                keyboardType: textInputType,
+                style: const TextStyle(
+                    color: Colors.black, overflow: TextOverflow.ellipsis),
+                decoration: InputDecoration(
+                    icon: icon,
+                    prefixIcon: prefixicon,
+                    suffixText: suffixText,
+                    suffix: suffix,
+                    prefixText: prefixText,
+                    prefixStyle: const TextStyle(
+                        fontSize: 14.5,
+                        color: Colors.black,
+                        overflow: TextOverflow.ellipsis),
+                    suffixIcon: suffixIcon,
+                    suffixStyle: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 14,
+                      color: hintTextColor,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    errorStyle: const TextStyle(height: 0.0, fontSize: 0.0),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 20),
+                    filled: true,
+                    fillColor: kPrimaryWhite,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: textFieldBorderColor,
+                        width: 0.0,
+                        style: BorderStyle.solid,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: textFieldBorderColor,
+                        width: 0.0,
+                        style: BorderStyle.solid,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(
+                        color: textFieldBorderColor,
+                        width: 0.0,
+                        style: BorderStyle.solid,
+                      ),
+                    ),
+                    hintStyle: TextStyle(
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 14,
+                      color: hintTextColor,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    hintText: hintText),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: textFieldBorderColor,
-                  width: 0.0,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: textFieldBorderColor,
-                  width: 0.0,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              hintStyle: TextStyle(
-                overflow: TextOverflow.ellipsis,
-                fontSize: 14,
-                color: hintTextColor,
-                fontWeight: FontWeight.w400,
-              ),
-              hintText: hintText),
-        )
-        : KeyboardActions(
-          config: KeyboardActionsConfig(actions: [
-            KeyboardActionsItem(
-              focusNode: nodeText,
-              onTapAction: () => nodeText.unfocus(),
             ),
-          ]),
-          child: TextFormField(
-          focusNode: nodeText,
-          onTap: onTap as void Function()?,
-          validator: validateFunction,
-          readOnly: readOnly ?? false,
-          textInputAction: inputAction,
-          controller: textEditingController,
-          onChanged: onChanged,
-          cursorColor: kPrimaryColor,
-          obscureText: obscureText ?? false,
-          maxLines: 1,
-          minLines: 1,
-          inputFormatters: formatters,
-          keyboardType: textInputType,
-          style: const TextStyle(color: Colors.black, overflow: TextOverflow.ellipsis),
-          decoration: InputDecoration(
-              icon: icon,
-              prefixIcon: prefixicon,
-              suffixText: suffixText,
-              suffix: suffix,
-              prefixText: prefixText,
-              prefixStyle: const TextStyle(fontSize: 14.5, color: Colors.black, overflow: TextOverflow.ellipsis),
-              suffixIcon: suffixIcon,
-              suffixStyle: TextStyle(
-                overflow: TextOverflow.ellipsis,
-                fontSize: 14,
-                color: hintTextColor,
-                fontWeight: FontWeight.w400,
-              ),
-              errorStyle: const TextStyle(height: 0.0, fontSize: 0.0),
-              contentPadding:
-                  const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-              filled: true,
-              fillColor: kPrimaryWhite,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: textFieldBorderColor,
-                  width: 0.0,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: textFieldBorderColor,
-                  width: 0.0,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10),
-                borderSide: BorderSide(
-                  color: textFieldBorderColor,
-                  width: 0.0,
-                  style: BorderStyle.solid,
-                ),
-              ),
-              hintStyle: TextStyle(
-                overflow: TextOverflow.ellipsis,
-                fontSize: 14,
-                color: hintTextColor,
-                fontWeight: FontWeight.w400,
-              ),
-              hintText: hintText),
-        ),
-      ),
     );
   }
 }

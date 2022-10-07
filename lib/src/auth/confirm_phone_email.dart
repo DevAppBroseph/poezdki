@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:app_poezdka/bloc/auth/auth_builder.dart';
 import 'package:app_poezdka/const/theme.dart';
 import 'package:app_poezdka/model/is_correct.dart';
 import 'package:app_poezdka/model/reset_password.dart';
+import 'package:app_poezdka/src/auth/signup_email_phone.dart';
 import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
@@ -12,16 +12,17 @@ import 'package:pinput/pinput.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-class ResetPasswordPage extends StatefulWidget {
-  const ResetPasswordPage({
+class ConfirmPhoneEmailPage extends StatefulWidget {
+  const ConfirmPhoneEmailPage({
     Key? key,
   }) : super(key: key);
 
   @override
-  State<ResetPasswordPage> createState() => _ResetPasswordPageState();
+  State<ConfirmPhoneEmailPage> createState() =>
+      _ConfirmPhoneEmailPagePageState();
 }
 
-class _ResetPasswordPageState extends State<ResetPasswordPage>
+class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
     with SingleTickerProviderStateMixin {
   final TextEditingController email = TextEditingController();
 
@@ -29,7 +30,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
   final TextEditingController secondPass = TextEditingController();
   TabController? tabController;
 
-  int numberOfPages = 3;
+  int numberOfPages = 2;
   int currentPage = 0;
   DateTime selectedDate = DateTime.now();
   String? selectedGender;
@@ -42,8 +43,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
 
   @override
   void initState() {
-    tabController = TabController(length: 3, vsync: this);
-    // TODO: implement initState
+    tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
 
@@ -77,7 +77,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         title: const Padding(
           padding: EdgeInsets.symmetric(horizontal: 0),
           child: Text(
-            'Восстановление доступа',
+            'Подтвердите ваши данные',
             style: TextStyle(
               color: Colors.black,
               fontSize: 22,
@@ -96,7 +96,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
               children: [
                 _phonePage(),
                 _pinPage(),
-                _passPage(),
               ],
             ),
             Align(
@@ -107,11 +106,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
                   title: currentPage != 2 ? "Отправить" : 'Сохранить',
                   onPressed: () async {
                     if (currentPage == 0) {
-                      _resetPasswordOne(email.text);
+                      _sendPhoneEmail(email.text);
                     } else if (currentPage == 1) {
                       _checkCode(resetPasswordOne!.login, pin);
-                    } else if (currentPage == 2) {
-                      _resetPasswordConfirm(firstPass.text, secondPass.text);
                     }
                   },
                 ),
@@ -123,44 +120,8 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
     );
   }
 
-  Column _passPage() {
-    return Column(
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(left: 100, right: 100, top: 80),
-          child: Text(
-            'Введите новый пароль',
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15, top: 18),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15, top: 18),
-                child: KFormField(
-                  hintText: 'Пароль *',
-                  textEditingController: firstPass,
-                  validateFunction: Validations.validateEmail,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: KFormField(
-                  hintText: 'Повторите пароль *',
-                  textEditingController: secondPass,
-                  validateFunction: Validations.validateEmail,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _resetPasswordOne(String value) async {
+  Future<void> _sendPhoneEmail(String value) async {
+    pin = 0;
     Response res;
     var dio = Dio();
 
@@ -170,25 +131,36 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         options: Options(
           validateStatus: ((status) => status! >= 200),
         ),
-        data: jsonEncode({"login": value, "is_first_auth": false}),
+        data: jsonEncode({"login": value, "is_first_auth": true}),
       );
-      setState(() {
-        resetPasswordOne = ResetPasswordOne.fromJson(res.data);
-        currentPage++;
-        tabController!.animateTo(
-          currentPage,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.ease,
-        );
-      });
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        setState(() {
+          resetPasswordOne = ResetPasswordOne.fromJson(res.data);
+          currentPage++;
+          tabController!.animateTo(
+            currentPage,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.ease,
+          );
+        });
+      } else {
+        errorDialog.showError(res.data);
+      }
     } catch (e) {
       errorDialog.showError('Введите Телефон или E-Mail.');
+      currentPage++;
+      tabController!.animateTo(
+        currentPage,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.ease,
+      );
     }
   }
 
   Future<void> _checkCode(String value, int code) async {
     Response res;
     var dio = Dio();
+    print('object ${value} ${code}');
 
     try {
       res = await dio.post(
@@ -196,58 +168,22 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         options: Options(
           validateStatus: ((status) => status! >= 200),
         ),
-        data:
-            jsonEncode({"login": value, "code": code, "is_first_auth": false}),
+        data: jsonEncode({"login": value, "code": code, "is_first_auth": true}),
       );
       setState(() {
         isCorrect = IsCorrect.fromJson(res.data);
         if (isCorrect!.isCorrect) {
-          currentPage++;
-          tabController!.animateTo(
-            currentPage,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.ease,
-          );
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      SignUpWithEmailPhone(phoneEmail: email.text)));
         } else {
           errorDialog.showError('Код неправильно указан.');
         }
       });
     } catch (e) {
-      errorDialog.showError('Код неправильно указан.');
-    }
-  }
-
-  Future<void> _resetPasswordConfirm(
-    String passwordFirst,
-    String passwordSecond,
-  ) async {
-    if (passwordFirst == passwordSecond) {
-      Response res;
-      var dio = Dio();
-
-      try {
-        res = await dio.post(
-          "http://194.87.145.140/users/reset_password_confirm",
-          options: Options(validateStatus: ((status) => status! >= 200),
-              //TODO add token
-              headers: {"Authorization": isCorrect?.token}),
-          data: jsonEncode({
-            "password": passwordFirst,
-          }),
-        );
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const AppInitBuilder(),
-          ),
-          (route) => false,
-        );
-      } catch (e) {
-        errorDialog.showError('Не удалось поменять пароль.');
-      }
-    } else {
-      errorDialog.showError('Не удалось поменять пароль.');
+      errorDialog.showError('Код неправильно указан1.');
     }
   }
 
@@ -257,7 +193,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         const Padding(
           padding: EdgeInsets.only(left: 40, right: 40, top: 80),
           child: Text(
-            'Для сброса пароля, введите номер Телефона или E-mail который был указан при регистрации.',
+            'Для сброса кода, введите\nномер Телефона или E-mail.',
             textAlign: TextAlign.center,
           ),
         ),
@@ -279,7 +215,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         Padding(
           padding: const EdgeInsets.only(left: 100, right: 100, top: 80),
           child: Text(
-            'Код воостановления отправлен на ${email.text}',
+            'Код отправлен на ${email.text}',
             textAlign: TextAlign.center,
           ),
         ),
@@ -291,16 +227,16 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
             focusedPinTheme: focusedPinTheme,
             showCursor: false,
             onCompleted: (pin1) {
-              setState(() {
-                pin = int.parse(pin1);
-              });
+              // setState(() {
+              pin = int.parse(pin1);
+              // });
             },
             onChanged: (text) async {
-              if (text.length == 6) {
-                setState(() {
-                  pin = int.parse(text);
-                });
-              }
+              // if (text.length == 6) {
+              //   setState(() {
+              pin = int.parse(text);
+              // });
+              // }
             },
           ),
         ),
