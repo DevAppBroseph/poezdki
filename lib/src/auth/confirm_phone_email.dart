@@ -215,7 +215,7 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
         Padding(
           padding: const EdgeInsets.only(left: 100, right: 100, top: 80),
           child: Text(
-            'Код отправлен на ${email.text}',
+            'Код восстановления отправлен на ${email.text}',
             textAlign: TextAlign.center,
           ),
         ),
