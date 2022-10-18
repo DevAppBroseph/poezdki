@@ -172,16 +172,21 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         ),
         data: jsonEncode({"login": value, "is_first_auth": false}),
       );
-      setState(() {
-        resetPasswordOne = ResetPasswordOne.fromJson(res.data);
-        currentPage++;
-        tabController!.animateTo(
-          currentPage,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.ease,
-        );
-      });
+      if (res.statusCode != 200) {
+        errorDialog.showError('${res.data}');
+      } else {
+        setState(() {
+          resetPasswordOne = ResetPasswordOne.fromJson(res.data);
+          currentPage++;
+          tabController!.animateTo(
+            currentPage,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.ease,
+          );
+        });
+      }
     } catch (e) {
+      // print('log1 ${res.data}');
       errorDialog.showError('Введите Телефон или E-Mail.');
     }
   }
