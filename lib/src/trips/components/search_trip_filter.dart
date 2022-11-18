@@ -1,9 +1,16 @@
+import 'dart:io';
+
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/model/filter_model.dart';
 import 'package:app_poezdka/model/gender_model.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
+import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+enum TypeDate { start, end }
 
 class SearchTripBottomSheet extends StatefulWidget {
   final FilterModel initFilter;
@@ -23,6 +30,8 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
   bool _isSmoking = false;
   bool _isPetTransfer = false;
   GenderModel? _gender;
+  TextEditingController startDate = TextEditingController();
+  TextEditingController endDate = TextEditingController();
 
   @override
   void initState() {
@@ -98,24 +107,116 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
                   _isConditioner = value;
                 })),
         genderTile(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: SizedBox(
+            height: 60,
+            child: Row(
+              children: [
+                Expanded(child: const Text('С:   ')),
+                Expanded(
+                  flex: 5,
+                  child: GestureDetector(
+                    onTap: () => funcDate(TypeDate.start),
+                    child: KFormField(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 20),
+                      enabled: false,
+                      hintText:
+                          DateFormat('dd.MM.yyyy hh:mm').format(DateTime.now()),
+                      textEditingController: startDate,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(child: const Text('По:   ')),
+                Expanded(
+                  flex: 5,
+                  child: GestureDetector(
+                    onTap: () => funcDate(TypeDate.end),
+                    child: KFormField(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 5, vertical: 20),
+                      enabled: false,
+                      hintText:
+                          DateFormat('dd.MM.yyyy hh:mm').format(DateTime.now()),
+                      textEditingController: endDate,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
         FullWidthElevButton(
           title: "Применить",
           onPressed: () => Navigator.pop(
-              context,
-              FilterModel(
-                  isPackageTransfer: _isPackageTransfer,
-                  isTwoBackSeat: _isTwoBackSeat,
-                  isBagadgeTransfer: _isBagadgeTransfer,
-                  isChildSeat: _isChildSeat,
-                  isConditioner: _isConditioner,
-                  isSmoking: _isSmoking,
-                  isPetTransfer: _isPetTransfer,
-                  gender: _gender)),
+            context,
+            FilterModel(
+              isPackageTransfer: _isPackageTransfer,
+              isTwoBackSeat: _isTwoBackSeat,
+              isBagadgeTransfer: _isBagadgeTransfer,
+              isChildSeat: _isChildSeat,
+              isConditioner: _isConditioner,
+              isSmoking: _isSmoking,
+              isPetTransfer: _isPetTransfer,
+              gender: _gender,
+            ),
+          ),
         ),
         const SizedBox(
           height: 30,
         )
       ],
+    );
+  }
+
+  void funcDate(TypeDate typeDate) async {
+    if (Platform.isAndroid) {
+      final value = await showDialog(
+          context: context,
+          builder: ((context) {
+            return DatePickerDialog(
+              initialEntryMode: DatePickerEntryMode.calendarOnly,
+              initialDate: DateTime.now(),
+              firstDate: DateTime(2010),
+              lastDate: DateTime(2030),
+            );
+          }));
+      if (value != null) {
+        if (typeDate == TypeDate.start) {
+          startDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
+        } else {
+          endDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
+        }
+      }
+    }
+    final value = await showDialog(
+      barrierDismissible: true,
+      useSafeArea: false,
+      barrierColor: Colors.transparent,
+      context: context,
+      builder: ((context) {
+        return Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Container(
+              height: 200,
+              color: Colors.grey[200],
+              child: CupertinoDatePicker(
+                use24hFormat: true,
+                onDateTimeChanged: (value) {
+                  if (typeDate == TypeDate.start) {
+                    startDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
+                  } else {
+                    endDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
+                  }
+                },
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 

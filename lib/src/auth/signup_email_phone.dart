@@ -39,6 +39,8 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
   DateTime selectedDate = DateTime.now();
   String? selectedGender;
 
+  bool personalData = false;
+
   @override
   Widget build(BuildContext context) {
     email.text = widget.phoneEmail;
@@ -124,16 +126,31 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  "Нажимая кнопку, вы соглашаетесь с условиями обработки персональных данеых",
-                  style: TextStyle(color: kPrimaryLightGrey),
-                  textAlign: TextAlign.center,
-                ),
+                if (currentPage == 1)
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: personalData,
+                        shape: const CircleBorder(),
+                        onChanged: (value) {
+                          personalData = !personalData;
+                          setState(() {});
+                        },
+                      ),
+                      const Expanded(
+                        child: Text(
+                          "Я соглашаюсь с условиями обработки персональных данеых",
+                          style: TextStyle(color: kPrimaryLightGrey),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
                 FullWidthElevButton(
-                  title: currentPage == 1 ? "Зарегистрироваться" : "Далее",
+                  title: currentPage == 1 ? "Погнали!" : "Еще немного!",
                   onPressed: () async {
                     if (currentPage == 0 &&
-                        _regFormAccount.currentState!.validate() == false) {
+                        _regFormAccount.currentState!.validate() == false && !personalData) {
                       infoDialog.show(
                         title: "Что то не так:",
                         children: const [
@@ -162,7 +179,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                             curve: Curves.fastLinearToSlowEaseIn);
                       });
                     } else if (currentPage == 1 &&
-                        _regFormPersonal.currentState!.validate()) {
+                        _regFormPersonal.currentState!.validate() && personalData) {
                       final parseDate = dob.text.split('.');
                       final date = DateTime.parse(
                           '${parseDate[2]}-${parseDate[1]}-${parseDate[0]} 00:00:00.000');

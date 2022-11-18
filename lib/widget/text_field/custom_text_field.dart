@@ -26,6 +26,7 @@ class KFormField extends StatelessWidget {
   final Widget? prefixicon;
   final String? prefixText;
   final bool? enabled;
+  final EdgeInsets? contentPadding;
   const KFormField(
       {Key? key,
       this.onTap,
@@ -48,7 +49,8 @@ class KFormField extends StatelessWidget {
       this.suffixText,
       this.prefixicon,
       this.prefixText,
-      this.enabled})
+      this.enabled,
+      this.contentPadding,})
       : super(key: key);
 
   @override
@@ -58,6 +60,8 @@ class KFormField extends StatelessWidget {
     Color hintTextColor = Colors.grey;
 
     var widthOfScreen = MediaQuery.of(context).size.width;
+    var contentPadding = this.contentPadding ?? const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 20);
     return SizedBox(
       height: 75,
       width: widthOfScreen,
@@ -175,8 +179,7 @@ class KFormField extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                     ),
                     errorStyle: const TextStyle(height: 0.0, fontSize: 0.0),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 20),
+                    contentPadding: contentPadding,
                     filled: true,
                     fillColor: kPrimaryWhite,
                     border: OutlineInputBorder(
