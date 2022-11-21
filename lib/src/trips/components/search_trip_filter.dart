@@ -125,7 +125,7 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
                           horizontal: 5, vertical: 20),
                       enabled: false,
                       hintText:
-                          DateFormat('dd.MM.yyyy hh:mm').format(DateTime.now()),
+                          DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
                       textEditingController: startDate,
                     ),
                   ),
@@ -141,7 +141,7 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
                           horizontal: 5, vertical: 20),
                       enabled: false,
                       hintText:
-                          DateFormat('dd.MM.yyyy hh:mm').format(DateTime.now()),
+                          DateFormat('dd.MM.yyyy HH:mm').format(DateTime.now()),
                       textEditingController: endDate,
                     ),
                   ),
@@ -163,8 +163,12 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
               isSmoking: _isSmoking,
               isPetTransfer: _isPetTransfer,
               gender: _gender,
-              start: timeMilisecondStart?.microsecondsSinceEpoch,
-              end: timeMilisecondEnd?.microsecondsSinceEpoch,
+              start: timeMilisecondStart == null
+                  ? null
+                  : (timeMilisecondStart!.microsecondsSinceEpoch),
+              end: timeMilisecondEnd == null
+                  ? null
+                  : (timeMilisecondEnd!.microsecondsSinceEpoch),
             ),
           ),
         ),
@@ -179,52 +183,74 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
           context: context,
           builder: ((context) {
             return DatePickerDialog(
-              initialEntryMode: DatePickerEntryMode.calendarOnly,
               initialDate: DateTime.now(),
-              firstDate: DateTime(2010),
+              firstDate: DateTime.now(),
               lastDate: DateTime(2030),
             );
           }));
       if (value != null) {
+        final TimeOfDay? timePicked = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay(
+              hour: TimeOfDay.now().hour,
+              minute: TimeOfDay.now().minute,
+            ));
+
         if (typeDate == TypeDate.start) {
-          timeMilisecondStart = DateTime.tryParse(value);
-          startDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
+          final DateTime temp = DateTime(
+            value.year,
+            value.month,
+            value.day,
+            timePicked!.hour,
+            timePicked.minute,
+          );
+          timeMilisecondStart = temp;
+          startDate.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);
         } else {
-          timeMilisecondStart = DateTime.tryParse(value);
-          endDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
+          final DateTime temp = DateTime(
+            value.year,
+            value.month,
+            value.day,
+            timePicked!.hour,
+            timePicked.minute,
+          );
+          timeMilisecondEnd = temp;
+          endDate.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);
         }
       }
-    }
-    final value = await showDialog(
-      barrierDismissible: true,
-      useSafeArea: false,
-      barrierColor: Colors.transparent,
-      context: context,
-      builder: ((context) {
-        return Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Container(
-              height: 200,
-              color: Colors.grey[200],
-              child: CupertinoDatePicker(
-                use24hFormat: true,
-                onDateTimeChanged: (value) {
-                  if (typeDate == TypeDate.start) {
-                    timeMilisecondStart = value;
-                    startDate.text =
-                        DateFormat('dd.MM.yyyy hh:mm').format(value);
-                  } else {
-                    timeMilisecondEnd = value;
-                    endDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
-                  }
-                },
+    } else {
+      final value = await showDialog(
+        barrierDismissible: true,
+        useSafeArea: false,
+        barrierColor: Colors.transparent,
+        context: context,
+        builder: ((context) {
+          return Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Container(
+                height: 200,
+                color: Colors.grey[200],
+                child: CupertinoDatePicker(
+                  use24hFormat: true,
+                  onDateTimeChanged: (value) {
+                    if (typeDate == TypeDate.start) {
+                      timeMilisecondStart = value;
+                      startDate.text =
+                          DateFormat('dd.MM.yyyy HH:mm').format(value);
+                    } else {
+                      timeMilisecondEnd = value;
+                      endDate.text =
+                          DateFormat('dd.MM.yyyy HH:mm').format(value);
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
-        );
-      }),
-    );
+            ],
+          );
+        }),
+      );
+    }
   }
 
   Widget switchTileTitle({

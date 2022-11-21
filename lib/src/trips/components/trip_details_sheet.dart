@@ -7,6 +7,7 @@ import 'package:app_poezdka/bloc/chat/chat_builder.dart';
 import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/const/server/server_user.dart';
@@ -117,12 +118,20 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                 ),
               )
             : const SizedBox(),
-        Expanded(
+        BlocBuilder<UserTripsPassengerBloc, UserTripsPassengerState>(
+            builder: (context, state) {
+          List<List<TripModel>> tripsModels = [];
+          if (state is UserTripsPassengerLoaded) {
+            tripsModels.addAll(state.trips!);
+          }
+          return Expanded(
             child: FullWidthElevButton(
-          onPressed: () => bookTrip(context),
-          title: "Забронировать",
-          titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
-        ))
+              onPressed: () => bookTrip(context, tripsModels),
+              title: "Забронировать",
+              titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
+            ),
+          );
+        }),
       ],
     );
   }
@@ -622,7 +631,7 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
         .add(BookThisPackage(context, const [], widget.trip.tripId!));
   }
 
-  void bookTrip(context) async {
+  void bookTrip(context, List<List<TripModel>> tripsModels) async {
     final tripBloc = BlocProvider.of<TripsBloc>(context, listen: false);
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
@@ -752,33 +761,54 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
           }
         }
       } else {
-        InfoDialog().show(
-          height: 100,
-          buttonTitle: 'Хорошо',
-          title: 'Помните!',
-          description:
-              'Оплату за поездку необходимо производить только после того как услуга будет выполнена.',
-          children: [],
-          onPressed: () async {
-            await SmartDialog.dismiss();
-            if (widget.trip.car!.countOfPassengers! > 4) {
-              tripBloc.add(
-                BookThisTrip(
-                  context,
-                  [widget.trip.passengers!.length + 1],
-                  widget.trip.tripId!,
-                ),
-              );
-            } else {
-              pushNewScreen(
-                context,
-                screen: BookTrip(
-                  tripData: widget.trip,
-                ),
-              );
+        bool statebutton = false;
+        for (var element in tripsModels) {
+          for (var element1 in element) {
+            if (element1.tripId == widget.trip.tripId) {
+              statebutton = true;
+              break;
             }
-          },
-        );
+          }
+        }
+        if (statebutton) {
+          InfoDialog().show(
+            height: 100,
+            buttonTitle: 'А, ой, точняк',
+            title: 'Невозможно забронировать!',
+            description: 'Вы уже забронировали место в данной поездке',
+            children: [],
+          );
+        } else {
+          InfoDialog().show(
+            height: 100,
+            buttonTitle: 'Хорошо',
+            title: 'Помните!',
+            description:
+                'Оплату за поездку необходимо производить только после того как услуга будет выполнена.',
+            children: [],
+            onPressed: () async {
+              await SmartDialog.dismiss();
+              if (widget.trip.car!.countOfPassengers! > 4) {
+                tripBloc.add(
+                  BookThisTrip(
+                    context,
+                    [widget.trip.passengers!.length + 1],
+                    widget.trip.tripId!,
+                  ),
+                );
+              } else {
+                await pushNewScreen(
+                  context,
+                  screen: BookTrip(
+                    tripData: widget.trip,
+                  ),
+                );
+                Navigator.pop(context);
+                BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList());
+              }
+            },
+          );
+        }
       }
     } else {
       pushNewScreen(context, withNavBar: false, screen: const SignInScreen());

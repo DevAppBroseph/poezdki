@@ -17,20 +17,22 @@ class TripTileDefault extends StatelessWidget {
 
   @override
   // ignore: avoid_renaming_method_parameters
-  Widget build(BuildContext ctx) {
+  Widget build(BuildContext context) {
     final ownerImage = trip.owner?.photo;
     final btmSheet = BottomSheetCall();
     return ScaleButton(
       bound: 0.05,
       duration: const Duration(milliseconds: 200),
-      onTap: () => btmSheet.show(
-        ctx,
-        useRootNavigator: true,
-        topRadius: const Radius.circular(50),
-        child: TripDetailsSheet(
-          trip: trip,
-        ),
-      ),
+      onTap: () {
+        btmSheet.show(
+          context,
+          useRootNavigator: true,
+          topRadius: const Radius.circular(50),
+          child: TripDetailsSheet(
+            trip: trip,
+          ),
+        );
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         decoration: BoxDecoration(
@@ -66,9 +68,9 @@ class TripTileDefault extends StatelessWidget {
                   // Padding(
                   //   padding: const EdgeInsets.only(left: 5, right: 5),
                   //   child: Container(
-                  //     height: 5, 
+                  //     height: 5,
                   //     width: 5,
-                  //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), 
+                  //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50),
                   //     color: const Color.fromRGBO(191,212,228, 1))),
                   // ),
                   Text(
@@ -93,23 +95,31 @@ class TripTileDefault extends StatelessWidget {
     );
   }
 
-  double calculateDistance(lat1, lon1, lat2, lon2){
+  double calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
     var c = cos;
-    var a = 0.5 - c((lat2 - lat1) * p)/2 +
-        c(lat1 * p) * c(lat2 * p) *
-            (1 - c((lon2 - lon1) * p))/2;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
     return 12742 * asin(sqrt(a));
   }
 
   Widget _trip(TripModel? tripData) {
     double distance = 0;
-    
-    distance += calculateDistance(tripData!.departure!.coords!.lat!, tripData.departure!.coords!.lon!, tripData.stops![0].coords!.lat!, tripData.stops![0].coords!.lon!);
-    for(int i = 1; i < tripData.stops!.length - 1; i++) {
-      distance += calculateDistance(tripData.stops![i].coords!.lat!, tripData.stops![i].coords!.lon!, tripData.stops![i+1].coords!.lat!, tripData.stops![i+1].coords!.lon!);
+
+    distance += calculateDistance(
+        tripData!.departure!.coords!.lat!,
+        tripData.departure!.coords!.lon!,
+        tripData.stops![0].coords!.lat!,
+        tripData.stops![0].coords!.lon!);
+    for (int i = 1; i < tripData.stops!.length - 1; i++) {
+      distance += calculateDistance(
+          tripData.stops![i].coords!.lat!,
+          tripData.stops![i].coords!.lon!,
+          tripData.stops![i + 1].coords!.lat!,
+          tripData.stops![i + 1].coords!.lon!);
     }
-    distance += (distance * 20)/100;
+    distance += (distance * 20) / 100;
 
     final startTime = DateTime.fromMicrosecondsSinceEpoch(tripData.timeStart!);
     final endTime = DateTime.fromMicrosecondsSinceEpoch(
