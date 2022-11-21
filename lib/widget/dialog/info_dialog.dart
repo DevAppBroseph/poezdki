@@ -23,7 +23,7 @@ class InfoDialog {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
                 constraints:
-                    const BoxConstraints(minHeight: 351, maxHeight: 700),
+                    BoxConstraints(minHeight: height ?? 351, maxHeight: 700),
                 // height: height ?? 351,
                 width: width ?? 600,
                 padding: const EdgeInsets.all(10),

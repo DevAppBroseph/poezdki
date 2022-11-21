@@ -44,14 +44,17 @@ class _SearchRidesState extends State<SearchRides>
       GlobalKey<RefreshIndicatorState>();
 
   FilterModel filter = FilterModel(
-      isPackageTransfer: false,
-      isTwoBackSeat: false,
-      isBagadgeTransfer: false,
-      isChildSeat: false,
-      isConditioner: false,
-      isSmoking: false,
-      isPetTransfer: false,
-      gender: null);
+    isPackageTransfer: false,
+    isTwoBackSeat: false,
+    isBagadgeTransfer: false,
+    isChildSeat: false,
+    isConditioner: false,
+    isSmoking: false,
+    isPetTransfer: false,
+    gender: null,
+    start: null,
+    end: null,
+  );
 
   @override
   void initState() {
@@ -191,41 +194,40 @@ class _SearchRidesState extends State<SearchRides>
                 WayPointField(
                   type: WaypointType.start,
                   textField: GestureDetector(
-                    onTap: () => pickDestinition(
-                      context,
-                      startWay,
-                      from,
-                      "Откуда едем?",
-                      (destination) {
-                        setState(() {
-                          from = destination;
-                        });
-                      },
-                    ),
-                    child: LocationField(
-                      startWay: startWay, 
-                      hintText: 'Откуда', 
-                      icon: 'assets/img/gps.svg', 
-                      iconClear: startWay.text.isNotEmpty
-                      ? IconButton(
-                        padding: const EdgeInsets.only(right: 0, top: 5),
-                        alignment: Alignment.centerRight,
-                        onPressed: () {
-                          setState(() {
-                            from = null;
-                            startWay.clear();
-                          });
-                          fetchTrips(context, page: searchPageIndex);
-                        },
-                        icon: const Icon(
-                          CupertinoIcons.clear_circled,
-                          size: 18,
-                          color: kPrimaryDarkGrey,
-                        ),
-                      )
-                      : const SizedBox()
-                    )
-                  ),
+                      onTap: () => pickDestinition(
+                            context,
+                            startWay,
+                            from,
+                            "Откуда едем?",
+                            (destination) {
+                              setState(() {
+                                from = destination;
+                              });
+                            },
+                          ),
+                      child: LocationField(
+                          startWay: startWay,
+                          hintText: 'Откуда',
+                          icon: 'assets/img/gps.svg',
+                          iconClear: startWay.text.isNotEmpty
+                              ? IconButton(
+                                  padding:
+                                      const EdgeInsets.only(right: 0, top: 5),
+                                  alignment: Alignment.centerRight,
+                                  onPressed: () {
+                                    setState(() {
+                                      from = null;
+                                      startWay.clear();
+                                    });
+                                    fetchTrips(context, page: searchPageIndex);
+                                  },
+                                  icon: const Icon(
+                                    CupertinoIcons.clear_circled,
+                                    size: 18,
+                                    color: kPrimaryDarkGrey,
+                                  ),
+                                )
+                              : const SizedBox())),
                 ),
                 const WayPointField(
                   type: WaypointType.empty,
@@ -236,36 +238,35 @@ class _SearchRidesState extends State<SearchRides>
                 WayPointField(
                   type: WaypointType.start,
                   textField: GestureDetector(
-                    onTap: () => pickDestinition(
-                          context, endWay, to, "Куда едем?", (destination) {
-                        setState(() {
-                          to = destination;
-                        });
-                      }),
-                    child: LocationField(
-                      startWay: endWay, 
-                      hintText: 'Куда', 
-                      icon: 'assets/img/gps.svg', 
-                      iconClear: endWay.text.isNotEmpty
-                      ? IconButton(
-                        padding: const EdgeInsets.only(right: 0, top: 5),
-                        alignment: Alignment.centerRight,
-                        onPressed: () {
-                          setState(() {
-                            to = null;
-                            endWay.clear();
-                          });
-                          fetchTrips(context, page: searchPageIndex);
-                        },
-                        icon: const Icon(
-                          CupertinoIcons.clear_circled,
-                          size: 18,
-                          color: kPrimaryDarkGrey,
-                        ),
-                      )
-                      : const SizedBox()
-                    )
-                  ),
+                      onTap: () => pickDestinition(
+                              context, endWay, to, "Куда едем?", (destination) {
+                            setState(() {
+                              to = destination;
+                            });
+                          }),
+                      child: LocationField(
+                          startWay: endWay,
+                          hintText: 'Куда',
+                          icon: 'assets/img/gps.svg',
+                          iconClear: endWay.text.isNotEmpty
+                              ? IconButton(
+                                  padding:
+                                      const EdgeInsets.only(right: 0, top: 5),
+                                  alignment: Alignment.centerRight,
+                                  onPressed: () {
+                                    setState(() {
+                                      to = null;
+                                      endWay.clear();
+                                    });
+                                    fetchTrips(context, page: searchPageIndex);
+                                  },
+                                  icon: const Icon(
+                                    CupertinoIcons.clear_circled,
+                                    size: 18,
+                                    color: kPrimaryDarkGrey,
+                                  ),
+                                )
+                              : const SizedBox())),
                 ),
               ],
             ),
@@ -332,6 +333,8 @@ class _SearchRidesState extends State<SearchRides>
         twoPlacesInBehind: filter.isTwoBackSeat,
         conditioner: filter.isConditioner,
         gender: filter.gender?.apiTitle,
+        start: filter.start,
+        end: filter.end,
       ),
     );
 

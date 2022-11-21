@@ -3,6 +3,7 @@ import 'package:app_poezdka/widget/button/icon_box_button.dart';
 import 'package:app_poezdka/widget/divider/row_divider.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class Referal extends StatelessWidget {
@@ -27,9 +28,9 @@ class Referal extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   subtitle: Text(
-                      "\nЗа каждого нового пользователя? кто установит приложение по вашей ссылке, Вы получите 100 баллов."),
+                      "\nЗа каждого нового пользователя кто установит приложение по вашей ссылке, Вы получите 100 баллов."),
                 ),
-                referalBox(),
+                referalBox(context),
                 const KDivider(
                     margin: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                     text: "Поделиться"),
@@ -40,11 +41,20 @@ class Referal extends StatelessWidget {
         ));
   }
 
-  Widget referalBox() {
+  Widget referalBox(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
       child: InkWell(
-        onTap: () {},
+        onTap: () async {
+          await Clipboard.setData(
+              const ClipboardData(text: "www.link//32ws2cw"));
+          const _snackBar = SnackBar(
+            backgroundColor: kPrimaryColor,
+            content: Text('Скопировано'),
+            duration: Duration(seconds: 1),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(_snackBar);
+        },
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10), color: kPrimaryColor),
@@ -66,7 +76,7 @@ class Referal extends StatelessWidget {
   Widget shareButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: const[
+      children: const [
         IconBoxButton(
           child: Icon(
             MaterialCommunityIcons.vk,

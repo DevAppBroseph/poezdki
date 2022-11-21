@@ -5,6 +5,7 @@ import 'package:app_poezdka/src/profile/components/profile_button.dart';
 import 'package:app_poezdka/src/profile/faq.dart';
 import 'package:app_poezdka/src/profile/offert.dart';
 import 'package:app_poezdka/src/profile/rating.dart';
+import 'package:app_poezdka/src/profile/referal.dart';
 import 'package:app_poezdka/src/profile/review.dart';
 import 'package:app_poezdka/src/profile/users_confirm.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
@@ -38,11 +39,11 @@ class ProfileScreen extends StatelessWidget {
                   title: "Рейтинг",
                   icon: 'rate_star'),
               // const ProfileBtn(title: "Бонусы", icon: 'dollar-circlebonus'),
-              // ProfileBtn(
-              //     onPressed: () =>
-              //         pushNewScreen(context, screen: const Referal()),
-              //     title: "Реферальная система",
-              //     icon: 'profile-2userreferal'),
+              ProfileBtn(
+                  onPressed: () =>
+                      pushNewScreen(context, screen: const Referal()),
+                  title: "Реферальная система",
+                  icon: 'profile-2user'),
               // ProfileBtn(
               //     onPressed: () =>
               //         pushNewScreen(context, screen: const Balance()),

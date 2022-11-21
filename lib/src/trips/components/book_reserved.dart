@@ -98,42 +98,44 @@ class _BookTripState extends State<BookTripReserves> {
             final state = BlocProvider.of<ProfileBloc>(context).state;
             final List<int> seats = [];
             if (state is ProfileLoaded) {
-              if(state.user.phone == null || state.user.phone == '') {
+              if (state.user.phone == null || state.user.phone == '') {
                 phoneController.text = '';
                 InfoDialog().show(
-                  buttonTitle: 'Подтвердить',
-                  title: 'Введите ваш номер',
-                  children: [
-                    KFormField(
-                      hintText: '+79876543210',
-                      textInputType: TextInputType.phone,
-                      textEditingController: phoneController,
-                      validateFunction: Validations.validatePhone,
-                      inputAction: TextInputAction.done,
-                      formatters: [
-                        LengthLimitingTextInputFormatter(12),
-                      ],
-                    ),
-                  ],
-                  onPressed: () {
-                    final validate = Validations.validatePhone(phoneController.text);
-                    if(validate == null) {
-                      final dio = Dio();
-                      dio.options.headers["Authorization"] = state.user.token;
-                      dio.put(addPhone, data: {'phone_number': phoneController.text}).then((value) {
-                        _editUser(state);
-                        SmartDialog.dismiss();
-                      });
-                  }
-                  }
-                );
+                    buttonTitle: 'Подтвердить',
+                    title: 'Введите ваш номер',
+                    children: [
+                      KFormField(
+                        hintText: '+79876543210',
+                        textInputType: TextInputType.phone,
+                        textEditingController: phoneController,
+                        validateFunction: Validations.validatePhone,
+                        inputAction: TextInputAction.done,
+                        formatters: [
+                          LengthLimitingTextInputFormatter(12),
+                        ],
+                      ),
+                    ],
+                    onPressed: () {
+                      final validate =
+                          Validations.validatePhone(phoneController.text);
+                      if (validate == null) {
+                        final dio = Dio();
+                        dio.options.headers["Authorization"] = state.user.token;
+                        dio.put(addPhone, data: {
+                          'phone_number': phoneController.text
+                        }).then((value) {
+                          _editUser(state);
+                          SmartDialog.dismiss();
+                        });
+                      }
+                    });
               } else {
-                  for (var element in selectedSeats) 
-                    seats.add(element.seatNumber);
-                  widget.tripData.seats = seats;
-                  tripBloc.add(CreateUserTrip(context, widget.tripData));
-                  // Navigator.pop(context, true);
-                  Navigator.pop(context, true);
+                for (var element in selectedSeats)
+                  seats.add(element.seatNumber);
+                widget.tripData.seats = seats;
+                tripBloc.add(CreateUserTrip(context, widget.tripData));
+                // Navigator.pop(context, true);
+                Navigator.pop(context, true);
               }
             }
           }),
@@ -158,8 +160,6 @@ class _BookTripState extends State<BookTripReserves> {
       ),
     );
   }
-
-  
 
   Widget _placePicker(context) {
     return Stack(

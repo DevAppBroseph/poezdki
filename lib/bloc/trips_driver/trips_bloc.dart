@@ -33,6 +33,8 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
       twoPlacesInBehind: event.twoPlacesInBehind,
       conditioner: event.conditioner,
       gender: event.gender,
+      start: event.start,
+      end: event.end,
     );
     trips != null ? add(UpdateTripsList(trips)) : add(ThrowAllTripsError());
   }
@@ -70,8 +72,10 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     add(LoadAllTripsList());
   }
 
-  void _deletePassengerInTrip(DeletePassengerInTrip event, Emitter<TripsState> emit) async {
-    await tripService.cancelPassengerInTrip(tripId: event.tripId, userId: event.userId);
+  void _deletePassengerInTrip(
+      DeletePassengerInTrip event, Emitter<TripsState> emit) async {
+    await tripService.cancelPassengerInTrip(
+        tripId: event.tripId, userId: event.userId);
     add(LoadAllTripsList());
   }
 

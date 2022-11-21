@@ -195,7 +195,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                         model: selectModel,
                         color: carColor.text.trim(),
                         vehicleNumber: carNumber.text.trim(),
-                        countOfPassengers: 4,
+                        countOfPassengers: int.parse(carSeats.text),
                       ),
                     ),
                   );

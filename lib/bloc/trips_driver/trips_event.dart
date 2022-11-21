@@ -15,6 +15,8 @@ class LoadAllTripsList extends TripsEvent {
   final bool? twoPlacesInBehind;
   final bool? conditioner;
   final String? gender;
+  final int? start;
+  final int? end;
 
   LoadAllTripsList(
       {this.page,
@@ -27,7 +29,9 @@ class LoadAllTripsList extends TripsEvent {
       this.smoke,
       this.twoPlacesInBehind,
       this.conditioner,
-      this.gender});
+      this.gender,
+      this.start,
+      this.end,});
 }
 
 class UpdateTripsList extends TripsEvent {

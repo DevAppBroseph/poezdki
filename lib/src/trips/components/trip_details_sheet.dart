@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
@@ -9,6 +11,7 @@ import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/const/server/server_user.dart';
 import 'package:app_poezdka/export/services.dart';
+import 'package:app_poezdka/model/country_code.dart';
 import 'package:app_poezdka/model/passenger_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/model/user_model.dart';
@@ -26,23 +29,57 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/services.dart' show LengthLimitingTextInputFormatter, rootBundle;
+import 'package:flutter/services.dart'
+    show LengthLimitingTextInputFormatter, rootBundle;
 
 import 'trip_details_info.dart';
 
-class TripDetailsSheet extends StatelessWidget {
+class TripDetailsSheet extends StatefulWidget {
   final TripModel trip;
   final bool isMyTrips;
   TripDetailsSheet({Key? key, required this.trip, this.isMyTrips = false})
       : super(key: key);
 
+  @override
+  State<TripDetailsSheet> createState() => _TripDetailsSheetState();
+}
+
+class _TripDetailsSheetState extends State<TripDetailsSheet> {
   final TextEditingController phoneController = TextEditingController();
+
+  final streamController = StreamController<bool>();
+
+  final btmSheet = BottomSheetCallAwait();
+
+  CountryCode? countryCode;
+
+  int maxLength = 10;
+
+  String selectCode = '+7';
+
+  void loadDB() async {
+    String str = await rootBundle.loadString('assets/phone/code_phone.json');
+    countryCode = CountryCode.fromJson(json.decode(str));
+  }
+
+  @override
+  void initState() {
+    loadDB();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    streamController.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +91,12 @@ class TripDetailsSheet extends StatelessWidget {
         _div(),
         _rideInfo(),
         _div(),
-        if (isMyTrips)
-          if (trip.passengers!.isNotEmpty) _passengerInfo(),
-        if (isMyTrips)
-          if (trip.passengers!.isNotEmpty) _div(),
+        if (widget.isMyTrips)
+          if (widget.trip.passengers!.isNotEmpty) _passengerInfo(),
+        if (widget.isMyTrips)
+          if (widget.trip.passengers!.isNotEmpty) _div(),
         // _rideComment(),
-        if (!isMyTrips) _tripButtons(context),
+        if (!widget.isMyTrips) _tripButtons(context),
         const SizedBox(
           height: 30,
         )
@@ -70,7 +107,7 @@ class TripDetailsSheet extends StatelessWidget {
   Widget _tripButtons(context) {
     return Row(
       children: [
-        trip.package!
+        widget.trip.package!
             ? Expanded(
                 child: FullWidthElevButton(
                   onPressed: () => bookPackage(context),
@@ -91,14 +128,9 @@ class TripDetailsSheet extends StatelessWidget {
   }
 
   // Widget _rideComment() {
-  //   return const ListTile(
-  //     title: Text(loremIpsum),
-  //   );
-  // }
-
   Widget _tripData() {
     return RideDetailsTrip(
-      tripData: trip,
+      tripData: widget.trip,
     );
   }
 
@@ -108,7 +140,7 @@ class TripDetailsSheet extends StatelessWidget {
         padding: const EdgeInsets.only(left: 20.0),
         child: RichText(
           text: TextSpan(
-              text: trip.price.toString(),
+              text: widget.trip.price.toString(),
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 18,
@@ -127,12 +159,12 @@ class TripDetailsSheet extends StatelessWidget {
 
   Widget _rideInfo() {
     final mapInfo = {
-      'Перевозка багажа': trip.package,
-      '2 места на заднем сиденье': trip.twoPlacesInBehind,
-      'Есть детское кресло': trip.babyChair,
-      'Можно с животными': trip.animals,
-      'Кондиционер': trip.conditioner,
-      'Можно курить': trip.smoke
+      'Перевозка багажа': widget.trip.package,
+      '2 места на заднем сиденье': widget.trip.twoPlacesInBehind,
+      'Есть детское кресло': widget.trip.babyChair,
+      'Можно с животными': widget.trip.animals,
+      'Кондиционер': widget.trip.conditioner,
+      'Можно курить': widget.trip.smoke
     };
 
     return Column(
@@ -142,7 +174,7 @@ class TripDetailsSheet extends StatelessWidget {
           trailing: SizedBox(
             width: 150,
             child: Text(
-              "${trip.car?.mark ?? ""} ${trip.car?.model ?? ""} ${trip.car?.color ?? ""} ",
+              "${widget.trip.car?.mark ?? ""} ${widget.trip.car?.model ?? ""} ${widget.trip.car?.color ?? ""} ",
               maxLines: 2,
               overflow: TextOverflow.clip,
             ),
@@ -180,9 +212,9 @@ class TripDetailsSheet extends StatelessWidget {
   }
 
   Widget _passengerInfo() {
-    if (trip.passengers!.any((element) => element.seat!.contains(0))) {
-      if (trip.passengers!.last.id != 0) {
-        trip.passengers!.add(PassengerModel(
+    if (widget.trip.passengers!.any((element) => element.seat!.contains(0))) {
+      if (widget.trip.passengers!.last.id != 0) {
+        widget.trip.passengers!.add(PassengerModel(
           id: 0,
           phone: '',
           firstname: '',
@@ -217,9 +249,11 @@ class TripDetailsSheet extends StatelessWidget {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               // padding: EdgeInsets.all(5),
-              itemCount: trip.passengers?.length,
+              itemCount: widget.trip.passengers?.length,
               itemBuilder: (context, int index) {
-                if(trip.owner!.id == trip.passengers![index].id || trip.passengers![index].id == 0) {
+                if (widget.trip.owner!.id ==
+                        widget.trip.passengers![index].id ||
+                    widget.trip.passengers![index].id == 0) {
                   return const SizedBox();
                 }
 
@@ -244,8 +278,10 @@ class TripDetailsSheet extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
                       onTap: () async {
-                        final tripsBloc = BlocProvider.of<TripsBloc>(context, listen: false);
-                        tripsBloc.add(DeletePassengerInTrip(trip.tripId!, trip.passengers![index].id!));
+                        final tripsBloc =
+                            BlocProvider.of<TripsBloc>(context, listen: false);
+                        tripsBloc.add(DeletePassengerInTrip(widget.trip.tripId!,
+                            widget.trip.passengers![index].id!));
 
                         final btmSheet = BottomSheetCall();
                         btmSheet.show(
@@ -258,45 +294,54 @@ class TripDetailsSheet extends StatelessWidget {
                       child: Center(
                         child: ListTile(
                           leading: UserCachedImage(
-                            img: trip.passengers![index].photo,
+                            img: widget.trip.passengers![index].photo,
                           ),
-                          title: Text(trip.passengers![index].firstname!,
+                          title: Text(
+                            widget.trip.passengers![index].firstname!,
                             style: const TextStyle(
                                 fontFamily: '.SF Pro Display', fontSize: 15),
                           ),
-                          subtitle: trip.passengers![index].id != 0
+                          subtitle: widget.trip.passengers![index].id != 0
                               ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  trip.car == null
-                                  ? const Text('водитель')
-                                  : Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                        _getSeat(
-                                          trip.passengers![index].seat!
-                                              .where((element) => element != 0)
-                                              .length,
-                                        ),
-                                        style: const TextStyle(
-                                          fontFamily: '.SF Pro Display',
-                                        ),
-                                      ),
-                                      Text(
-                                        trip.passengers![index].seat!.contains(0)
-                                            ? 'посылка'
-                                            : '',
-                                        style: const TextStyle(
-                                            fontFamily: '.SF Pro Display', fontSize: 15),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              )
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    widget.trip.car == null
+                                        ? const Text('водитель')
+                                        : Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                _getSeat(
+                                                  widget.trip.passengers![index]
+                                                      .seat!
+                                                      .where((element) =>
+                                                          element != 0)
+                                                      .length,
+                                                ),
+                                                style: const TextStyle(
+                                                  fontFamily: '.SF Pro Display',
+                                                ),
+                                              ),
+                                              Text(
+                                                widget.trip.passengers![index]
+                                                        .seat!
+                                                        .contains(0)
+                                                    ? 'посылка'
+                                                    : '',
+                                                style: const TextStyle(
+                                                    fontFamily:
+                                                        '.SF Pro Display',
+                                                    fontSize: 15),
+                                              )
+                                            ],
+                                          )
+                                  ],
+                                )
                               : null,
                         ),
                       ),
@@ -326,7 +371,8 @@ class TripDetailsSheet extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () {
-                        chatToDriver(context, id: trip.passengers![index].id);
+                        chatToDriver(context,
+                            id: widget.trip.passengers![index].id);
                       },
                       child: Center(
                         child: ListTile(
@@ -348,7 +394,7 @@ class TripDetailsSheet extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15),
                       onTap: () async {
                         final userRepo = SecureStorage.instance;
-                        final passengers = trip.passengers;
+                        final passengers = widget.trip.passengers;
                         final userId = await userRepo.getUserId();
                         if (passengers?[index].id != int.parse(userId!)) {
                           Navigator.pop(context);
@@ -395,7 +441,7 @@ class TripDetailsSheet extends StatelessWidget {
                                       BlocProvider.of<TripsBloc>(context).add(
                                         AddReview(
                                           context,
-                                          trip.passengers![index].id!,
+                                          widget.trip.passengers![index].id!,
                                           reviewController.text,
                                           ratingCount,
                                         ),
@@ -431,7 +477,8 @@ class TripDetailsSheet extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () async {
-                        final url = "tel:${trip.passengers![index].phoneNumber}";   
+                        final url =
+                            "tel:${widget.trip.passengers![index].phoneNumber}";
                         if (await canLaunch(url)) {
                           await launch(url);
                         } else {
@@ -441,7 +488,8 @@ class TripDetailsSheet extends StatelessWidget {
                       child: Center(
                         child: ListTile(
                           title: const Text('Позвонить'),
-                          trailing: SvgPicture.asset("$svgPath/call-calling.svg"),
+                          trailing:
+                              SvgPicture.asset("$svgPath/call-calling.svg"),
                         ),
                       ),
                     ),
@@ -455,13 +503,19 @@ class TripDetailsSheet extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () async {
-                        Navigator.of(context)..pop()..pop();
-                        BlocProvider.of<UserTripsDriverBloc>(context).add(LoadUserTripsList());
+                        Navigator.of(context)
+                          ..pop()
+                          ..pop();
+                        BlocProvider.of<UserTripsDriverBloc>(context)
+                            .add(LoadUserTripsList());
                       },
                       child: const Center(
                         child: ListTile(
                           title: Text('Удалить'),
-                          trailing: Icon(Icons.delete, color: Colors.red,),
+                          trailing: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
                         ),
                       ),
                     ),
@@ -498,26 +552,32 @@ class TripDetailsSheet extends StatelessWidget {
           color: kPrimaryWhite, borderRadius: BorderRadius.circular(10)),
       child: ListTile(
         leading: UserCachedImage(
-          img: trip.owner?.photo,
+          img: widget.trip.owner?.photo,
         ),
         title: Text(
-          (trip.owner?.firstname != null ? trip.owner!.firstname! : '') +
+          (widget.trip.owner?.firstname != null
+                  ? widget.trip.owner!.firstname!
+                  : '') +
               ' ' +
-              (trip.owner?.lastname != null ? trip.owner!.lastname! : ''),
+              (widget.trip.owner?.lastname != null
+                  ? widget.trip.owner!.lastname!
+                  : ''),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            trip.owner?.phone != null
+            widget.trip.owner?.phone != null
                 ? IconButton(
                     onPressed: () => callToDriver(context),
                     icon: SvgPicture.asset("$svgPath/call-calling.svg"),
                   )
                 : const SizedBox(),
             IconButton(
-              onPressed: () => chatToDriver(context, id: trip.owner?.id, phone: trip.owner!.phoneNumber),
+              onPressed: () => chatToDriver(context,
+                  id: widget.trip.owner?.id,
+                  phone: widget.trip.owner!.phoneNumber),
               icon: SvgPicture.asset("$svgPath/messages-2.svg"),
             ),
             IconButton(
@@ -532,19 +592,22 @@ class TripDetailsSheet extends StatelessWidget {
 
   void share() async {
     ByteData bytes = await rootBundle.load('assets/img/label.png');
-    Uint8List image = bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
+    Uint8List image =
+        bytes.buffer.asUint8List(bytes.offsetInBytes, bytes.lengthInBytes);
     final temp = await getTemporaryDirectory();
     final path = '${temp.path}/image.jpg';
     File(path).writeAsBytesSync(image);
 
-    DateTime date = DateTime.fromMicrosecondsSinceEpoch(trip.timeStart!);
+    DateTime date = DateTime.fromMicrosecondsSinceEpoch(widget.trip.timeStart!);
     var format = DateFormat("yyyy/MM/dd hh:mm");
     var dateString = format.format(date);
 
-    String linkApp = Platform.isAndroid 
-      ? 'https://play.google.com/store/apps/details?id=com.broseph.poezdka' 
-      : 'https://apps.apple.com/by/app/%D0%BF%D0%BE%D0%B5%D0%B7%D0%B4%D0%BA%D0%B0-%D0%B1%D1%80%D0%BE%D0%BD%D0%B8%D1%80%D1%83%D0%B9-%D0%BF%D0%BE%D0%B5%D0%B7%D0%B4%D0%BA%D1%83/id1640484502';
-    Share.shareFiles([path], text: '${trip.departure?.name}-${trip.stops!.last.name}\n$linkApp\n$dateString');
+    String linkApp = Platform.isAndroid
+        ? 'https://play.google.com/store/apps/details?id=com.broseph.poezdka'
+        : 'https://apps.apple.com/by/app/%D0%BF%D0%BE%D0%B5%D0%B7%D0%B4%D0%BA%D0%B0-%D0%B1%D1%80%D0%BE%D0%BD%D0%B8%D1%80%D1%83%D0%B9-%D0%BF%D0%BE%D0%B5%D0%B7%D0%B4%D0%BA%D1%83/id1640484502';
+    Share.shareFiles([path],
+        text:
+            '${widget.trip.departure?.name}-${widget.trip.stops!.last.name}\n$linkApp\n$dateString');
   }
 
   Widget _div() {
@@ -556,7 +619,7 @@ class TripDetailsSheet extends StatelessWidget {
 
   void bookPackage(context) async {
     BlocProvider.of<TripsBloc>(context, listen: false)
-      .add(BookThisPackage(context, const [], trip.tripId!));
+        .add(BookThisPackage(context, const [], widget.trip.tripId!));
   }
 
   void bookTrip(context) async {
@@ -567,52 +630,156 @@ class TripDetailsSheet extends StatelessWidget {
       // if (passengers!.any((p) => p.id == int.parse(userId!))) {
       //   null;
       // } else {
-      if(trip.car == null) {
+      if (widget.trip.car == null) {
         final state = BlocProvider.of<ProfileBloc>(context).state;
-            if (state is ProfileLoaded) {
-              if(state.user.phone == null || state.user.phone == '') {
-                phoneController.text = '';
-                InfoDialog().show(
-                  buttonTitle: 'Подтвердить',
-                  title: 'Введите ваш номер',
-                  children: [
-                    PhoneTextField(
+        if (state is ProfileLoaded) {
+          if (state.user.phone == null || state.user.phone == '') {
+            phoneController.text = '';
+            InfoDialog().show(
+                buttonTitle: 'Подтвердить',
+                title: 'Введите ваш номер',
+                children: [
+                  StreamBuilder<bool>(
+                      initialData: true,
+                      stream: streamController.stream,
+                      builder: (context, snapshot) {
+                        return PhoneTextField(
                             hintText: 'Телефон',
-                            prefixIcon: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                              child: Text('+7'),
+                            prefixIcon: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: GestureDetector(
+                                onTap: () async {
+                                  Country? select = await btmSheet.wait(
+                                    context,
+                                    useRootNavigator: true,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(24),
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        padding: EdgeInsets.zero,
+                                        physics: const ClampingScrollPhysics(),
+                                        itemCount: countryCode!.country.length,
+                                        itemBuilder: ((context, index) {
+                                          return MaterialButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop(
+                                                  countryCode!.country[index]);
+                                            },
+                                            child: SizedBox(
+                                              height: 30,
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      countryCode!
+                                                          .country[index].name!,
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                        color: Colors.grey,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const Spacer(),
+                                                  Text(
+                                                    countryCode!.country[index]
+                                                        .dialCode!,
+                                                    style: const TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    ),
+                                  );
+                                  if (select != null) {
+                                    maxLength = int.parse(select.lengthPhone!) -
+                                        select.dialCode!.length;
+                                    selectCode = select.dialCode!;
+                                    streamController.add(true);
+                                  }
+                                },
+                                child: SizedBox(
+                                  width: 60,
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      selectCode,
+                                      style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis,
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                             controller: phoneController,
                             textInputType: TextInputType.number,
                             textInputAction: TextInputAction.done,
-                            inputFormatters: [LengthLimitingTextInputFormatter(10)],
-                            validateFunction: Validations.validatePhone)
-                  ],
-                  onPressed: () {
-                    final validate = Validations.validatePhone(phoneController.text);
-                    if(validate == null) {
-                      final dio = Dio();
-                      dio.options.headers["Authorization"] = state.user.token;
-                      dio.put(addPhone, data: {'phone_number': '+7' + phoneController.text}).then((value) {
-                        _editUser(state, context);
-                        // SmartDialog.dismiss();
-                      });
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(maxLength)
+                            ],
+                            validateFunction: Validations.validatePhone);
+                      })
+                ],
+                onPressed: () {
+                  final validate =
+                      Validations.validatePhone(phoneController.text);
+                  if (validate == null) {
+                    final dio = Dio();
+                    dio.options.headers["Authorization"] = state.user.token;
+                    dio.put(addPhone, data: {
+                      'phone_number': selectCode + phoneController.text
+                    }).then((value) {
+                      _editUser(state, context);
+                      // SmartDialog.dismiss();
+                    });
                   }
-                  }
-                );
-              } else {
-                  tripBloc.add(BookThisTrip(context, const [], trip.tripId!));
-              }
-            }
+                });
+          } else {
+            tripBloc.add(BookThisTrip(context, const [], widget.trip.tripId!));
+          }
+        }
       } else {
-        pushNewScreen(
-          context,
-          screen: BookTrip(
-            tripData: trip,
-          ),
+        InfoDialog().show(
+          height: 100,
+          buttonTitle: 'Хорошо',
+          title: 'Помните!',
+          description:
+              'Оплату за поездку необходимо производить только после того как услуга будет выполнена.',
+          children: [],
+          onPressed: () async {
+            await SmartDialog.dismiss();
+            if (widget.trip.car!.countOfPassengers! > 4) {
+              tripBloc.add(
+                BookThisTrip(
+                  context,
+                  [widget.trip.passengers!.length + 1],
+                  widget.trip.tripId!,
+                ),
+              );
+            } else {
+              pushNewScreen(
+                context,
+                screen: BookTrip(
+                  tripData: widget.trip,
+                ),
+              );
+            }
+          },
         );
       }
-      // }
     } else {
       pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
     }
@@ -626,7 +793,7 @@ class TripDetailsSheet extends StatelessWidget {
           firstname: state.user.firstname,
           email: state.user.email,
           lastname: state.user.lastname,
-          phone: '+7' + phoneController.text,
+          phone: selectCode + phoneController.text,
           gender: state.user.gender,
           birth: state.user.birth,
           cars: state.user.cars,
@@ -642,10 +809,10 @@ class TripDetailsSheet extends StatelessWidget {
     if (token != null) {
       // final passengers = trip.passengers;
       // if (passengers!.any((p) => p.id == int.parse(userId!))) {
-        launchUrl(Uri(scheme: 'tel', path: '${trip.owner?.phone}'));
+      launchUrl(Uri(scheme: 'tel', path: '${widget.trip.owner?.phone}'));
       // } else {
-        // ErrorDialogs()
-            // .showError("Только пассажиры могут связаться с водителем.");
+      // ErrorDialogs()
+      // .showError("Только пассажиры могут связаться с водителем.");
       // }
     } else {
       pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
@@ -658,18 +825,18 @@ class TripDetailsSheet extends StatelessWidget {
     final userId = await userRepo.getUserId();
     if (token != null) {
       if (id == null) {
-        final passengers = trip.passengers;
+        final passengers = widget.trip.passengers;
         if (passengers!.any((p) => p.id == int.parse(userId!))) {
           BlocProvider.of<ChatBloc>(context).testController.add([]);
           pushNewScreen(
             context,
             withNavBar: false,
             screen: ChatsBuilder(
-              ownerId: trip.owner!.id!,
+              ownerId: widget.trip.owner!.id!,
               senderId: int.parse(userId!),
               token: token,
               phone: phone!,
-              receiverId: trip.owner!.id!,
+              receiverId: widget.trip.owner!.id!,
             ),
           );
         } else {

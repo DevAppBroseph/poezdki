@@ -1,13 +1,16 @@
 import 'dart:convert';
 import 'package:app_poezdka/const/theme.dart';
+import 'package:app_poezdka/model/country_code.dart';
 import 'package:app_poezdka/model/is_correct.dart';
 import 'package:app_poezdka/model/reset_password.dart';
 import 'package:app_poezdka/src/auth/signup_email_phone.dart';
 import 'package:app_poezdka/util/validation.dart';
+import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -40,11 +43,22 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
   int pin = 0;
 
   final errorDialog = ErrorDialogs();
+  final btmSheet = BottomSheetCallAwait();
+
+  CountryCode? countryCode;
+  int maxLength = 10;
+  String selectCode = '+7';
+
+  void loadDB() async {
+    String str = await rootBundle.loadString('assets/phone/code_phone.json');
+    countryCode = CountryCode.fromJson(json.decode(str));
+  }
 
   @override
   void initState() {
     tabController = TabController(length: 2, vsync: this);
     super.initState();
+    loadDB();
   }
 
   @override
@@ -131,7 +145,7 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
         options: Options(
           validateStatus: ((status) => status! >= 200),
         ),
-        data: jsonEncode({"login": value, "is_first_auth": true}),
+        data: jsonEncode({"login": '$selectCode$value', "is_first_auth": true}),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
         setState(() {
@@ -147,7 +161,7 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
         errorDialog.showError(res.data);
       }
     } catch (e) {
-      errorDialog.showError('Введите Телефон или E-Mail.');
+      errorDialog.showError('Введите Телефон.');
       currentPage++;
       tabController!.animateTo(
         currentPage,
@@ -183,7 +197,7 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
         }
       });
     } catch (e) {
-      errorDialog.showError('Код неправильно указан1.');
+      errorDialog.showError('Код неправильно указан.');
     }
   }
 
@@ -193,16 +207,99 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
         const Padding(
           padding: EdgeInsets.only(left: 40, right: 40, top: 80),
           child: Text(
-            'Для сброса кода, введите\nномер Телефона или E-mail.',
+            'Для сброса кода, введите\nномер Телефона.',
             textAlign: TextAlign.center,
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15, top: 18),
-          child: KFormField(
-            hintText: 'Телефон или E-mail *',
-            textEditingController: email,
-            validateFunction: Validations.validateEmail,
+          padding:
+              const EdgeInsets.only(left: 15, right: 15, top: 18, bottom: 18),
+          child: Row(
+            children: [
+              Expanded(
+                child: KFormField(
+                  textInputType: TextInputType.number,
+                  prefixicon: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        Country? select = await btmSheet.wait(
+                          context,
+                          useRootNavigator: true,
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              physics: const ClampingScrollPhysics(),
+                              itemCount: countryCode!.country.length,
+                              itemBuilder: ((context, index) {
+                                return MaterialButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pop(countryCode!.country[index]);
+                                  },
+                                  child: SizedBox(
+                                    height: 30,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            countryCode!.country[index].name!,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.w400,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Text(
+                                          countryCode!.country[index].dialCode!,
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ),
+                          ),
+                        );
+                        if (select != null) {
+                          setState(() {
+                            maxLength = int.parse(select.lengthPhone!) - select.dialCode!.length;
+                            selectCode = select.dialCode!;
+                          });
+                        }
+                      },
+                      child: SizedBox(
+                        width: 60,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            selectCode,
+                            style: const TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                              fontSize: 16,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  hintText: 'Телефон',
+                  textEditingController: email,
+                  validateFunction: Validations.validateEmail,
+                  formatters: [LengthLimitingTextInputFormatter(maxLength)],
+                ),
+              ),
+            ],
           ),
         ),
       ],

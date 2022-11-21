@@ -60,7 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         FullWidthElevButtonChild(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           color: kPrimaryWhite,
-          child: const Text("E-mail или телефон"),
+          child: const Text("Телефон"),
           onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(

@@ -1,0 +1,82 @@
+{
+	"country": [
+		{
+			"name": "Армения",
+			"dial_code": "+374",
+			"code": "AM",
+			"length_phone": "14"
+		},
+		{
+			"name": "Азербайджан",
+			"dial_code": "+994",
+			"code": "AZ",
+			"length_phone": "13"
+		},
+		{
+			"name": "Беларусь",
+			"dial_code": "+375",
+			"code": "BY",
+			"length_phone": "13"
+		},
+		{
+			"name": "Эстония",
+			"dial_code": "+372",
+			"code": "EE",
+			"length_phone": "12"
+		},
+		{
+			"name": "Кыргыстан",
+			"dial_code": "+996",
+			"code": "KG",
+			"length_phone": "14"
+		},
+		{
+			"name": "Латвия",
+			"dial_code": "+371",
+			"code": "LV",
+			"length_phone": "12"
+		},
+		{
+			"name": "Литва",
+			"dial_code": "+370",
+			"code": "LT",
+			"length_phone": "12"
+		},
+		{
+			"name": "Румыния",
+			"dial_code": "+40",
+			"code": "RO",
+			"length_phone": "12"
+		},
+		{
+			"name": "Таджикистан",
+			"dial_code": "+992",
+			"code": "TJ",
+			"length_phone": "13"
+		},
+		{
+			"name": "Тукрменистан",
+			"dial_code": "+993",
+			"code": "TM",
+			"length_phone": "12"
+		},
+		{
+			"name": "Украина",
+			"dial_code": "+380",
+			"code": "UA",
+			"length_phone": "13"
+		},
+		{
+			"name": "Узбекистан",
+			"dial_code": "+998",
+			"code": "UZ",
+			"length_phone": "13"
+		},
+		{
+			"name": "Россия",
+			"dial_code": "+7",
+			"code": "RU",
+			"length_phone": "12"
+		}
+	]
+}

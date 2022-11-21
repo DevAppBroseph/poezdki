@@ -32,6 +32,8 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
   GenderModel? _gender;
   TextEditingController startDate = TextEditingController();
   TextEditingController endDate = TextEditingController();
+  DateTime? timeMilisecondStart;
+  DateTime? timeMilisecondEnd;
 
   @override
   void initState() {
@@ -113,7 +115,7 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
             height: 60,
             child: Row(
               children: [
-                Expanded(child: const Text('С:   ')),
+                const Expanded(child: Text('С:   ')),
                 Expanded(
                   flex: 5,
                   child: GestureDetector(
@@ -129,7 +131,7 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
                   ),
                 ),
                 const SizedBox(width: 20),
-                Expanded(child: const Text('По:   ')),
+                const Expanded(child: Text('По:   ')),
                 Expanded(
                   flex: 5,
                   child: GestureDetector(
@@ -161,12 +163,12 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
               isSmoking: _isSmoking,
               isPetTransfer: _isPetTransfer,
               gender: _gender,
+              start: timeMilisecondStart?.microsecondsSinceEpoch,
+              end: timeMilisecondEnd?.microsecondsSinceEpoch,
             ),
           ),
         ),
-        const SizedBox(
-          height: 30,
-        )
+        const SizedBox(height: 30)
       ],
     );
   }
@@ -185,8 +187,10 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
           }));
       if (value != null) {
         if (typeDate == TypeDate.start) {
+          timeMilisecondStart = DateTime.tryParse(value);
           startDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
         } else {
+          timeMilisecondStart = DateTime.tryParse(value);
           endDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
         }
       }
@@ -207,8 +211,11 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
                 use24hFormat: true,
                 onDateTimeChanged: (value) {
                   if (typeDate == TypeDate.start) {
-                    startDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
+                    timeMilisecondStart = value;
+                    startDate.text =
+                        DateFormat('dd.MM.yyyy hh:mm').format(value);
                   } else {
+                    timeMilisecondEnd = value;
                     endDate.text = DateFormat('dd.MM.yyyy hh:mm').format(value);
                   }
                 },

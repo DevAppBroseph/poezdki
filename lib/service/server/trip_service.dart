@@ -12,17 +12,20 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 class TripService {
   final errorDialog = ErrorDialogs();
 
-  Future<List<TripModel>?> getAllTrips(
-      {Map? departure,
-      Map? destination,
-      bool? animals,
-      bool? package,
-      bool? baggage,
-      bool? babyChair,
-      bool? smoke,
-      bool? twoPlacesInBehind,
-      bool? conditioner,
-      String? gender}) async {
+  Future<List<TripModel>?> getAllTrips({
+    Map? departure,
+    Map? destination,
+    bool? animals,
+    bool? package,
+    bool? baggage,
+    bool? babyChair,
+    bool? smoke,
+    bool? twoPlacesInBehind,
+    bool? conditioner,
+    String? gender,
+    int? start,
+    int? end,
+  }) async {
     Map<String, dynamic> filter = {
       if (departure != null) "departure": departure,
       if (destination != null) "destination": destination,
@@ -33,7 +36,9 @@ class TripService {
       "baby_chair": babyChair,
       "smoke": smoke,
       "two_places_in_behind": twoPlacesInBehind,
-      "conditioner": conditioner
+      "conditioner": conditioner,
+      "start": start,
+      "end": end,
     };
 
     Response response;
@@ -52,6 +57,7 @@ class TripService {
             headers: userHeader, validateStatus: (status) => status! >= 200),
       );
       if (response.statusCode == 200) {
+        
         final body = response.data;
         final list = body['all_trips'] as List;
 
@@ -59,6 +65,7 @@ class TripService {
         list.map((e) {
           trips.add(TripModel.fromJson(e, true));
         }).toList();
+        print('object ${trips.length}');
         return trips;
       } else {
         // throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
@@ -307,9 +314,8 @@ class TripService {
     }
   }
 
-  Future<void> cancelPassengerInTrip({
-    required int tripId, required int userId
-  }) async {
+  Future<void> cancelPassengerInTrip(
+      {required int tripId, required int userId}) async {
     Response res;
     var dio = Dio();
 
@@ -390,8 +396,7 @@ class TripService {
           responseType: ResponseType.json,
           validateStatus: (status) => status! >= 200);
       var result = await dio.delete("$deleteTripUrl$tripId", options: options);
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   Future<void> addReview(int id, String message, int mark) async {
@@ -412,7 +417,6 @@ class TripService {
           },
         ),
       );
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 }
