@@ -122,7 +122,7 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
                     if (currentPage == 0) {
                       _sendPhoneEmail(email.text);
                     } else if (currentPage == 1) {
-                      _checkCode(selectCode + resetPasswordOne!.login, pin);
+                      _checkCode(resetPasswordOne!.login, pin);
                     }
                   },
                 ),
@@ -183,6 +183,7 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
         ),
         data: jsonEncode({"login": value, "code": code, "is_first_auth": true}),
       );
+
       setState(() {
         isCorrect = IsCorrect.fromJson(res.data);
         if (isCorrect!.isCorrect) {
@@ -190,7 +191,7 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
               context,
               MaterialPageRoute(
                   builder: (context) => SignUpWithEmailPhone(
-                      phoneEmail: selectCode + email.text)));
+                      phoneEmail: value)));
         } else {
           errorDialog.showError('Код неправильно указан.');
         }
