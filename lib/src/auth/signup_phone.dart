@@ -85,7 +85,7 @@ class _SignUpWithPhoneState extends State<SignUpWithPhone> {
                       children: const [
                         ListTile(
                           title: Text(
-                              "1) Убедитесь что вы корректно ввели E-mail",
+                              "1) Убедитесь что вы корректно ввели Телефон.",
                               style: TextStyle(fontSize: 14)),
                         ),
                       ],

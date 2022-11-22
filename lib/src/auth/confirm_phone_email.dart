@@ -122,7 +122,7 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
                     if (currentPage == 0) {
                       _sendPhoneEmail(email.text);
                     } else if (currentPage == 1) {
-                      _checkCode(resetPasswordOne!.login, pin);
+                      _checkCode(selectCode + resetPasswordOne!.login, pin);
                     }
                   },
                 ),
@@ -174,7 +174,6 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
   Future<void> _checkCode(String value, int code) async {
     Response res;
     var dio = Dio();
-    print('object ${value} ${code}');
 
     try {
       res = await dio.post(
@@ -190,8 +189,8 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      SignUpWithEmailPhone(phoneEmail: email.text)));
+                  builder: (context) => SignUpWithEmailPhone(
+                      phoneEmail: selectCode + email.text)));
         } else {
           errorDialog.showError('Код неправильно указан.');
         }
@@ -271,7 +270,8 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
                         );
                         if (select != null) {
                           setState(() {
-                            maxLength = int.parse(select.lengthPhone!) - select.dialCode!.length;
+                            maxLength = int.parse(select.lengthPhone!) -
+                                select.dialCode!.length;
                             selectCode = select.dialCode!;
                           });
                         }
