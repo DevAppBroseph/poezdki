@@ -201,8 +201,8 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
             value.year,
             value.month,
             value.day,
-            timePicked!.hour,
-            timePicked.minute,
+            timePicked != null ? timePicked.hour : 0,
+            timePicked != null ? timePicked.minute : 0,
           );
           timeMilisecondStart = temp;
           startDate.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);
@@ -211,8 +211,8 @@ class _SearchTripBottomSheetState extends State<SearchTripBottomSheet> {
             value.year,
             value.month,
             value.day,
-            timePicked!.hour,
-            timePicked.minute,
+            timePicked != null ? timePicked.hour : 0,
+            timePicked != null ? timePicked.minute : 0,
           );
           timeMilisecondEnd = temp;
           endDate.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);

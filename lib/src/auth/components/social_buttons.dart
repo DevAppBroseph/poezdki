@@ -4,10 +4,12 @@ import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/src/auth/signup_phone.dart';
 import 'package:app_poezdka/widget/button/full_width_leveated_button_child.dart';
+import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_vk/flutter_login_vk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class SocialAuthButtons extends StatelessWidget {
   SocialAuthButtons({Key? key}) : super(key: key);
@@ -90,65 +92,66 @@ class SocialAuthButtons extends StatelessWidget {
   }
 
   Future<void> _signInWithVk(BuildContext context) async {
-    if (!vk.isInitialized) {
-      await vk.initSdk();
-    }
+    Navigator.push(context, MaterialPageRoute(builder: ((context) => WebViewPage())));
+//     if (!vk.isInitialized) {
+//       await vk.initSdk();
+//     }
 
-    final res = await vk.logIn(
-      scope: [
-        VKScope.email,
-        // VKScope.phone,
-      ],
-    );
+//     final res = await vk.logIn(
+//       scope: [
+//         VKScope.email,
+//         // VKScope.phone,
+//       ],
+//     );
 
-// Check result
-    if (res.isValue) {
-      // There is no error, but we don't know yet
-      // if user loggen in or not.
-      // You should check isCanceled
-      final VKLoginResult data = res.asValue!.value;
+// // Check result
+//     if (res.isValue) {
+//       // There is no error, but we don't know yet
+//       // if user loggen in or not.
+//       // You should check isCanceled
+//       final VKLoginResult data = res.asValue!.value;
 
-      if (res.isError) {
-        // User cancel log in
-      } else {
-        final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
-        final email = await vk.getUserEmail();
-        final profile = (await vk.getUserProfile()).asValue!.value!;
-        VKUserProfile ;
-        // Logged in
+//       if (res.isError) {
+//         // User cancel log in
+//       } else {
+//         final authBloc = BlocProvider.of<AuthBloc>(context, listen: false);
+//         final email = await vk.getUserEmail();
+//         final profile = (await vk.getUserProfile()).asValue!.value!;
+//         VKUserProfile ;
+//         // Logged in
 
-        if (email == null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SignUpWithPhone(
-                userModel: UserModel(
-                  email: email,
-                  firstname: profile.firstName,
-                  lastname: profile.lastName,
-                ),
-              ),
-            ),
-          );
-        } else {
-          // authBloc.add(SignInWithGoogle(user, context));
-        }
-        // Send access token to server for validation and auth
-        final VKAccessToken accessToken = res.asValue!.value.accessToken!;
-        print('Access token: ${accessToken.token}');
+//         if (email == null) {
+//           Navigator.push(
+//             context,
+//             MaterialPageRoute(
+//               builder: (context) => SignUpWithPhone(
+//                 userModel: UserModel(
+//                   email: email,
+//                   firstname: profile.firstName,
+//                   lastname: profile.lastName,
+//                 ),
+//               ),
+//             ),
+//           );
+//         } else {
+//           // authBloc.add(SignInWithGoogle(user, context));
+//         }
+//         // Send access token to server for validation and auth
+//         final VKAccessToken accessToken = res.asValue!.value.accessToken!;
+//         print('Access token: ${accessToken.token}');
 
-        // Get profile data
-        print('Hello, ${profile.firstName}! You ID: ${profile.userId}');
-        // print('Hello, ${profile.phone}! You ID: ${profile.userId}');
+//         // Get profile data
+//         print('Hello, ${profile.firstName}! You ID: ${profile.userId}');
+//         // print('Hello, ${profile.phone}! You ID: ${profile.userId}');
 
-        // Get email (since we request email permissions)
-        print('And your email is $email');
-      }
-    } else {
-      // Log in failed
-      final errorRes = res.asError;
-      print('Error while log in: ${errorRes?.error}');
-    }
+//         // Get email (since we request email permissions)
+//         print('And your email is $email');
+//       }
+//     } else {
+//       // Log in failed
+//       final errorRes = res.asError;
+//       print('Error while log in: ${errorRes?.error}');
+//     }
   }
 
   void _signWithGoogle(BuildContext context) async {
@@ -197,5 +200,21 @@ class SocialAuthButtons extends StatelessWidget {
     } catch (exception) {
       print(exception);
     }
+  }
+}
+
+class WebViewPage extends StatelessWidget {
+  const WebViewPage({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const KScaffoldScreen(
+      isLeading: true,
+      title: 'Вконтакте',
+      body: WebView(
+        backgroundColor: Colors.white,
+        initialUrl: 'http://194.87.145.140/users/login/vk-oauth2/',
+      ),
+    );
   }
 }

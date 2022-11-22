@@ -1,4 +1,5 @@
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/src/auth/components/social_buttons.dart';
 import 'package:app_poezdka/src/auth/confirm_phone_email.dart';
 import 'package:app_poezdka/widget/button/full_width_leveated_button_child.dart';
 import 'package:flutter/material.dart';
