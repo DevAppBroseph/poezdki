@@ -8,6 +8,7 @@ import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class Referal extends StatelessWidget {
   const Referal({Key? key}) : super(key: key);
+  final referalStr = 'www.link//32ws2cw';
 
   @override
   Widget build(BuildContext context) {
@@ -58,12 +59,12 @@ class Referal extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10), color: kPrimaryColor),
-          child: const ListTile(
+          child: ListTile(
             title: Text(
-              "www.link//32ws2cw",
-              style: TextStyle(color: Colors.white),
+              referalStr,
+              style: const TextStyle(color: Colors.white),
             ),
-            trailing: Icon(
+            trailing: const Icon(
               Ionicons.copy_outline,
               color: Colors.white,
             ),
@@ -76,33 +77,38 @@ class Referal extends StatelessWidget {
   Widget shareButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: const [
+      children: [
         IconBoxButton(
-          child: Icon(
+          referalStr: referalStr,
+          child: const Icon(
             MaterialCommunityIcons.vk,
             color: Colors.blue,
           ),
         ),
         IconBoxButton(
-          child: Icon(
+          referalStr: referalStr,
+          child: const Icon(
             MaterialCommunityIcons.whatsapp,
             color: Colors.green,
           ),
         ),
         IconBoxButton(
-          child: Icon(
+          referalStr: referalStr,
+          child: const Icon(
             MaterialCommunityIcons.twitter,
             color: Colors.blue,
           ),
         ),
         IconBoxButton(
-          child: Icon(
+          referalStr: referalStr,
+          child: const Icon(
             MaterialCommunityIcons.telegram,
             color: Colors.blueAccent,
           ),
         ),
         IconBoxButton(
-          child: Icon(
+          referalStr: referalStr,
+          child: const Icon(
             Fontisto.viber,
             color: Colors.purple,
           ),
