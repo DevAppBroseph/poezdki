@@ -1,6 +1,7 @@
 import 'server_data.dart';
 
 const usersUrl = '$serverURL/users';
+const authVK = '$serverURL/users/login/vk-oauth2/';
 const authUrl = '$usersUrl/auth';
 const regUrl = '$usersUrl/registration';
 const deleteUserUrl = '$usersUrl/delete_user';

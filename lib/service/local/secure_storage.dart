@@ -10,10 +10,11 @@ class SecureStorage {
   static const _emailKey = 'EMAIL';
   static const _userId = 'EMAIL';
 
-  Future<void> persistEmailAndToken(String email, String token, int id) async {
-    await _storage.write(key: _emailKey, value: email);
-    await _storage.write(key: _tokenKey, value: token);
-    await _storage.write(key: _userId, value: id.toString());
+  Future<void> persistEmailAndToken(
+      String? email, String? token, int? id) async {
+    if (email != null) await _storage.write(key: _emailKey, value: email);
+    if (token != null) await _storage.write(key: _tokenKey, value: token);
+    if (id != null) await _storage.write(key: _userId, value: id.toString());
   }
 
   Future<bool> hasToken() async {

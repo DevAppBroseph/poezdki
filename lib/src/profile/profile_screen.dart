@@ -3,7 +3,7 @@ import 'package:app_poezdka/src/policy/policy.dart';
 import 'package:app_poezdka/src/profile/about_project.dart';
 import 'package:app_poezdka/src/profile/components/profile_button.dart';
 import 'package:app_poezdka/src/profile/faq.dart';
-import 'package:app_poezdka/src/profile/offert.dart';
+import 'package:app_poezdka/src/profile/feedback.dart';
 import 'package:app_poezdka/src/profile/rating.dart';
 import 'package:app_poezdka/src/profile/referal.dart';
 import 'package:app_poezdka/src/profile/review.dart';
@@ -53,6 +53,11 @@ class ProfileScreen extends StatelessWidget {
                 onPressed: () => pushNewScreen(context, screen: const FAQ()),
                 title: "Вопросы и ответы",
                 icon: 'message-question',
+              ),
+              ProfileBtn(
+                onPressed: () => pushNewScreen(context, screen: const FeedBack()),
+                title: "Обратная связь",
+                icon: 'feedback',
               ),
               // ProfileBtn(
               //     onPressed: () => pushNewScreen(context, screen: const Blog()),

@@ -1,6 +1,7 @@
 import 'package:app_poezdka/model/server_responce.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/service/server/auth_service.dart';
+import 'package:app_poezdka/service/server/user_service.dart';
 import 'package:app_poezdka/src/app_screens.dart';
 
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
@@ -139,22 +140,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _signWithVk(SignInWithVk event, Emitter<AuthState> emit) async {
-    var result = await authService.signWithVk(event.account,
-        (await FirebaseMessaging.instance.getToken()).toString());
+    // var result = await authService.signWithVk(event.account,
+    //     (await FirebaseMessaging.instance.getToken()).toString());
 
-    if (result != null) {
-      await userRepository.persistEmailAndToken(
-        result.login!,
-        result.token!,
-        result.id!,
-      );
-      Navigator.pushAndRemoveUntil(
-        event.context,
-        MaterialPageRoute(builder: (context) => const AppScreens()),
-        (route) => false,
-      );
-      add(AppInit());
-    }
+    // if (result != null) {
+    await userRepository.persistEmailAndToken(
+      event.account.email,
+      event.account.token,
+      null,
+      // result.login!,
+      // result.token!,
+      // result.id!,
+    );
+
+    await UserService().editUser(token: event.account.token!, user: event.account);
+
+    Navigator.pushAndRemoveUntil(
+      event.context,
+      MaterialPageRoute(builder: (context) => const AppScreens()),
+      (route) => false,
+    );
     add(AppInit());
+    // }
+    // add(AppInit());
   }
 }

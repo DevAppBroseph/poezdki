@@ -1,7 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/const/server/server_user.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/user_model.dart';
+import 'package:app_poezdka/model/vk.dart';
+import 'package:app_poezdka/service/local/secure_storage.dart';
+import 'package:app_poezdka/src/app_screens.dart';
 import 'package:app_poezdka/src/auth/signup_phone.dart';
 import 'package:app_poezdka/widget/button/full_width_leveated_button_child.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
@@ -57,18 +62,18 @@ class SocialAuthButtons extends StatelessWidget {
             _signInWithVk(context);
           },
         ),
-        FullWidthElevButtonChild(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          color: kPrimaryWhite,
-          child: Image.asset(
-            "$path/google_login.png",
-            width: 136,
-            height: 24,
-          ),
-          onPressed: () {
-            _signWithGoogle(context);
-          },
-        ),
+        // FullWidthElevButtonChild(
+        //   margin: const EdgeInsets.symmetric(horizontal: 10),
+        //   color: kPrimaryWhite,
+        //   child: Image.asset(
+        //     "$path/google_login.png",
+        //     width: 136,
+        //     height: 24,
+        //   ),
+        //   onPressed: () {
+        //     _signWithGoogle(context);
+        //   },
+        // ),
         // FullWidthElevButtonChild(
         //   margin: const EdgeInsets.symmetric(horizontal: 10),
         //   color: kPrimaryWhite,
@@ -92,7 +97,8 @@ class SocialAuthButtons extends StatelessWidget {
   }
 
   Future<void> _signInWithVk(BuildContext context) async {
-    Navigator.push(context, MaterialPageRoute(builder: ((context) => WebViewPage())));
+    Navigator.push(
+        context, MaterialPageRoute(builder: ((context) => WebViewPage())));
 //     if (!vk.isInitialized) {
 //       await vk.initSdk();
 //     }
@@ -121,18 +127,18 @@ class SocialAuthButtons extends StatelessWidget {
 //         // Logged in
 
 //         if (email == null) {
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(
-//               builder: (context) => SignUpWithPhone(
-//                 userModel: UserModel(
-//                   email: email,
-//                   firstname: profile.firstName,
-//                   lastname: profile.lastName,
-//                 ),
-//               ),
-//             ),
-//           );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (context) => SignUpWithPhone(
+    //       userModel: UserModel(
+    //         email: email,
+    //         firstname: profile.firstName,
+    //         lastname: profile.lastName,
+    //       ),
+    //     ),
+    //   ),
+    // );
 //         } else {
 //           // authBloc.add(SignInWithGoogle(user, context));
 //         }
@@ -204,17 +210,61 @@ class SocialAuthButtons extends StatelessWidget {
 }
 
 class WebViewPage extends StatelessWidget {
-  const WebViewPage({Key? key}) : super(key: key);
+  WebViewPage({Key? key}) : super(key: key);
 
+  late SecureStorage userRepository = SecureStorage.instance;
+  late WebViewController _controller;
   @override
   Widget build(BuildContext context) {
-    return const KScaffoldScreen(
+    return KScaffoldScreen(
       isLeading: true,
       title: 'Вконтакте',
       body: WebView(
         backgroundColor: Colors.white,
-        initialUrl: 'http://194.87.145.140/users/login/vk-oauth2/',
+        javascriptMode: JavascriptMode.unrestricted,
+        onPageFinished: (url) {
+          readJS(context);
+        },
+        onWebViewCreated: (controller) {
+          _controller = controller;
+        },
+        initialUrl: authVK,
       ),
     );
+  }
+
+  void readJS(BuildContext context) async {
+    String html = await _controller
+        .evaluateJavascript("document.querySelector('body pre').innerHTML;");
+    VKModel? vkModel = VKModel.fromJson(json.decode(html));
+
+    if (vkModel != null) {
+      if (vkModel.phoneNumber == null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SignUpWithPhone(
+              userModel: UserModel(
+                email: vkModel.email,
+                firstname: vkModel.firstname,
+                lastname: vkModel.lastname,
+                token: vkModel.token,
+              ),
+            ),
+          ),
+        );
+      } else {
+        await userRepository.persistEmailAndToken(
+          vkModel.email,
+          vkModel.token,
+          vkModel.id,
+        );
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const AppScreens()),
+          (route) => false,
+        );
+      }
+    }
   }
 }
