@@ -20,6 +20,7 @@ import 'package:app_poezdka/widget/text_field/form_location_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:parse_server_sdk_flutter/generated/i18n.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 class SearchRides extends StatefulWidget {
@@ -229,10 +230,38 @@ class _SearchRidesState extends State<SearchRides>
                                 )
                               : const SizedBox())),
                 ),
-                const WayPointField(
+                WayPointField(
                   type: WaypointType.empty,
                   textField: SizedBox(
-                    height: 10,
+                    // height: 10,
+                    child: Row(
+                      children: [
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: GestureDetector(
+                            onTap: () {
+                              final temp = from;
+                              from = to;
+                              to = temp;
+
+                              startWay.text = from != null ? from!.name! : '';
+                              endWay.text = to != null ? to!.name! : '';
+
+                              setState(() {
+                                
+                              });
+                              
+                              fetchTrips(context);
+                            },
+                            child: const Icon(
+                              Icons.swap_vert_rounded,
+                              color: kPrimaryColor,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 WayPointField(
@@ -319,6 +348,7 @@ class _SearchRidesState extends State<SearchRides>
     context, {
     int? page,
   }) async {
+    print('object start=${from?.name} end=${to?.name}');
     final tripsBloc = BlocProvider.of<TripsBloc>(context);
     tripsBloc.add(
       LoadAllTripsList(
