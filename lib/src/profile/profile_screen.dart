@@ -55,7 +55,7 @@ class ProfileScreen extends StatelessWidget {
                 icon: 'message-question',
               ),
               ProfileBtn(
-                onPressed: () => pushNewScreen(context, screen: const FeedBack()),
+                onPressed: () => pushNewScreen(context, screen: FeedBack()),
                 title: "Обратная связь",
                 icon: 'feedback',
               ),

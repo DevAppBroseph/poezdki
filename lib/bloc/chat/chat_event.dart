@@ -26,3 +26,5 @@ class ShowTestEvent extends ChatEvent {
   final String message;
   ShowTestEvent({required this.message});
 }
+
+class GetChatSupport extends ChatEvent {}

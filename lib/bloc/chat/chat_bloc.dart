@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:app_poezdka/const/server/server_data.dart';
+import 'package:app_poezdka/model/answer_support.dart';
+import 'package:http/http.dart' as http;
 import 'package:app_poezdka/model/new_message.dart';
 import 'package:app_poezdka/model/send_message.dart';
 import 'package:app_poezdka/service/server/chat_service.dart';
@@ -18,6 +20,7 @@ part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final chatService = ChatService();
+  final secureStorage = SecureStorage.instance;
 
   ChatBloc() : super(ChatInitial()) {
     //Example
@@ -40,6 +43,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<ChatStarted>(_onChatStarted);
     on<UpdateChat>(_updateChat);
     on<StartSocket>(_startSocket);
+    on<GetChatSupport>(_getChatSupport);
   }
   WebSocketChannel? channel;
 
@@ -51,7 +55,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ///
 
   void _startSocket(StartSocket event, Emitter<ChatState> emit) async {
-    // if (channel == null) {
     final token = await SecureStorage.instance.getToken();
     channel = WebSocketChannel.connect(
       Uri.parse('ws://194.87.145.140:80/ws/$token'),
@@ -59,10 +62,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
     channel?.stream.listen(
       (event) async {
-        // setState(() {
         try {
           var newMessage = NewMessageAnswer.fromJson(jsonDecode(event));
-          if (newMessage.fromName == 'BAZA' && newMessage.from == '-1') {
+          if (newMessage.message == 'answer from support') {
+            updateSupportChat();
+            MessageDialogs().showMessage(
+              'Служба поддержки',
+              'Новое сообщение',
+            );
+          } else if (newMessage.fromName == 'BAZA' && newMessage.from == '-1') {
             MessageDialogs().showMessage(
               NewMessageAnswer.fromJson(jsonDecode(event)).fromName,
               NewMessageAnswer.fromJson(jsonDecode(event)).message,
@@ -140,6 +148,27 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _updateChat(UpdateChat event, Emitter<ChatState> emit) {
     emit(ChatLoaded(event.messages.reversed.toList()));
+  }
+
+  void _getChatSupport(GetChatSupport event, Emitter<ChatState> emit) async {
+    updateSupportChat();
+  }
+
+  void updateSupportChat() async {
+    final SecureStorage userRepository = SecureStorage.instance;
+    String? token = await userRepository.getToken();
+    var response = await http.get(
+      Uri.parse('$serverURL/chat/get_questions'),
+      headers: {"Authorization": token!},
+    );
+
+    if (response.statusCode == 200) {
+      List<AnswerSupport> answer = [];
+      for (var element in jsonDecode(response.body)) {
+        answer.add(AnswerSupport.fromJson(element));
+      }
+      emit(SupportMessageState(answer: answer));
+    }
   }
 
   // void _initApp(AppInit event, Emitter<AuthState> emit) async {

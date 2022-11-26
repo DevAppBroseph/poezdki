@@ -8,7 +8,7 @@ class SecureStorage {
 
   static const _tokenKey = 'TOKEN';
   static const _emailKey = 'EMAIL';
-  static const _userId = 'EMAIL';
+  static const _userId = 'ID';
 
   Future<void> persistEmailAndToken(
       String? email, String? token, int? id) async {

@@ -20,3 +20,8 @@ class TestState extends ChatState {
   final String message;
   TestState({required this.message});
 }
+
+class SupportMessageState extends ChatState {
+  List<AnswerSupport> answer;
+  SupportMessageState({required this.answer});
+}

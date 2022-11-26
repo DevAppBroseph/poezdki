@@ -18,6 +18,7 @@ class TripTileDefault extends StatelessWidget {
   @override
   // ignore: avoid_renaming_method_parameters
   Widget build(BuildContext context) {
+    print('object ${trip.isPremium} ${trip.tripId}');
     final ownerImage = trip.owner?.photo;
     final btmSheet = BottomSheetCall();
     return ScaleButton(
@@ -36,7 +37,10 @@ class TripTileDefault extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          // color: Color.fromARGB(255, 249, 243, 226),
+          color: trip.isPremium != null && trip.isPremium!
+              ? const Color.fromARGB(255, 249, 243, 226)
+              : Colors.white,
           boxShadow: const [
             BoxShadow(
               offset: Offset(0, 4),
@@ -47,48 +51,59 @@ class TripTileDefault extends StatelessWidget {
           ],
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Stack(
+          alignment: Alignment.bottomRight,
           children: [
-            ListTile(
-              leading: UserCachedImage(
-                img: ownerImage,
-              ),
-              title: Text(
-                '${trip.owner!.firstname!} ${trip.owner!.lastname!}',
-                // "${((trip.owner!.firstname! + ' ' + trip.owner!.lastname!)) ?? " Пользователь не найден"}",
-                maxLines: 1,
-                overflow: TextOverflow.clip,
-              ),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(trip.passenger! ? 'Я Подвезу Вас' : 'Ищу поездку'),
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left: 5, right: 5),
-                  //   child: Container(
-                  //     height: 5,
-                  //     width: 5,
-                  //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50),
-                  //     color: const Color.fromRGBO(191,212,228, 1))),
-                  // ),
-                  Text(
-                    "${trip.price} ₽",
+            trip.isPremium != null && trip.isPremium!
+                ? SvgPicture.asset(
+                    'assets/icon/premium.svg',
+                    height: 70,
+                  )
+                : const SizedBox(),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ListTile(
+                  leading: UserCachedImage(
+                    img: ownerImage,
+                  ),
+                  title: Text(
+                    '${trip.owner!.firstname!} ${trip.owner!.lastname!}',
+                    // "${((trip.owner!.firstname! + ' ' + trip.owner!.lastname!)) ?? " Пользователь не найден"}",
                     maxLines: 1,
                     overflow: TextOverflow.clip,
                   ),
-                ],
-              ),
-              trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(trip.passenger! ? 'Я Подвезу Вас' : 'Ищу поездку'),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 5, right: 5),
+                      //   child: Container(
+                      //     height: 5,
+                      //     width: 5,
+                      //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50),
+                      //     color: const Color.fromRGBO(191,212,228, 1))),
+                      // ),
+                      Text(
+                        "${trip.price} ₽",
+                        maxLines: 1,
+                        overflow: TextOverflow.clip,
+                      ),
+                    ],
+                  ),
+                  trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
+                ),
+                _trip(trip),
+                // isUpcoming!
+                //     ? FullWidthElevButton(
+                //         title: "Отменить поездку",
+                //         onPressed: () {},
+                //       )
+                //     : const SizedBox()
+              ],
             ),
-            _trip(trip),
-            // isUpcoming!
-            //     ? FullWidthElevButton(
-            //         title: "Отменить поездку",
-            //         onPressed: () {},
-            //       )
-            //     : const SizedBox()
           ],
         ),
       ),
