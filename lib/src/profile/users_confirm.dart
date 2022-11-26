@@ -20,6 +20,7 @@ class _UsersConfirmState extends State<UsersConfirm> {
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return KScaffoldScreen(
@@ -27,11 +28,23 @@ class _UsersConfirmState extends State<UsersConfirm> {
         title: "Пользовательское соглашение",
         body: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: [
-                Text(text != null ? text! : ''),
-              ],
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 20,
+            ),
+            child: Container(
+              decoration: const BoxDecoration(color: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 15,
+                ),
+                child: Text(
+                  text != null ? text! : '',
+                  style: const TextStyle(fontSize: 17),
+                  textAlign: TextAlign.justify,
+                ),
+              ),
             ),
           ),
         ));
