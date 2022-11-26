@@ -46,7 +46,7 @@ class TripModel {
 
   TripModel.fromJson(Map<String, dynamic> json, bool state) {
     passenger = state;
-    isPremium = json['is_premium'];
+    isPremium = json['premium'];
     tripId = json['trip_id'];
     owner = json['owner'] != null ? Owner.fromJson(json['owner']) : null;
     car = json['car'] != null ? Car.fromJson(json['car']) : null;
