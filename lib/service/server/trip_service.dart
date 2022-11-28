@@ -147,16 +147,20 @@ class TripService {
       response = await dio.post(addTripUrl,
           data: json.encode(data),
           options: Options(
+              validateStatus: (status) => status! <= 400,
               headers: {"Authorization": token},
               responseType: ResponseType.json));
-      final responceData = ResponceServerData.fromMap(response.data);
 
-      if (responceData.success) {
+      if (response.statusCode == 200) {
+        final responceData = ResponceServerData.fromMap(response.data);
         return responceData.success;
       } else {
-        errorDialog.showError(responceData.status.toString());
-
-        return responceData.success;
+        errorDialog.showError(
+          'Минимальная стоимость поездки составляет: ' +
+              response.toString().split(':')[2].replaceAll(' ', '') +
+              ' руб.',
+        );
+        return false;
       }
     } catch (e) {
       errorDialog.showError(e.toString());
@@ -214,7 +218,7 @@ class TripService {
             description: "Ожидайте попутчиков.",
           );
           // Navigator.pop(context, true);
-          // return responceData.success;
+          return responceData.success;
         } else {
           print('object log 2  ${response.data}');
           errorDialog.showError(responceData.status);
