@@ -57,7 +57,6 @@ class TripService {
             headers: userHeader, validateStatus: (status) => status! >= 200),
       );
       if (response.statusCode == 200) {
-        
         final body = response.data;
         final list = body['all_trips'] as List;
 
@@ -192,28 +191,40 @@ class TripService {
       "seats": trip.seats
     };
 
+    final token = await SecureStorage.instance.getToken();
+
     try {
-      final token = await SecureStorage.instance.getToken();
+      // final token = await SecureStorage.instance.getToken();
       response = await dio.post(addTripUrl,
           data: json.encode(data),
           options: Options(
               headers: {"Authorization": token},
               responseType: ResponseType.json));
       final responceData = ResponceServerData.fromMap(response.data);
+      print('object log 1 ${response.data}');
       if (responceData.success == true) {
         InfoDialog().show(
           img: "assets/img/like.svg",
           title: "Ваша поездка создана!",
           description: "Ожидайте попутчиков.",
         );
-        Navigator.pop(context, true);
-        return responceData.success;
+        // Navigator.pop(context, true);
+        // return responceData.success;
       } else {
+        print('object log 2  ${response.data}');
         errorDialog.showError(responceData.status);
-        return false;
+        // return false;
       }
+      return false;
     } catch (e) {
-      errorDialog.showError(e.toString());
+      // InfoDialog().show(
+        // img: "assets/img/like.svg",
+      //   title: "Внимание!",
+      //   description: "Цена по данному направление ниже минимальной.",
+      // );
+      errorDialog.showError('Внимание\nЦена по данному направление ниже минимально установленной');
+      print('$token object log 3 ${e}');
+      // errorDialog.showError(e.toString());
       return false;
     }
   }

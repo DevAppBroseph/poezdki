@@ -18,7 +18,6 @@ class TripTileDefault extends StatelessWidget {
   @override
   // ignore: avoid_renaming_method_parameters
   Widget build(BuildContext context) {
-    print('object ${trip.isPremium} ${trip.tripId}');
     final ownerImage = trip.owner?.photo;
     final btmSheet = BottomSheetCall();
     return ScaleButton(
