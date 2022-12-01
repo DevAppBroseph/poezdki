@@ -1,5 +1,6 @@
 import 'package:app_poezdka/model/server_responce.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
+import 'package:app_poezdka/service/local/shared_preferences.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
@@ -45,7 +46,6 @@ class TripService {
     var dio = Dio();
 
     try {
-      // var response = await http.get(allTrips);
       final userHeader = {
         "Content-type": "application/json",
         "Accept": "application/json"
@@ -64,7 +64,6 @@ class TripService {
         list.map((e) {
           trips.add(TripModel.fromJson(e, true));
         }).toList();
-        print('object ${trips.length}');
         return trips;
       } else {
         // throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
@@ -210,7 +209,6 @@ class TripService {
       );
       if (response.statusCode == 200) {
         final responceData = ResponceServerData.fromMap(response.data);
-        print('object log 1 ${response.data}');
         if (responceData.success == true) {
           InfoDialog().show(
             img: "assets/img/like.svg",

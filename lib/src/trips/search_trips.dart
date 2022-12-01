@@ -1,5 +1,5 @@
 // ignore_for_file: unused_field
-
+import 'dart:convert';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_builder.dart';
 import 'package:app_poezdka/bloc/trips_passenger/trips_p_builder.dart';
@@ -8,6 +8,7 @@ import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/filter_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
+import 'package:app_poezdka/service/local/shared_preferences.dart';
 import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/src/trips/components/pick_city.dart';
 import 'package:app_poezdka/src/rides/components/waypoint.dart';
@@ -19,8 +20,8 @@ import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:app_poezdka/widget/text_field/form_location_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
-import 'package:parse_server_sdk_flutter/generated/i18n.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 class SearchRides extends StatefulWidget {
@@ -248,10 +249,7 @@ class _SearchRidesState extends State<SearchRides>
                               startWay.text = from != null ? from!.name! : '';
                               endWay.text = to != null ? to!.name! : '';
 
-                              setState(() {
-                                
-                              });
-                              
+                              setState(() {});
                               fetchTrips(context);
                             },
                             child: const Icon(
@@ -315,10 +313,376 @@ class _SearchRidesState extends State<SearchRides>
               ),
               title: const Text("Передать посылку"),
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            child: GestureDetector(
+              onTap: () async {
+                final settings = await LocalStorageService.getInstance();
+                String? allSearch = settings.getSearch();
+
+                List<String>? history = allSearch?.split('#');
+                List<ModelSearch> searchHistory = [];
+
+                if (history != null) {
+                  for (var element in history) {
+                    final res = jsonDecode(element);
+                    searchHistory.add(ModelSearch.fromJson(res));
+                  }
+                }
+
+                SmartDialog.show(
+                  maskColor: const Color.fromRGBO(6, 22, 46, 0.67),
+                  builder: (context) {
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Container(
+                              constraints: const BoxConstraints(
+                                  minHeight: 351, maxHeight: 700),
+                              // height: height ?? 351,
+                              width: 600,
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.white,
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      offset: Offset(0, 4),
+                                      blurRadius: 10,
+                                      spreadRadius: 3,
+                                      color: Color.fromRGBO(26, 42, 97, 0.06),
+                                    ),
+                                  ]),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    const Text(
+                                      'История поиска',
+                                      style: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 30),
+                                    searchHistory.isEmpty
+                                        ? const Text('Пусто')
+                                        : ListView.builder(
+                                            shrinkWrap: true,
+                                            itemCount: searchHistory.length,
+                                            itemBuilder: (context, index) {
+                                              return Column(
+                                                children: [
+                                                  GestureDetector(
+                                                    onTap: () async {
+                                                      final tripsBloc =
+                                                          BlocProvider.of<
+                                                                  TripsBloc>(
+                                                              context);
+                                                      tripsBloc.add(
+                                                        LoadAllTripsList(
+                                                          page: 0,
+                                                          departure:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .departure,
+                                                          destination:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .destination,
+                                                          animals:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .animals,
+                                                          package:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .package,
+                                                          baggage:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .baggage,
+                                                          babyChair:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .babyChair,
+                                                          smoke: searchHistory[
+                                                                  index]
+                                                              .smoke,
+                                                          twoPlacesInBehind:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .twoPlacesInBehind,
+                                                          conditioner:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .conditioner,
+                                                          gender: searchHistory[
+                                                                  index]
+                                                              .gender,
+                                                          start: searchHistory[
+                                                                  index]
+                                                              .start,
+                                                          end: searchHistory[
+                                                                  index]
+                                                              .end,
+                                                        ),
+                                                      );
+
+                                                      Map<String, dynamic>
+                                                          tripOne = {
+                                                        "page": 1,
+                                                        "departure": {
+                                                          "coords": {
+                                                            "lat":
+                                                                searchHistory[
+                                                                        index]
+                                                                    .departure!
+                                                                    .coords!
+                                                                    .lat,
+                                                            "lon":
+                                                                searchHistory[
+                                                                        index]
+                                                                    .departure!
+                                                                    .coords!
+                                                                    .lon
+                                                          },
+                                                          "district":
+                                                              searchHistory[
+                                                                      index]
+                                                                  .departure!
+                                                                  .district,
+                                                          "name": searchHistory[
+                                                                  index]
+                                                              .departure!
+                                                              .name,
+                                                          "population":
+                                                              searchHistory[
+                                                                      index]
+                                                                  .departure!
+                                                                  .population
+                                                        },
+                                                        "destination": {
+                                                          "coords": {
+                                                            "lat": searchHistory[
+                                                                    index]
+                                                                .destination!
+                                                                .coords!
+                                                                .lat,
+                                                            "lon": searchHistory[
+                                                                    index]
+                                                                .destination!
+                                                                .coords!
+                                                                .lon
+                                                          },
+                                                          "district":
+                                                              searchHistory[
+                                                                      index]
+                                                                  .destination!
+                                                                  .district,
+                                                          "name": searchHistory[
+                                                                  index]
+                                                              .destination!
+                                                              .name,
+                                                          "population":
+                                                              searchHistory[
+                                                                      index]
+                                                                  .destination!
+                                                                  .population
+                                                        },
+                                                        "animals":
+                                                            searchHistory[index]
+                                                                .animals,
+                                                        "package":
+                                                            searchHistory[index]
+                                                                .package,
+                                                        "baggage":
+                                                            searchHistory[index]
+                                                                .baggage,
+                                                        "babyChair":
+                                                            searchHistory[index]
+                                                                .babyChair,
+                                                        "smoke":
+                                                            searchHistory[index]
+                                                                .smoke,
+                                                        "twoPlacesInBehind":
+                                                            searchHistory[index]
+                                                                .twoPlacesInBehind,
+                                                        "conditioner":
+                                                            searchHistory[index]
+                                                                .conditioner,
+                                                        "gender":
+                                                            searchHistory[index]
+                                                                .gender,
+                                                        "start":
+                                                            searchHistory[index]
+                                                                .start,
+                                                        "end":
+                                                            searchHistory[index]
+                                                                .end
+                                                      };
+
+                                                      print('objecthjh $tripOne');
+
+                                                      final tripsBlocSecond =
+                                                          BlocProvider.of<
+                                                                  TripsPassengerBloc>(
+                                                              context);
+                                                      tripsBlocSecond.add(
+                                                        LoadPassengerTripsList(
+                                                          // page: page,
+                                                          departure:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .departure,
+                                                          destination:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .destination,
+                                                          animals:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .animals,
+                                                          package:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .package,
+                                                          baggage:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .baggage,
+                                                          babyChair:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .babyChair,
+                                                          smoke: searchHistory[
+                                                                  index]
+                                                              .smoke,
+                                                          twoPlacesInBehind:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .twoPlacesInBehind,
+                                                          conditioner:
+                                                              searchHistory[
+                                                                      index]
+                                                                  .conditioner,
+                                                          // gender: filter.gender?.apiTitle,
+                                                        ),
+                                                      );
+
+                                                      startWay.text =
+                                                          searchHistory[index]
+                                                              .departure!
+                                                              .name!;
+                                                      endWay.text =
+                                                          searchHistory[index]
+                                                              .destination!
+                                                              .name!;
+
+                                                      // if (from != null &&
+                                                      //     to != null) {
+                                                      String jsonStr =
+                                                          jsonEncode(tripOne);
+                                                      final settings =
+                                                          await LocalStorageService
+                                                              .getInstance();
+                                                      String? allSearch =
+                                                          settings.getSearch();
+                                                      settings.setSearch(
+                                                          allSearch == null
+                                                              ? '$jsonStr'
+                                                              : '$jsonStr#$allSearch');
+                                                      setState(() {});
+                                                      SmartDialog.dismiss();
+                                                      // }
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Expanded(
+                                                          flex: 2,
+                                                          child: Text(
+                                                            searchHistory[index]
+                                                                .departure!
+                                                                .name!,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                            textAlign:
+                                                                TextAlign.right,
+                                                          ),
+                                                        ),
+                                                        const Expanded(
+                                                          child: Icon(
+                                                            Icons
+                                                                .arrow_right_alt_sharp,
+                                                          ),
+                                                        ),
+                                                        Expanded(
+                                                          flex: 2,
+                                                          child: Text(
+                                                            searchHistory[index]
+                                                                .destination!
+                                                                .name!,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                            ),
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                          ),
+                                                        ),
+                                                        const Expanded(
+                                                          child: Icon(
+                                                            Icons.chevron_right,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const Divider()
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ),
+                    );
+                  },
+                  alignment: Alignment.center,
+                );
+              },
+              child: Row(
+                children: const [
+                  Text('История поиска', style: TextStyle()),
+                ],
+              ),
+            ),
           )
         ],
       ),
-      preferredSize: const Size(200, 308),
+      preferredSize: const Size(200, 345),
     );
   }
 
@@ -348,7 +712,6 @@ class _SearchRidesState extends State<SearchRides>
     context, {
     int? page,
   }) async {
-    print('object start=${from?.name} end=${to?.name}');
     final tripsBloc = BlocProvider.of<TripsBloc>(context);
     tripsBloc.add(
       LoadAllTripsList(
@@ -368,6 +731,38 @@ class _SearchRidesState extends State<SearchRides>
       ),
     );
 
+    Map<String, dynamic> tripOne = {
+      "page": page,
+      "departure": {
+        "coords": {
+          "lat": from?.coords!.lat,
+          "lon": from?.coords!.lon,
+        },
+        "district": from?.district,
+        "name": from?.name,
+        "population": from?.population
+      },
+      "destination": {
+        "coords": {
+          "lat": to?.coords!.lat,
+          "lon": to?.coords!.lon,
+        },
+        "district": to?.district,
+        "name": to?.name,
+        "population": to?.population
+      },
+      "animals": filter.isPetTransfer,
+      "package": filter.isPackageTransfer,
+      "baggage": filter.isBagadgeTransfer,
+      "babyChair": filter.isChildSeat,
+      "smoke": filter.isSmoking,
+      "twoPlacesInBehind": filter.isTwoBackSeat,
+      "conditioner": filter.isConditioner,
+      "gender": filter.gender?.apiTitle,
+      "start": filter.start,
+      "end": filter.end
+    };
+
     final tripsBlocSecond = BlocProvider.of<TripsPassengerBloc>(context);
     tripsBlocSecond.add(
       LoadPassengerTripsList(
@@ -384,6 +779,14 @@ class _SearchRidesState extends State<SearchRides>
         // gender: filter.gender?.apiTitle,
       ),
     );
+
+    if (from != null && to != null) {
+      String jsonStr = jsonEncode(tripOne);
+      final settings = await LocalStorageService.getInstance();
+      String? allSearch = settings.getSearch();
+      settings
+          .setSearch(allSearch == null ? '$jsonStr' : '$jsonStr#$allSearch');
+    }
   }
 
   void applyFilters() async {
@@ -398,5 +801,55 @@ class _SearchRidesState extends State<SearchRides>
         fetchTrips(context, page: searchPageIndex);
       });
     }
+  }
+}
+
+class ModelSearch {
+  int? page;
+  Departure? departure;
+  Departure? destination;
+  bool animals;
+  bool package;
+  bool baggage;
+  bool babyChair;
+  bool smoke;
+  bool twoPlacesInBehind;
+  bool conditioner;
+  String? gender;
+  int? start;
+  int? end;
+
+  ModelSearch({
+    required this.page,
+    required this.departure,
+    required this.destination,
+    required this.animals,
+    required this.package,
+    required this.baggage,
+    required this.babyChair,
+    required this.smoke,
+    required this.twoPlacesInBehind,
+    required this.conditioner,
+    required this.gender,
+    required this.start,
+    required this.end,
+  });
+
+  factory ModelSearch.fromJson(Map<String, dynamic> json) {
+    return ModelSearch(
+      page: json['page'],
+      departure: Departure.fromJson(json['departure']),
+      destination: Departure.fromJson(json['destination']),
+      animals: json['animals'],
+      package: json['package'],
+      baggage: json['baggage'],
+      babyChair: json['babyChair'],
+      smoke: json['smoke'],
+      twoPlacesInBehind: json['twoPlacesInBehind'],
+      conditioner: json['conditioner'],
+      gender: json['gender'],
+      start: json['start'],
+      end: json['end'],
+    );
   }
 }
