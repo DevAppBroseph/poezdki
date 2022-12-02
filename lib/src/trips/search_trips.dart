@@ -740,7 +740,8 @@ class _SearchRidesState extends State<SearchRides>
         },
         "district": from?.district,
         "name": from?.name,
-        "population": from?.population
+        "population": from?.population,
+        "subject": from?.subject
       },
       "destination": {
         "coords": {
@@ -749,7 +750,8 @@ class _SearchRidesState extends State<SearchRides>
         },
         "district": to?.district,
         "name": to?.name,
-        "population": to?.population
+        "population": to?.population,
+        "subject": to?.subject
       },
       "animals": filter.isPetTransfer,
       "package": filter.isPackageTransfer,

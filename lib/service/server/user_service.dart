@@ -23,6 +23,7 @@ class UserService {
     );
     if (response.statusCode == 200) {
       Map<String, dynamic> body = json.decode(response.body);
+      print('object ${body}');
       final UserModel user = UserModel.fromJson(body);
       return user;
     } else {

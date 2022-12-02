@@ -20,8 +20,6 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
-      <key>NSLocationWhenInUseUsageDescription</key>
-      <string>Your location is required for xyz benefits for you</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -48,6 +46,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is required for xyz benefits for you</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Разрешите доступ к галерее, чтобы добавить или изменить фото профиля.</string>
 	<key>UIBackgroundModes</key>

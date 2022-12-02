@@ -41,7 +41,7 @@ class ProfileScreen extends StatelessWidget {
               // const ProfileBtn(title: "Бонусы", icon: 'dollar-circlebonus'),
               ProfileBtn(
                   onPressed: () =>
-                      pushNewScreen(context, screen: const Referal()),
+                      pushNewScreen(context, screen: Referal()),
                   title: "Реферальная система",
                   icon: 'profile-2user'),
               // ProfileBtn(

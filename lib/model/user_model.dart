@@ -108,6 +108,8 @@ class UserModel {
   String? fcmToken;
   int? birth;
   List<Cars>? cars;
+  String? ref;
+  String? father;
 
   UserModel({
     this.token,
@@ -140,6 +142,8 @@ class UserModel {
         cars!.add(Cars.fromJson(v));
       });
     }
+    ref = json['ref'];
+    father = json['father'];
   }
 
   Map<String, dynamic> toJson() {

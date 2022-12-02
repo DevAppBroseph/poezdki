@@ -1,17 +1,24 @@
+import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/export/server_url.dart';
+import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/widget/button/icon_box_button.dart';
 import 'package:app_poezdka/widget/divider/row_divider.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
 class Referal extends StatelessWidget {
-  const Referal({Key? key}) : super(key: key);
-  final referalStr = 'www.link//32ws2cw';
+  Referal({Key? key}) : super(key: key);
+  String referalStr = '$serverURL/users/registration?ref=';
 
   @override
   Widget build(BuildContext context) {
+    UserModel? userModel = BlocProvider.of<ProfileBloc>(context).userModel;
+    referalStr = userModel != null ? referalStr + userModel.ref! : '';
+
     return KScaffoldScreen(
         isLeading: true,
         title: "Реферальная система",
@@ -47,8 +54,7 @@ class Referal extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
       child: InkWell(
         onTap: () async {
-          await Clipboard.setData(
-              const ClipboardData(text: "www.link//32ws2cw"));
+          await Clipboard.setData(ClipboardData(text: referalStr));
           const _snackBar = SnackBar(
             backgroundColor: kPrimaryColor,
             content: Text('Скопировано'),
@@ -59,15 +65,28 @@ class Referal extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10), color: kPrimaryColor),
-          child: ListTile(
-            title: Text(
-              referalStr,
-              style: const TextStyle(color: Colors.white),
-            ),
-            trailing: const Icon(
-              Ionicons.copy_outline,
-              color: Colors.white,
-            ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    referalStr,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              const Icon(
+                Ionicons.copy_outline,
+                color: Colors.white,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+            ],
           ),
         ),
       ),

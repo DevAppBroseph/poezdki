@@ -13,6 +13,7 @@ part 'profile_event.dart';
 part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+  UserModel? userModel;
   final SecureStorage userRepository;
   ProfileBloc(this.userRepository) : super(ProfileInitial()) {
     final userService = UserService();
@@ -21,6 +22,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(ProfileLoading());
       final token = await userRepository.getToken();
       final UserModel? user = token == null ? null : await userService.getCurrentUser(token: token);
+      userModel = user;
       user != null ? add(UpdateProfile(user)) : add(ErrorProfileLoaded(""));
     });
     on<CreateCar>((event, emit) async {

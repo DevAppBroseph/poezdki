@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
@@ -6,15 +7,14 @@ import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/const/theme.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'bloc/auth/auth_builder.dart';
 import 'export/blocs.dart';
 import 'export/services.dart';
@@ -41,11 +41,37 @@ void main() async {
   Hive.init(appDocumentDirectory.path);
   await Hive.openBox(HiveBox.appBox.box);
 
-  runApp(const App());
+  runApp(App());
 }
 
-class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+class App extends StatefulWidget {
+  App({Key? key}) : super(key: key);
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  @override
+  void initState() {
+    super.initState();
+    handleDynamicLinks();
+  }
+
+  Future handleDynamicLinks() async {
+    final PendingDynamicLinkData? data =
+        await FirebaseDynamicLinks.instance.getInitialLink();
+    if (data != null) {
+      print('object ${data.link}');
+      // SmartDialog.show(
+      //   builder: (context) {
+      //     return Text(data.link.toString());
+      //   },
+      // );
+    }
+  }
+
+  // https://referalpoezdki.page.link/referal?ref=testMYreferalLINK123
 
   @override
   Widget build(BuildContext context) {
