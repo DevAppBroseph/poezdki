@@ -66,7 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
           child: Column(
         children: [
           KFormField(
-            hintText: 'Телефон или E-mail',
+            hintText: 'Телефон',
             textEditingController: email,
           ),
           KPasswordField(

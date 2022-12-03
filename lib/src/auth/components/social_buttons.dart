@@ -186,6 +186,9 @@ class SocialAuthButtons extends StatelessWidget {
         // nonce: nonce,
       );
 
+      print(appleCredential);
+      
+
       if (appleCredential.email != null) {
         BlocProvider.of<AuthBloc>(context).add(
           SignInWithVk(
@@ -202,6 +205,7 @@ class SocialAuthButtons extends StatelessWidget {
           '${appleCredential.givenName} ${appleCredential.familyName}';
       final userEmail = '${appleCredential.email}';
 
+      // print(appleCredential);
       print(displayName);
     } catch (exception) {
       print(exception);
@@ -235,7 +239,7 @@ class WebViewPage extends StatelessWidget {
 
   void readJS(BuildContext context) async {
     String html = await _controller
-        .evaluateJavascript("document.querySelector('body pre').innerHTML;");
+        .runJavascriptReturningResult("document.querySelector('body pre').innerHTML;");
     VKModel? vkModel = VKModel.fromJson(json.decode(html));
 
     if (vkModel != null) {
