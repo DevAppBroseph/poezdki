@@ -137,11 +137,19 @@ class _TripTileState extends State<TripTile> {
               ),
               _trip(widget.trip),
               if (!widget.last)
-                passengers.any((element) => element.id == userId)
-                    ? FullWidthElevButton(
+                // passengers.any((element) => element.id == userId)
+                    // ? 
+                    FullWidthElevButton(
                         color: kPrimaryRed,
                         title: "Отменить бронь",
                         onPressed: () {
+                          // final tripsBloc =
+                          //   BlocProvider.of<TripsBloc>(context, listen: false);
+                        // tripsBloc.add(DeletePassengerInTrip(widget.trip.tripId!,
+                        //     widget.trip.tripId!));
+                        //   // tripsBloc.add(DeleteTrip(widget.trip.tripId!));
+                        //   // tripsDriverBloc.add(LoadUserTripsList());
+                        //   Future.delayed(const Duration(seconds: 1), () => BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList()));
                           tripsPassangerBloc.add(CancelBookTrip(widget.trip.tripId!));
                           tripsBloc.add(LoadAllTripsList());
                           Future.delayed(const Duration(seconds: 1), () {
@@ -153,8 +161,8 @@ class _TripTileState extends State<TripTile> {
                             // });
                           });
                         }
-                      )
-                    : const SizedBox(),
+                      ),
+                    // : const SizedBox(),
               if (!widget.last)
                 widget.trip.owner!.id == userId
                     ? FullWidthElevButton(

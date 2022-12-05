@@ -188,6 +188,7 @@ class _SignInScreenState extends State<SignInScreen> {
           ErrorDialogs().showError('Поля не заполнены.');
         } else {
           authBloc.add(LoggedIn(context, selectCode + email.text, pw.text));
+          // authBloc.add(LoggedIn(context, 'bochko000000@gmail.com', '123'));
         }
       },
     );

@@ -21,6 +21,7 @@ class TripModel {
   bool? conditioner;
   String? ownerGender;
   List<int>? seats = [];
+  int? bronSeat;
 
   TripModel(
       {this.passenger = false,
@@ -42,10 +43,12 @@ class TripModel {
       this.passengers,
       this.conditioner,
       this.ownerGender,
-      this.seats = const[]});
+      this.seats = const[],
+      this.bronSeat});
 
   TripModel.fromJson(Map<String, dynamic> json, bool state) {
     passenger = state;
+    bronSeat = json['over4index'];
     isPremium = json['premium'];
     tripId = json['trip_id'];
     owner = json['owner'] != null ? Owner.fromJson(json['owner']) : null;

@@ -58,7 +58,7 @@ class CreateUserTrip extends TripsEvent {
 
 class BookThisTrip extends TripsEvent {
   final BuildContext context;
-  final List<int> seats;
+  final List<int?> seats;
   final int tripId;
 
   BookThisTrip(this.context, this.seats, this.tripId);

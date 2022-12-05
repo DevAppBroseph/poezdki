@@ -9,6 +9,7 @@ part 'user_trips_passenger_state.dart';
 class UserTripsPassengerBloc
     extends Bloc<UserTripsPassengerEvent, UserTripsPassengerState> {
   final tripService = TripService();
+  List<List<TripModel>> tripsModel = [];
   UserTripsPassengerBloc() : super(UserTripsPassengerInitial()) {
     on<LoadUserPassengerTripsList>(_loadUserPassengerTrips);
     on<UpdateUserPassengerTripsList>(_updateUserPassengerTrips);
@@ -19,6 +20,8 @@ class UserTripsPassengerBloc
       Emitter<UserTripsPassengerState> emit) async {
     emit(UserTripsPassengerLoading());
     final trips = await tripService.loadUserPassangerTrips();
+    tripsModel.clear();
+    tripsModel.addAll(trips);
     add(UpdateUserPassengerTripsList(trips));
   }
 
