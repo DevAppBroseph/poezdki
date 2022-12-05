@@ -13,11 +13,15 @@ part 'profile_event.dart';
 part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+  String? referal;
   UserModel? userModel;
   final SecureStorage userRepository;
   ProfileBloc(this.userRepository) : super(ProfileInitial()) {
     final userService = UserService();
     final carService = CarService();
+    on<SetReferal>((event, emit) async {
+      referal = event.referal;
+    });
     on<LoadProfile>((event, emit) async {
       emit(ProfileLoading());
       final token = await userRepository.getToken();

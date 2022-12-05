@@ -3,10 +3,8 @@ import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/service/server/auth_service.dart';
 import 'package:app_poezdka/service/server/user_service.dart';
 import 'package:app_poezdka/src/app_screens.dart';
-
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:bloc/bloc.dart';
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -81,6 +79,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       gender: event.gender,
       birth: event.birth,
       fcmToken: (await FirebaseMessaging.instance.getToken()).toString(),
+      referal: event.referal
     );
 
     if (data != null) {

@@ -5,6 +5,12 @@ abstract class ProfileEvent {}
 
 class LoadProfile extends ProfileEvent {}
 
+class SetReferal extends ProfileEvent {
+  String? referal;
+
+  SetReferal(this.referal);
+}
+
 class UpdateProfile extends ProfileEvent {
   final UserModel user;
 

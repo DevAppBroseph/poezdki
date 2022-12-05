@@ -191,15 +191,15 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
 
       setState(() {
         isCorrect = IsCorrect.fromJson(res.data);
-        // if (isCorrect!.isCorrect) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SignUpWithEmailPhone(phoneEmail: value),
-            ));
-        // } else {
-        //   errorDialog.showError('Код неправильно указан.');
-        // }
+        if (isCorrect!.isCorrect) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SignUpWithEmailPhone(phoneEmail: value),
+              ));
+        } else {
+          errorDialog.showError('Код неправильно указан.');
+        }
       });
     } catch (e) {
       errorDialog.showError('Код неправильно указан.');

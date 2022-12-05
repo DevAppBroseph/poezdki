@@ -239,8 +239,11 @@ class WebViewPage extends StatelessWidget {
 
   void readJS(BuildContext context) async {
     String html = await _controller
-        .runJavascriptReturningResult("document.querySelector('body pre').innerHTML;");
-    VKModel? vkModel = VKModel.fromJson(json.decode(html));
+        .runJavascriptReturningResult("document.querySelector('body pre').innerHTML");
+
+    final jsons = jsonDecode(html);
+
+    VKModel? vkModel = VKModel.fromJson(json.decode(jsons));
 
     if (vkModel != null) {
       if (vkModel.phoneNumber == null) {

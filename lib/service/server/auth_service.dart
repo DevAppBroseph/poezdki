@@ -20,7 +20,8 @@ class AuthService {
       required String lastName,
       required String gender,
       required int birth,
-      required String fcmToken}) async {
+      required String fcmToken,
+      required String? referal}) async {
     Map<String, dynamic> params = {
       "login": login,
       "password": password,
@@ -29,6 +30,7 @@ class AuthService {
       "gender": gender,
       "birth": "$birth",
       "fcm_token": fcmToken,
+      if(referal != null) "ref": referal
     };
 
     try {

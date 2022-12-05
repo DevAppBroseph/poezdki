@@ -174,6 +174,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                           lastName: surname.text,
                           gender: selectedGender!,
                           birth: date.millisecondsSinceEpoch,
+                          referal: widget.referal
                         ),
                       );
 

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
@@ -64,24 +65,33 @@ class _AppState extends State<App> {
     final PendingDynamicLinkData? data =
         await FirebaseDynamicLinks.instance.getInitialLink();
     if (data != null) {
-      print('object ${data}');
-      referalLink = data.link.toString();
+      final ref = data.link.toString().split('/');
+      referalLink = ref.last;
+      // Future.delayed(const Duration(seconds: 1), () {
+      // BlocProvider.of<ProfileBloc>(context).add(SetReferal(referalLink));
+      // print('object set link referal ${referalLink}');
       // SmartDialog.show(
       //   builder: (context) {
-      //     return Text(data.link.toString());
+      //     return Text(referalLink!);
       //   },
       // );
-      setState(() {
-        loading = false;
-      });
-    } else {
-      setState(() {
-        loading = false;
-      });
+      // });
+      // setState(() {
+      //   loading = false;
+      // });
     }
+    // else {
+    //   setState(() {
+    //     loading = false;
+    //   });
+    // }
+    setState(() {
+      loading = false;
+    });
   }
 
   // https://referalpoezdki.page.link/referal?ref=testMYreferalLINK123
+  // https://apppoezdka.page.link/n3UL?link=https%3A%2F%2Fapppoezdka.page.link%2F
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +114,10 @@ class _AppState extends State<App> {
               UserTripsPassengerBloc()..add(LoadUserPassengerTripsList()),
         ),
         BlocProvider<ProfileBloc>(
-          create: (context) => ProfileBloc(userRepository)..add(LoadProfile()),
+          create: (context) {
+            BlocProvider.of<ProfileBloc>(context).add(SetReferal(referalLink));
+            return ProfileBloc(userRepository)..add(LoadProfile());
+          },
         ),
         BlocProvider<AuthBloc>(
           create: (context) {

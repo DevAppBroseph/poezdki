@@ -30,11 +30,11 @@ class VKModel {
     login = json['login'];
     email = json['email'];
     phoneNumber = json['phone_number'];
-    photo = json['photo'];;
+    photo = json['photo'];
     firstname = json['firstname'];
     lastname = json['lastname'];
-    gender = json['gender'];;
-    birth = json['birth'];;
+    gender = json['gender'];
+    birth = json['birth'];
     cars = List.castFrom<dynamic, dynamic>(json['cars']);
   }
 

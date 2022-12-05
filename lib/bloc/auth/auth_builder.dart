@@ -1,7 +1,4 @@
-import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
-import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/src/app_screens.dart';
-import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/src/auth/signup.dart';
 import 'package:app_poezdka/src/onboarding/on_board.dart';
 import 'package:app_poezdka/src/trips/search_trips.dart';
@@ -15,8 +12,8 @@ class AppInitBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ChatBloc>(context);
-    BlocProvider.of<ProfileBloc>(context);
+    // BlocProvider.of<ChatBloc>(context);
+    // BlocProvider.of<ProfileBloc>(context);
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (referal == null) {
         print(state);
@@ -40,13 +37,13 @@ class AppInitBuilder extends StatelessWidget {
             isAuthorized: false,
           );
         }
-        if (state is ReferalSuccess) {
-          return Scaffold(
-            body: Center(
-              child: Text(state.referalLink),
-            ),
-          );
-        }
+        // if (state is ReferalSuccess) {
+        //   return Scaffold(
+        //     body: Center(
+        //       child: Text(state.referalLink),
+        //     ),
+        //   );
+        // }
       } else {
         return SignUpScreen(referal: referal);
       }

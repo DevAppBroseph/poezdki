@@ -8,6 +8,7 @@ class AppStarted extends AuthEvent {}
 class AppInit extends AuthEvent {}
 
 class SignUp extends AuthEvent {
+  String? referal;
   final BuildContext context;
   final String login;
   final String password;
@@ -24,6 +25,7 @@ class SignUp extends AuthEvent {
     required this.lastName,
     required this.gender,
     required this.birth,
+    required this.referal
   });
 }
 

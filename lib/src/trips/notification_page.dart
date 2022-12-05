@@ -82,76 +82,75 @@ class _NotificationPageState extends State<NotificationPage> {
               )
             ];
           },
-          body: Expanded(
-            child: ListView.builder(
-              itemCount: notifications.length,
-              itemBuilder: ((context, index) {
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.notifications, size: 27, color: kPrimaryColor,),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      notifications[index].departure!,
-                                      style: const TextStyle(fontSize: 17),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    child: Text(
-                                      DateFormat("dd MMMM, HH:mm", 'RU')
-                                          .format(DateTime.fromMicrosecondsSinceEpoch(
-                                              notifications[index].fromDot!))
-                                          .toString(),
-                                      style:
-                                          const TextStyle(fontWeight: FontWeight.w400),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      notifications[index].destination!,
-                                      style: const TextStyle(fontSize: 17),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    child: Text(
-                                      DateFormat("dd MMMM, HH:mm", 'RU')
-                                          .format(DateTime.fromMicrosecondsSinceEpoch(
-                                              notifications[index].toDot!))
-                                          .toString(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+          body: ListView.builder(
+            shrinkWrap: true,
+            itemCount: notifications.length,
+            itemBuilder: ((context, index) {
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10)
                   ),
-                );
-              }),
-            ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.notifications, size: 27, color: kPrimaryColor,),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    notifications[index].departure!,
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: Text(
+                                    DateFormat("dd MMMM, HH:mm", 'RU')
+                                        .format(DateTime.fromMicrosecondsSinceEpoch(
+                                            notifications[index].fromDot!))
+                                        .toString(),
+                                    style:
+                                        const TextStyle(fontWeight: FontWeight.w400),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    notifications[index].destination!,
+                                    style: const TextStyle(fontSize: 17),
+                                  ),
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: Text(
+                                    DateFormat("dd MMMM, HH:mm", 'RU')
+                                        .format(DateTime.fromMicrosecondsSinceEpoch(
+                                            notifications[index].toDot!))
+                                        .toString(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
           ),
         ),
       ),
