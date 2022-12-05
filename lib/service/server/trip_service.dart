@@ -93,8 +93,11 @@ class TripService {
       "baby_chair": babyChair,
       "smoke": smoke,
       "two_places_in_behind": twoPlacesInBehind,
-      "conditioner": conditioner
+      "conditioner": conditioner,
+      "over4seats": null
     };
+
+    print('object log ${json.encode(filter)} ${getAllDriverTripsUrl}');
     Response response;
     var dio = Dio();
 
@@ -115,6 +118,7 @@ class TripService {
         throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
       }
     } catch (e) {
+      print('object ${e}');
       errorDialog.showError(e.toString());
       return null;
     }
@@ -246,7 +250,7 @@ class TripService {
   }
 
   Future<bool> bookTrip(context,
-      {required int tripId, required List<int> seats}) async {
+      {required int tripId, required List<int?> seats}) async {
     Response response;
     var dio = Dio();
     final data = {
@@ -341,6 +345,8 @@ class TripService {
           responseType: ResponseType.json,
         ),
       );
+
+      print('object ${res.statusCode}');
     } catch (e) {
       errorDialog.showError(e.toString());
     }

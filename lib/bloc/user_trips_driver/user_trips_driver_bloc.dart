@@ -9,6 +9,7 @@ part 'user_trips_driver_state.dart';
 class UserTripsDriverBloc
     extends Bloc<UserTripsDriverEvent, UserTripsDriverState> {
   final tripService = TripService();
+  List<List<TripModel>> tripsModel = [];
   UserTripsDriverBloc() : super(UserTripsDriverInitial()) {
     on<LoadUserTripsList>(_loadUserTrips);
     on<UpdateUserTripsList>(_updateUserTrips);
@@ -18,6 +19,8 @@ class UserTripsDriverBloc
       LoadUserTripsList event, Emitter<UserTripsDriverState> emit) async {
     emit(UserTripsDriverLoading());
     final trips = await tripService.loadUserDriverTrips();
+    tripsModel.clear();
+    tripsModel.addAll(trips);
     add(UpdateUserTripsList(trips));
   }
 

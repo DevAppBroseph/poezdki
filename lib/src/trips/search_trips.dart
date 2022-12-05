@@ -14,6 +14,7 @@ import 'package:app_poezdka/src/trips/components/pick_city.dart';
 import 'package:app_poezdka/src/rides/components/waypoint.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
 import 'package:app_poezdka/src/trips/components/search_trip_filter.dart';
+import 'package:app_poezdka/src/trips/notification_page.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
@@ -70,11 +71,17 @@ class _SearchRidesState extends State<SearchRides>
       title: "Поиск поездок",
       actions: [
         Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: IconButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => NotificationPage())),
+              icon: const Icon(MaterialCommunityIcons.notification_clear_all)),
+        ),
+        Padding(
           padding: const EdgeInsets.only(right: 10),
           child: IconButton(
               onPressed: () => applyFilters(),
               icon: const Icon(MaterialCommunityIcons.filter_outline)),
-        )
+        ),
       ],
       body: Container(
         height: MediaQuery.of(context).size.height,
@@ -299,7 +306,7 @@ class _SearchRidesState extends State<SearchRides>
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
             child: ListTile(
               onTap: () => setState(() {
                 filter.isPackageTransfer = !filter.isPackageTransfer;
@@ -315,7 +322,7 @@ class _SearchRidesState extends State<SearchRides>
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 25),
             child: GestureDetector(
               onTap: () async {
                 final settings = await LocalStorageService.getInstance();
@@ -531,7 +538,8 @@ class _SearchRidesState extends State<SearchRides>
                                                                 .end
                                                       };
 
-                                                      print('objecthjh $tripOne');
+                                                      print(
+                                                          'objecthjh $tripOne');
 
                                                       final tripsBlocSecond =
                                                           BlocProvider.of<

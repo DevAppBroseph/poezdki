@@ -106,6 +106,7 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
   }
 
   Widget _tripButtons(context) {
+    BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList());
     return Row(
       children: [
         widget.trip.package!
@@ -118,15 +119,21 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                 ),
               )
             : const SizedBox(),
-        BlocBuilder<UserTripsPassengerBloc, UserTripsPassengerState>(
+        BlocBuilder<UserTripsDriverBloc, UserTripsDriverState>(
             builder: (context, state) {
-          List<List<TripModel>> tripsModels = [];
-          if (state is UserTripsPassengerLoaded) {
-            tripsModels.addAll(state.trips!);
-          }
+          List<List<TripModel>> tripsModelsDriver = BlocProvider.of<UserTripsDriverBloc>(context).tripsModel;
+          List<List<TripModel>> tripsModelPass = BlocProvider.of<UserTripsPassengerBloc>(context).tripsModel;
+
+          List<List<TripModel>> list = [];
+
+          list.addAll(tripsModelsDriver);
+          list.addAll(tripsModelPass);
+          // if (state is UserTripsDriverLoaded) {
+          //   tripsModels.addAll(state.trips);
+          // }
           return Expanded(
             child: FullWidthElevButton(
-              onPressed: () => bookTrip(context, tripsModels),
+              onPressed: () => bookTrip(context, tripsModelPass),
               title: "Забронировать",
               titleStyle: const TextStyle(fontSize: 13, color: Colors.white),
             ),
@@ -287,10 +294,10 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                     borderRadius: BorderRadius.circular(10),
                     child: InkWell(
                       onTap: () async {
-                        final tripsBloc =
-                            BlocProvider.of<TripsBloc>(context, listen: false);
-                        tripsBloc.add(DeletePassengerInTrip(widget.trip.tripId!,
-                            widget.trip.passengers![index].id!));
+                        // final tripsBloc =
+                        //     BlocProvider.of<TripsBloc>(context, listen: false);
+                        // tripsBloc.add(DeletePassengerInTrip(widget.trip.tripId!,
+                        //     widget.trip.passengers![index].id!));
 
                         final btmSheet = BottomSheetCall();
                         btmSheet.show(
@@ -512,6 +519,10 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(15),
                       onTap: () async {
+                        final tripsBloc =
+                            BlocProvider.of<TripsBloc>(context, listen: false);
+                        tripsBloc.add(DeletePassengerInTrip(widget.trip.tripId!,
+                            widget.trip.passengers![index].id!));
                         Navigator.of(context)
                           ..pop()
                           ..pop();
@@ -762,12 +773,12 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
         }
       } else {
         bool statebutton = false;
-        
+
         for (var element in tripsModels) {
-          
           for (var element1 in element) {
+            print('object ${element1.tripId} ${widget.trip.tripId}');
             if (element1.tripId == widget.trip.tripId) {
-              print('object ${element1.tripId} ${widget.trip.tripId}');
+              // print('object ${element1.tripId} ${widget.trip.tripId}');
               statebutton = true;
               break;
             }
@@ -791,11 +802,14 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
             children: [],
             onPressed: () async {
               await SmartDialog.dismiss();
+              // print(
+              //     'object ${widget.trip.car!.countOfPassengers} ${widget.trip.car!.countOfPassengers}');
+              // print('object ${widget.trip.passengers!.length + 1} ${widget.trip.tripId!}');
               if (widget.trip.car!.countOfPassengers! > 4) {
                 tripBloc.add(
                   BookThisTrip(
                     context,
-                    [widget.trip.passengers!.length + 1],
+                    [widget.trip.bronSeat],
                     widget.trip.tripId!,
                   ),
                 );
@@ -807,7 +821,8 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                   ),
                 );
                 Navigator.pop(context);
-                BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList());
+                BlocProvider.of<UserTripsPassengerBloc>(context)
+                    .add(LoadUserPassengerTripsList());
               }
             },
           );
