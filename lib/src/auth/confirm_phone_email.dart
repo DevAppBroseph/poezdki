@@ -117,7 +117,7 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 50, right: 15, left: 15),
                 child: FullWidthElevButton(
-                  title: currentPage != 2 ? "Отправить" : 'Сохранить',
+                  title: currentPage != 1 ? "Все будет круто" : 'Погнали!',
                   onPressed: () async {
                     if (currentPage == 0) {
                       _sendPhoneEmail(email.text);
@@ -148,15 +148,18 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
         data: jsonEncode({"login": '$selectCode$value', "is_first_auth": true}),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        setState(() {
-          resetPasswordOne = ResetPasswordOne.fromJson(res.data);
-          currentPage++;
-          tabController!.animateTo(
-            currentPage,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.ease,
-          );
-        });
+        // setState(() {
+        resetPasswordOne = ResetPasswordOne.fromJson(res.data);
+        currentPage++;
+        tabController!.animateTo(
+          currentPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        );
+        Future.delayed(const Duration(milliseconds: 300), (() {
+          setState(() {});
+        }));
+        // });
       } else {
         errorDialog.showError(res.data);
       }
@@ -186,22 +189,22 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
 
       setState(() {
         isCorrect = IsCorrect.fromJson(res.data);
-        if (isCorrect!.isCorrect) {
+        // if (isCorrect!.isCorrect) {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => SignUpWithEmailPhone(
-                      phoneEmail: value)));
-        } else {
-          errorDialog.showError('Код неправильно указан.');
-        }
+                  builder: (context) =>
+                      SignUpWithEmailPhone(phoneEmail: value)));
+        // } else {
+        //   errorDialog.showError('Код неправильно указан.');
+        // }
       });
     } catch (e) {
       errorDialog.showError('Код неправильно указан.');
     }
   }
 
-  Column _phonePage() {
+  Widget _phonePage() {
     return Column(
       children: [
         const Padding(
@@ -307,13 +310,13 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
     );
   }
 
-  Column _pinPage() {
+  Widget _pinPage() {
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 100, right: 100, top: 80),
           child: Text(
-            'Код восстановления отправлен на ${email.text}',
+            'Код восстановления отправлен на ${selectCode + email.text}',
             textAlign: TextAlign.center,
           ),
         ),

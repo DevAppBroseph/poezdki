@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
+import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
@@ -146,53 +147,53 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(left: 15,right: 5, bottom: 10),
-              child: Platform.isAndroid
-              ? TextFormField(
-                  scrollPadding: const EdgeInsets.only(bottom: 100),
-                  focusNode: _nodeText1,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    // suffixText: "1000",
-                    hintStyle: TextStyle(wordSpacing: 5),
-                    contentPadding: EdgeInsets.only(right: 5.0, top: 10),
-                  ),
-                  textAlign: TextAlign.end,
-                  controller: priceController,
-                  onChanged: (val) => setState(() {}),
-                )
-              : KeyboardActions(
-                config: KeyboardActionsConfig(actions: [
-                  KeyboardActionsItem(
-                    focusNode: _nodeText1,
-                    onTapAction: () => _nodeText1.unfocus(),
-                  ),
-                ]),
-                child: TextFormField(
-                  scrollPadding: const EdgeInsets.only(bottom: 100),
-                  focusNode: _nodeText1,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.done,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    // suffixText: "1000",
-                    hintStyle: TextStyle(wordSpacing: 5),
-                    contentPadding: EdgeInsets.only(right: 5.0, top: 10),
-                  ),
-                  textAlign: TextAlign.end,
-                  controller: priceController,
-                  onChanged: (val) => setState(() {}),
-                ),
-              )
-            ),
+                padding: const EdgeInsets.only(left: 15, right: 5, bottom: 10),
+                child: Platform.isAndroid
+                    ? TextFormField(
+                        scrollPadding: const EdgeInsets.only(bottom: 100),
+                        focusNode: _nodeText1,
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.done,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          // suffixText: "1000",
+                          hintStyle: TextStyle(wordSpacing: 5),
+                          contentPadding: EdgeInsets.only(right: 5.0, top: 10),
+                        ),
+                        textAlign: TextAlign.end,
+                        controller: priceController,
+                        onChanged: (val) => setState(() {}),
+                      )
+                    : KeyboardActions(
+                        config: KeyboardActionsConfig(actions: [
+                          KeyboardActionsItem(
+                            focusNode: _nodeText1,
+                            onTapAction: () => _nodeText1.unfocus(),
+                          ),
+                        ]),
+                        child: TextFormField(
+                          scrollPadding: const EdgeInsets.only(bottom: 100),
+                          focusNode: _nodeText1,
+                          keyboardType: TextInputType.number,
+                          textInputAction: TextInputAction.done,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                          ],
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            // suffixText: "1000",
+                            hintStyle: TextStyle(wordSpacing: 5),
+                            contentPadding:
+                                EdgeInsets.only(right: 5.0, top: 10),
+                          ),
+                          textAlign: TextAlign.end,
+                          controller: priceController,
+                          onChanged: (val) => setState(() {}),
+                        ),
+                      )),
           ),
           const Icon(
             Fontisto.rouble,
@@ -318,16 +319,26 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
       // if (passengers!.any((p) => p.id == int.parse(userId!))) {
       //   null;
       // } else {
+      // if (screen == 1) {
+      BlocProvider.of<UserTripsDriverBloc>(context).add(LoadUserTripsList());
+      // } else {
+      // BlocProvider.of<UserTripsPassengerBloc>(context)
+      //     .add(LoadUserPassengerTripsList());
+      // }
       pushNewScreen(
         context,
         screen: BookTripReserves(
           tripData: trip,
         ),
       ).then((value) {
-        if (priceController.text.isNotEmpty) {
-                  // tripBloc.add(CreateUserTrip(context, trip));
-                  // tripDriverBloc.add(LoadUserTripsList());
-                }
+        if (value is bool && value)
+          Navigator.pop(context, true);
+        else
+          Navigator.pop(context, false);
+        // if (priceController.text.isNotEmpty) {
+        // tripBloc.add(CreateUserTrip(context, trip));
+        // tripDriverBloc.add(LoadUserTripsList());
+        // }
       });
       // }
     }

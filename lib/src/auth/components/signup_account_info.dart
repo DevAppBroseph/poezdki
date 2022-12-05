@@ -26,7 +26,7 @@ class SignUpAccountInfo extends StatelessWidget {
           children: [
             KFormField(
               enabled: false,
-              hintText: 'Телефон или E-mail*',
+              hintText: 'Телефон*',
               textEditingController: email,
               validateFunction: Validations.validateEmail,
             ),

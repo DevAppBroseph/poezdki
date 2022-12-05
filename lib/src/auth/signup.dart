@@ -12,6 +12,8 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  bool personalData = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,6 +32,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(child: _authSection()),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+            child: Row(
+              children: [
+                Checkbox(
+                  value: personalData,
+                  shape: const CircleBorder(),
+                  onChanged: (value) {
+                    personalData = !personalData;
+                    setState(() {});
+                  },
+                ),
+                const Expanded(
+                  child: Text(
+                    "Я соглашаюсь с условиями обработки персональных данеых",
+                    style: TextStyle(color: kPrimaryLightGrey),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(bottom: 40),
             child: InkWell(
@@ -58,16 +82,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
             style: TextStyle(color: kPrimaryLightGrey),
           ),
         ),
-        FullWidthElevButtonChild(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          color: kPrimaryWhite,
-          child: const Text("Телефон"),
-          onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const ConfirmPhoneEmailPage())),
+        Stack(
+          children: [
+            Column(
+              children: [
+                FullWidthElevButtonChild(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  color: kPrimaryWhite,
+                  child: const Text("Телефон"),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ConfirmPhoneEmailPage())),
+                ),
+                SocialAuthButtons(),
+              ],
+            ),
+            if(!personalData) Positioned.fill(child: Container(color: Colors.transparent,)),
+          ],
         ),
-        SocialAuthButtons(),
       ],
     );
   }

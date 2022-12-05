@@ -216,13 +216,13 @@ class _EditProfileState extends State<EditProfile> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 25, right: 25),
-                      child: KFormField(
-                        hintText: 'E-Mail ',
-                        textEditingController: email,
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 25, right: 25),
+                    //   child: KFormField(
+                    //     hintText: 'E-Mail ',
+                    //     textEditingController: email,
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

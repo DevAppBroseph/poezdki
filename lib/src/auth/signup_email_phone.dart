@@ -1,4 +1,3 @@
-import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/src/auth/components/signup_account_info.dart';
 import 'package:app_poezdka/src/auth/components/signup_personal_info.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
@@ -38,8 +37,6 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
   int currentPage = 0;
   DateTime selectedDate = DateTime.now();
   String? selectedGender;
-
-  bool personalData = false;
 
   @override
   Widget build(BuildContext context) {
@@ -126,31 +123,11 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (currentPage == 1)
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: personalData,
-                        shape: const CircleBorder(),
-                        onChanged: (value) {
-                          personalData = !personalData;
-                          setState(() {});
-                        },
-                      ),
-                      const Expanded(
-                        child: Text(
-                          "Я соглашаюсь с условиями обработки персональных данеых",
-                          style: TextStyle(color: kPrimaryLightGrey),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
                 FullWidthElevButton(
-                  title: currentPage == 1 ? "Погнали!" : "Еще немного!",
+                  title: currentPage == 1 ? "Вперед!" : "Еще немного!",
                   onPressed: () async {
                     if (currentPage == 0 &&
-                        _regFormAccount.currentState!.validate() == false && !personalData) {
+                        _regFormAccount.currentState!.validate() == false) {
                       infoDialog.show(
                         title: "Что то не так:",
                         children: const [
@@ -179,7 +156,7 @@ class _SignUpWithEmailPhoneState extends State<SignUpWithEmailPhone> {
                             curve: Curves.fastLinearToSlowEaseIn);
                       });
                     } else if (currentPage == 1 &&
-                        _regFormPersonal.currentState!.validate() && personalData) {
+                        _regFormPersonal.currentState!.validate()) {
                       final parseDate = dob.text.split('.');
                       final date = DateTime.parse(
                           '${parseDate[2]}-${parseDate[1]}-${parseDate[0]} 00:00:00.000');

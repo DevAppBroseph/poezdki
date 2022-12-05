@@ -260,8 +260,13 @@ class TripService {
         options: Options(
           headers: {"Authorization": token},
           responseType: ResponseType.json,
+          validateStatus: (status) => status! <= 400,
         ),
       );
+      if(response.statusCode == 400) {
+        errorDialog.showError(response.data);
+        return false;
+      }
       final responceData = ResponceServerData.fromMap(response.data);
       if (responceData.success) {
         InfoDialog().show(

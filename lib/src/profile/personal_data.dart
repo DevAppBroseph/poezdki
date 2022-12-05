@@ -222,10 +222,10 @@ class ProfileDataCard extends StatelessWidget {
                         : "Женский"
                     : 'Не указан'),
               ),
-              ListTile(
-                title: const Text("E-mail"),
-                trailing: Text(user.email ?? ''),
-              ),
+              // ListTile(
+              //   title: const Text("E-mail"),
+              //   trailing: Text(user.email ?? ''),
+              // ),
               ListTile(
                 title: const Text("Телефон"),
                 trailing: Text(user.phone == null ? "Не указан" : user.phone!),

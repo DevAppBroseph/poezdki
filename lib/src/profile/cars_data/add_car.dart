@@ -163,9 +163,9 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                           ),
                           KFormField(
                             hintText: 'Количество пассажирских мест',
-                            formatters: [
-                              LengthLimitingTextInputFormatter(1),
-                            ],
+                            // formatters: [
+                            //   LengthLimitingTextInputFormatter(1),
+                            // ],
                             textInputType: TextInputType.number,
                             textEditingController: carSeats,
                             validateFunction: Validations.validateTitle,

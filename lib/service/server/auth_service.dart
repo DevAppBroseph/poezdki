@@ -129,7 +129,7 @@ class AuthService {
         if (resp.token.isNotEmpty) {
           return resp;
         } else {
-          errorDialog.showError('Неправильно указал E-Mail или пароль');
+          errorDialog.showError('Неправильно указал Телефон или пароль');
         }
       } else {
         return throw Exception(

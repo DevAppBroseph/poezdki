@@ -1,12 +1,16 @@
+import 'dart:convert';
 import 'package:app_poezdka/export/blocs.dart';
+import 'package:app_poezdka/model/country_code.dart';
 import 'package:app_poezdka/src/auth/reset_password.dart';
 import 'package:app_poezdka/src/auth/signup.dart';
 import 'package:app_poezdka/src/policy/policy.dart';
+import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:app_poezdka/widget/text_field/custom_password_text_field.dart';
-import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:app_poezdka/widget/text_field/phone_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -19,6 +23,22 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController email = TextEditingController();
   final TextEditingController pw = TextEditingController();
+
+  CountryCode? countryCode;
+  int maxLength = 10;
+  String selectCode = '+7';
+  final btmSheet = BottomSheetCallAwait();
+
+  void loadDB() async {
+    String str = await rootBundle.loadString('assets/phone/code_phone.json');
+    countryCode = CountryCode.fromJson(json.decode(str));
+  }
+
+  @override
+  void initState() {
+    loadDB();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +85,89 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Form(
           child: Column(
         children: [
-          KFormField(
-            hintText: 'Телефон',
-            textEditingController: email,
+          Row(
+            children: [
+              PhoneTextField(
+                hintText: 'Телефон',
+                prefixIcon: GestureDetector(
+                  onTap: () async {
+                    Country? select = await btmSheet.wait(
+                      context,
+                      useRootNavigator: true,
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          physics: const ClampingScrollPhysics(),
+                          itemCount: countryCode!.country.length,
+                          itemBuilder: ((context, index) {
+                            return MaterialButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pop(countryCode!.country[index]);
+                              },
+                              child: SizedBox(
+                                height: 30,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        countryCode!.country[index].name!,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w400,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      countryCode!.country[index].dialCode!,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                    );
+                    if (select != null) {
+                      setState(() {
+                        maxLength = int.parse(select.lengthPhone!) -
+                            select.dialCode!.length;
+                        selectCode = select.dialCode!;
+                      });
+                    }
+                  },
+                  child: SizedBox(
+                    width: 60,
+                    height: 50,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        selectCode,
+                        style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                controller: email,
+                textInputType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                inputFormatters: [LengthLimitingTextInputFormatter(maxLength)],
+              )
+            ],
           ),
           KPasswordField(
             hintText: 'Пароль',
@@ -87,7 +187,7 @@ class _SignInScreenState extends State<SignInScreen> {
         if (email.text.isEmpty && pw.text.isEmpty) {
           ErrorDialogs().showError('Поля не заполнены.');
         } else {
-          authBloc.add(LoggedIn(context, email.text, pw.text));
+          authBloc.add(LoggedIn(context, selectCode + email.text, pw.text));
         }
       },
     );

@@ -1,13 +1,17 @@
 import 'dart:convert';
 import 'package:app_poezdka/bloc/auth/auth_builder.dart';
 import 'package:app_poezdka/const/theme.dart';
+import 'package:app_poezdka/model/country_code.dart';
 import 'package:app_poezdka/model/is_correct.dart';
 import 'package:app_poezdka/model/reset_password.dart';
 import 'package:app_poezdka/util/validation.dart';
+import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
+import 'package:app_poezdka/widget/text_field/phone_text_field.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:pinput/pinput.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -40,10 +44,20 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
 
   final errorDialog = ErrorDialogs();
 
+  CountryCode? countryCode;
+  int maxLength = 10;
+  String selectCode = '+7';
+  final btmSheet = BottomSheetCallAwait();
+
+  void loadDB() async {
+    String str = await rootBundle.loadString('assets/phone/code_phone.json');
+    countryCode = CountryCode.fromJson(json.decode(str));
+  }
+
   @override
   void initState() {
     tabController = TabController(length: 3, vsync: this);
-    // TODO: implement initState
+    loadDB();
     super.initState();
   }
 
@@ -106,8 +120,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
                 child: FullWidthElevButton(
                   title: currentPage != 2 ? "Отправить" : 'Сохранить',
                   onPressed: () async {
+                    print('object ${selectCode} ${email.text}');
                     if (currentPage == 0) {
-                      _resetPasswordOne(email.text);
+                      _resetPasswordOne(selectCode + email.text);
                     } else if (currentPage == 1) {
                       _checkCode(resetPasswordOne!.login, pin);
                     } else if (currentPage == 2) {
@@ -175,19 +190,22 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
       if (res.statusCode != 200) {
         errorDialog.showError('${res.data}');
       } else {
-        setState(() {
-          resetPasswordOne = ResetPasswordOne.fromJson(res.data);
-          currentPage++;
-          tabController!.animateTo(
-            currentPage,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.ease,
-          );
-        });
+        // setState(() {
+        resetPasswordOne = ResetPasswordOne.fromJson(res.data);
+        currentPage++;
+        tabController!.animateTo(
+          currentPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.ease,
+        );
+        Future.delayed(Duration(milliseconds: 300), (() {
+          setState(() {});
+        }));
+        // });
       }
     } catch (e) {
       // print('log1 ${res.data}');
-      errorDialog.showError('Введите Телефон или E-Mail.');
+      errorDialog.showError('Введите Телефон.');
     }
   }
 
@@ -262,29 +280,108 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         const Padding(
           padding: EdgeInsets.only(left: 40, right: 40, top: 80),
           child: Text(
-            'Для сброса пароля, введите номер Телефона или E-mail который был указан при регистрации.',
+            'Для сброса пароля, введите номер Телефона который был указан при регистрации.',
             textAlign: TextAlign.center,
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 15, right: 15, top: 18),
-          child: KFormField(
-            hintText: 'Телефон или E-mail *',
-            textEditingController: email,
-            validateFunction: Validations.validateEmail,
+          child: Row(
+            children: [
+              PhoneTextField(
+                hintText: 'Телефон',
+                prefixIcon: GestureDetector(
+                  onTap: () async {
+                    Country? select = await btmSheet.wait(
+                      context,
+                      useRootNavigator: true,
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          physics: const ClampingScrollPhysics(),
+                          itemCount: countryCode!.country.length,
+                          itemBuilder: ((context, index) {
+                            return MaterialButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pop(countryCode!.country[index]);
+                              },
+                              child: SizedBox(
+                                height: 30,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        countryCode!.country[index].name!,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w400,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Text(
+                                      countryCode!.country[index].dialCode!,
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                    );
+                    if (select != null) {
+                      setState(() {
+                        maxLength = int.parse(select.lengthPhone!) -
+                            select.dialCode!.length;
+                        selectCode = select.dialCode!;
+                      });
+                    }
+                  },
+                  child: SizedBox(
+                    width: 60,
+                    height: 50,
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        selectCode,
+                        style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 16,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                controller: email,
+                textInputType: TextInputType.number,
+                textInputAction: TextInputAction.done,
+                inputFormatters: [LengthLimitingTextInputFormatter(maxLength)],
+              )
+            ],
           ),
         ),
       ],
     );
   }
 
-  Column _pinPage() {
+  Widget _pinPage() {
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 100, right: 100, top: 80),
           child: Text(
-            'Код воостановления отправлен на ${email.text}',
+            'Код воостановления отправлен на ${selectCode + email.text}',
             textAlign: TextAlign.center,
           ),
         ),

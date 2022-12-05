@@ -762,9 +762,12 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
         }
       } else {
         bool statebutton = false;
+        
         for (var element in tripsModels) {
+          
           for (var element1 in element) {
             if (element1.tripId == widget.trip.tripId) {
+              print('object ${element1.tripId} ${widget.trip.tripId}');
               statebutton = true;
               break;
             }
