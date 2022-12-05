@@ -19,13 +19,13 @@ class SendMessage {
     required this.time,
   });
 
-  int from;
+  String from;
   // int to;
   String message;
   DateTime? time;
 
   factory SendMessage.fromJson(Map<String, dynamic> json) => SendMessage(
-        from: json["from"],
+        from: json["from"].toString(),
         // to: json["to"],
         message: json["message"],
         time: json["time"] != null

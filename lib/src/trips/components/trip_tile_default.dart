@@ -37,9 +37,7 @@ class TripTileDefault extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
         decoration: BoxDecoration(
           // color: Color.fromARGB(255, 249, 243, 226),
-          color: trip.isPremium != null && trip.isPremium!
-              ? const Color.fromARGB(255, 249, 243, 226)
-              : Colors.white,
+          color: Colors.white,
           boxShadow: const [
             BoxShadow(
               offset: Offset(0, 4),
@@ -54,9 +52,12 @@ class TripTileDefault extends StatelessWidget {
           alignment: Alignment.bottomRight,
           children: [
             trip.isPremium != null && trip.isPremium!
-                ? SvgPicture.asset(
-                    'assets/icon/premium.svg',
-                    height: 70,
+                ? Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: SvgPicture.asset(
+                      'assets/icon/premium.svg',
+                      height: 40,
+                    ),
                   )
                 : const SizedBox(),
             Column(

@@ -11,8 +11,12 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../../export/blocs.dart';
 
 class SignUpWithEmailPhone extends StatefulWidget {
-  const SignUpWithEmailPhone({Key? key, required this.phoneEmail})
-      : super(key: key);
+  final String? referal;
+  const SignUpWithEmailPhone({
+    Key? key,
+    required this.phoneEmail,
+    this.referal,
+  }) : super(key: key);
   final String phoneEmail;
 
   @override

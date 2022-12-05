@@ -52,6 +52,8 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  String? referalLink;
+  bool loading = true;
   @override
   void initState() {
     super.initState();
@@ -62,12 +64,20 @@ class _AppState extends State<App> {
     final PendingDynamicLinkData? data =
         await FirebaseDynamicLinks.instance.getInitialLink();
     if (data != null) {
-      print('object ${data.link}');
+      print('object ${data}');
+      referalLink = data.link.toString();
       // SmartDialog.show(
       //   builder: (context) {
       //     return Text(data.link.toString());
       //   },
       // );
+      setState(() {
+        loading = false;
+      });
+    } else {
+      setState(() {
+        loading = false;
+      });
     }
   }
 
@@ -102,6 +112,7 @@ class _AppState extends State<App> {
               userRepository: userRepository,
               appRepository: appRepository,
             )..add(AppStarted());
+            // ..add(CheckReferal());
           },
         ),
         BlocProvider<ChatBloc>(
@@ -121,7 +132,13 @@ class _AppState extends State<App> {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: const [Locale('ru')],
-        home: const AppInitBuilder(),
+        home: loading == false
+            ? AppInitBuilder(referal: referalLink)
+            : const Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:app_poezdka/src/app_screens.dart';
 
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:bloc/bloc.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -31,6 +32,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthError>(_onAuthError);
     on<SignInWithGoogle>(_signWithGoogle);
     on<SignInWithVk>(_signWithVk);
+    // on<CheckReferal>(_checkReferal);
     ////////// Dev ////////
     on<OnDevLogIn>(_devLogIn);
     on<DeleteProfile>((event, emit) async {
@@ -40,6 +42,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       add(AppInit());
     });
   }
+
+  // void _checkReferal(CheckReferal event, Emitter<AuthState> emit) async {
+  //   final PendingDynamicLinkData? data =
+  //       await FirebaseDynamicLinks.instance.getInitialLink();
+  //   if (data != null) {
+  //     emit(ReferalSuccess(referalLink: data.));
+  //     print('object ${data}');
+  //   }
+  // }
 
   void _onAppStarted(AppStarted event, Emitter<AuthState> emit) async {
     final firstLaunch = appRepository.firstLaunch();
@@ -153,7 +164,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       // result.id!,
     );
 
-    await UserService().editUser(token: event.account.token!, user: event.account);
+    await UserService()
+        .editUser(token: event.account.token!, user: event.account);
 
     Navigator.pushAndRemoveUntil(
       event.context,

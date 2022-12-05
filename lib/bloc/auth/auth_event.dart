@@ -55,6 +55,8 @@ class SignInWithVk extends AuthEvent {
 
 class DeleteProfile extends AuthEvent {}
 
+class CheckReferal extends AuthEvent {}
+
 class AuthError extends AuthEvent {
   final String? error;
 

@@ -5,19 +5,51 @@ import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/widget/button/icon_box_button.dart';
 import 'package:app_poezdka/widget/divider/row_divider.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 
-class Referal extends StatelessWidget {
+class Referal extends StatefulWidget {
   Referal({Key? key}) : super(key: key);
+
+  @override
+  State<Referal> createState() => _ReferalState();
+}
+
+class _ReferalState extends State<Referal> {
   String referalStr = '$serverURL/users/registration?ref=';
+
+  @override
+  void initState() {
+    _createReferalLink();
+    super.initState();
+  }
+
+  void _createReferalLink() async {
+    UserModel? userModel = BlocProvider.of<ProfileBloc>(context).userModel;
+    referalStr = userModel != null ? referalStr + userModel.ref! : '';
+    final dynamicLinkParams = DynamicLinkParameters(
+        link: Uri.parse("https://apppoezdka.page.link/"),
+        uriPrefix: "https://apppoezdka.page.link/n3UL",
+        longDynamicLink:
+            Uri.parse('https://apppoezdka.page.link/${userModel!.ref!}'));
+    final dynamicLink =
+        await FirebaseDynamicLinks.instance.buildLink(dynamicLinkParams);
+
+    setState(() {
+      referalStr = dynamicLink.toString();
+    });
+    print(dynamicLink);
+  }
 
   @override
   Widget build(BuildContext context) {
     UserModel? userModel = BlocProvider.of<ProfileBloc>(context).userModel;
-    referalStr = userModel != null ? referalStr + userModel.ref! : '';
+    // if (referalStr == '$serverURL/users/registration?ref=') {
+    //   referalStr = userModel != null ? referalStr + userModel.ref! : '';
+    // }
 
     return KScaffoldScreen(
         isLeading: true,
@@ -76,16 +108,12 @@ class Referal extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
               const Icon(
                 Ionicons.copy_outline,
                 color: Colors.white,
               ),
-              SizedBox(
-                width: 10,
-              ),
+              const SizedBox(width: 10),
             ],
           ),
         ),

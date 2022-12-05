@@ -5,7 +5,8 @@ import 'package:app_poezdka/widget/button/full_width_leveated_button_child.dart'
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  final String? referal;
+  const SignUpScreen({Key? key, this.referal}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -91,14 +92,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   color: kPrimaryWhite,
                   child: const Text("Телефон"),
                   onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const ConfirmPhoneEmailPage())),
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ConfirmPhoneEmailPage(
+                        referal: widget.referal,
+                      ),
+                    ),
+                  ),
                 ),
                 SocialAuthButtons(),
               ],
             ),
-            if(!personalData) Positioned.fill(child: Container(color: Colors.transparent,)),
+            if (!personalData)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.transparent,
+                ),
+              ),
           ],
         ),
       ],

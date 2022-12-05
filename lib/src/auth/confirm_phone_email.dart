@@ -16,8 +16,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class ConfirmPhoneEmailPage extends StatefulWidget {
-  const ConfirmPhoneEmailPage({
+  String? referal;
+  ConfirmPhoneEmailPage({
     Key? key,
+    this.referal,
   }) : super(key: key);
 
   @override
@@ -190,11 +192,11 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
       setState(() {
         isCorrect = IsCorrect.fromJson(res.data);
         // if (isCorrect!.isCorrect) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      SignUpWithEmailPhone(phoneEmail: value)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SignUpWithEmailPhone(phoneEmail: value),
+            ));
         // } else {
         //   errorDialog.showError('Код неправильно указан.');
         // }

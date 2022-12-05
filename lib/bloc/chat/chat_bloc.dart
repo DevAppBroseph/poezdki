@@ -162,6 +162,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       headers: {"Authorization": token!},
     );
 
+    print(response.body);
     if (response.statusCode == 200) {
       List<AnswerSupport> answer = [];
       for (var element in jsonDecode(response.body)) {

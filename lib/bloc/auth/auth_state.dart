@@ -12,3 +12,9 @@ class AuthUnauthenticated extends AuthState {}
 class AuthSuccess extends AuthState {}
 
 class AuthOnboardingIncomplete extends AuthState {}
+
+class ReferalSuccess extends AuthState {
+  final String referalLink;
+
+  ReferalSuccess({required this.referalLink});
+}

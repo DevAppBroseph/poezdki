@@ -1,8 +1,10 @@
+import 'package:intl/intl.dart';
+
 class AnswerSupport {
   String? text;
-  String? datetime;
+  DateTime? datetime;
   String? answer;
-  String? answerDatetime;
+  DateTime? answerDatetime;
 
   AnswerSupport({
     this.text,
@@ -13,9 +15,11 @@ class AnswerSupport {
 
   AnswerSupport.fromJson(Map<String, dynamic> json) {
     text = json['text'];
-    datetime = json['datetime'];
+    datetime = DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["datetime"], true);
     answer = json['answer'];
-    answerDatetime = json['answer_datetime'];
+    answerDatetime = json["answer_datetime"] != null
+        ? DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["answer_datetime"], true)
+        : null;
   }
 
   Map<String, dynamic> toJson() {

@@ -66,7 +66,7 @@ class _FeedBackState extends State<FeedBack> {
               ChatMessage(
                 text: element.text!,
                 user: ChatUser(id: '1'),
-                createdAt: DateTime.parse(element.datetime!),
+                createdAt: element.datetime!.toLocal(),
               ),
             );
             if (element.answer != null) {
@@ -74,7 +74,7 @@ class _FeedBackState extends State<FeedBack> {
                 ChatMessage(
                   text: element.answer!,
                   user: ChatUser(id: '2'),
-                  createdAt: DateTime.parse(element.answerDatetime!),
+                  createdAt: element.answerDatetime!.toLocal(),
                 ),
               );
             }
