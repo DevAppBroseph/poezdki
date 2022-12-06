@@ -142,20 +142,29 @@ class WebViewPage extends StatelessWidget {
         "document.querySelector('body pre').innerHTML");
 
     final jsons = jsonDecode(html);
+    print(jsons);
 
-    VKModel? vkModel = VKModel.fromJson(json.decode(jsons));
+    VKModel? vkModel;
+    if (Platform.isIOS) {
+      print('ios');
+      vkModel = VKModel.fromJson(jsons);
+    } else if (Platform.isAndroid) {
+      print('android');
+      vkModel = VKModel.fromJson(jsonDecode(jsons));
+    }
 
     if (vkModel != null) {
       if (vkModel.phoneNumber == null) {
+        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => SignUpWithPhone(
               userModel: UserModel(
-                email: vkModel.email,
-                firstname: vkModel.firstname,
-                lastname: vkModel.lastname,
-                token: vkModel.token,
+                email: vkModel?.email,
+                firstname: vkModel?.firstname,
+                lastname: vkModel?.lastname,
+                token: vkModel?.token,
               ),
             ),
           ),
@@ -166,6 +175,7 @@ class WebViewPage extends StatelessWidget {
           vkModel.token,
           vkModel.id,
         );
+        // ignore: use_build_context_synchronously
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => const AppScreens()),

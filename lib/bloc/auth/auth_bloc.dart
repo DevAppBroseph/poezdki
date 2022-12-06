@@ -64,6 +64,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   void _initApp(AppInit event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     final hasToken = await userRepository.hasToken();
+    print('token is: ${await userRepository.getToken()}');
 
     hasToken == true ? emit(AuthSuccess()) : emit(AuthUnauthenticated());
   }
@@ -72,15 +73,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
 
     final ResponceAuth? data = await authService.signUp(
-      login: event.login,
-      password: event.password,
-      firstName: event.firstName,
-      lastName: event.lastName,
-      gender: event.gender,
-      birth: event.birth,
-      fcmToken: (await FirebaseMessaging.instance.getToken()).toString(),
-      referal: event.referal
-    );
+        login: event.login,
+        password: event.password,
+        firstName: event.firstName,
+        lastName: event.lastName,
+        gender: event.gender,
+        birth: event.birth,
+        fcmToken: (await FirebaseMessaging.instance.getToken()).toString(),
+        referal: event.referal);
 
     if (data != null) {
       await userRepository.persistEmailAndToken(
@@ -154,24 +154,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     //     (await FirebaseMessaging.instance.getToken()).toString());
 
     // if (result != null) {
-    await userRepository.persistEmailAndToken(
-      event.account.email,
-      event.account.token,
-      null,
-      // result.login!,
-      // result.token!,
-      // result.id!,
-    );
 
-    await UserService()
+    var result = await UserService()
         .editUser(token: event.account.token!, user: event.account);
 
-    Navigator.pushAndRemoveUntil(
-      event.context,
-      MaterialPageRoute(builder: (context) => const AppScreens()),
-      (route) => false,
-    );
-    add(AppInit());
+    if (result != null) {
+      await userRepository.persistEmailAndToken(
+        event.account.email,
+        event.account.token,
+        event.account.id,
+        // result.login!,
+        // result.token!,
+        // result.id!,
+      );
+      Navigator.pushAndRemoveUntil(
+        event.context,
+        MaterialPageRoute(builder: (context) => const AppScreens()),
+        (route) => false,
+      );
+      add(AppInit());
+    }
     // }
     // add(AppInit());
   }

@@ -4,15 +4,15 @@ class VKModel {
     required this.token,
     required this.login,
     required this.email,
-     this.phoneNumber,
-     this.photo,
+    this.phoneNumber,
+    this.photo,
     required this.firstname,
     required this.lastname,
-     this.gender,
-     this.birth,
+    this.gender,
+    this.birth,
     required this.cars,
   });
-  late final int id;
+  late final int? id;
   late final String token;
   late final String login;
   late final String? email;
@@ -23,8 +23,8 @@ class VKModel {
   late final String? gender;
   late final String? birth;
   late final List<dynamic> cars;
-  
-  VKModel.fromJson(Map<String, dynamic> json){
+
+  VKModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     token = json['token'];
     login = json['login'];

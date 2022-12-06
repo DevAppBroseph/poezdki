@@ -76,18 +76,22 @@ class UserService {
     // try {
     Response res;
     var dio = Dio();
-    user.fcmToken = token;
 
     // try {
     res = await dio.put(
       "http://194.87.145.140/users/update_user",
       options: Options(
-        validateStatus: ((status) => status! == 200),
+        validateStatus: ((status) => status! <= 400),
         headers: {"Authorization": token},
       ),
       data: user.toJson(),
     );
-    return UserModel.fromJson(res.data);
+    if (res.statusCode == 200) {
+      print(res.data);
+      return UserModel.fromJson(res.data);
+    } else {
+      ErrorDialogs().showError('Ошибка сервера, повторите попытку позже');
+    }
   }
 
   Future<UserModel?> changeUserPhoto(
