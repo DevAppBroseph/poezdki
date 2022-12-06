@@ -6,10 +6,12 @@ import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/model/vk.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
+import 'package:app_poezdka/service/server/user_service.dart';
 import 'package:app_poezdka/src/app_screens.dart';
 import 'package:app_poezdka/src/auth/signup_phone.dart';
 import 'package:app_poezdka/widget/button/full_width_leveated_button_child.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login_vk/flutter_login_vk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -187,7 +189,6 @@ class SocialAuthButtons extends StatelessWidget {
       );
 
       print(appleCredential);
-      
 
       if (appleCredential.email != null) {
         BlocProvider.of<AuthBloc>(context).add(
@@ -238,8 +239,8 @@ class WebViewPage extends StatelessWidget {
   }
 
   void readJS(BuildContext context) async {
-    String html = await _controller
-        .runJavascriptReturningResult("document.querySelector('body pre').innerHTML");
+    String html = await _controller.runJavascriptReturningResult(
+        "document.querySelector('body pre').innerHTML");
 
     final jsons = jsonDecode(html);
 

@@ -1,5 +1,6 @@
 // ignore_for_file: unused_field
 import 'dart:convert';
+import 'dart:io';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/trips_driver/trips_builder.dart';
 import 'package:app_poezdka/bloc/trips_passenger/trips_p_builder.dart';
@@ -18,11 +19,13 @@ import 'package:app_poezdka/src/trips/notification_page.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
+import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:app_poezdka/widget/text_field/form_location_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
+import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 class SearchRides extends StatefulWidget {
@@ -45,6 +48,11 @@ class _SearchRidesState extends State<SearchRides>
   final TextEditingController endWay = TextEditingController();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
+
+  TextEditingController startDate = TextEditingController();
+  TextEditingController endDate = TextEditingController();
+  DateTime? timeMilisecondStart;
+  DateTime? timeMilisecondEnd;
 
   FilterModel filter = FilterModel(
     isPackageTransfer: false,
@@ -73,7 +81,8 @@ class _SearchRidesState extends State<SearchRides>
         Padding(
           padding: const EdgeInsets.only(right: 5),
           child: IconButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => NotificationPage())),
+              onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => NotificationPage())),
               icon: const Icon(MaterialCommunityIcons.notification_clear_all)),
         ),
         Padding(
@@ -156,6 +165,7 @@ class _SearchRidesState extends State<SearchRides>
 
   PreferredSize _bottomFilter() {
     return PreferredSize(
+      preferredSize: const Size(200, 404),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -303,6 +313,129 @@ class _SearchRidesState extends State<SearchRides>
                               : const SizedBox())),
                 ),
               ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            child: SizedBox(
+              height: 60,
+              child: Row(
+                children: [
+                  const Expanded(child: Text('С:   ')),
+                  Expanded(
+                    flex: 5,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 75,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: kPrimaryWhite),
+                            child: Stack(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () => funcDate(TypeDate.start),
+                                        child: TextFormField(
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 20),
+                                            hintText:
+                                                DateFormat('dd.MM.yyyy HH:mm')
+                                                    .format(DateTime.now()),
+                                          ),
+                                          enabled: false,
+                                          controller: startDate,
+                                        ),
+                                      ),
+                                    ),
+                                    if (startDate.text.isNotEmpty)
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                            onTap: () {
+                                              startDate.text = '';
+                                              timeMilisecondStart= null;
+                                              setState(() {});
+                                              fetchTrips(context,
+                                                  page: searchPageIndex);
+                                            },
+                                            child: Icon(Icons.close)),
+                                      )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 20),
+                  const Expanded(child: Text('По:   ')),
+                  Expanded(
+                    flex: 5,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 75,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: kPrimaryWhite),
+                            child: Stack(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () => funcDate(TypeDate.end),
+                                        child: TextFormField(
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 20),
+                                            hintText:
+                                                DateFormat('dd.MM.yyyy HH:mm')
+                                                    .format(DateTime.now()),
+                                          ),
+                                          enabled: false,
+                                          controller: endDate,
+                                        ),
+                                      ),
+                                    ),
+                                    if (endDate.text.isNotEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: GestureDetector(
+                                            onTap: () {
+                                              endDate.text = '';
+                                              timeMilisecondEnd = null;
+                                              setState(() {});
+                                              fetchTrips(context,
+                                                  page: searchPageIndex);
+                                            },
+                                            child: const Icon(Icons.close)),
+                                      )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Padding(
@@ -687,11 +820,88 @@ class _SearchRidesState extends State<SearchRides>
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
-      preferredSize: const Size(200, 345),
     );
+  }
+
+  void funcDate(TypeDate typeDate) async {
+    if (Platform.isAndroid) {
+      final value = await showDialog(
+          context: context,
+          builder: ((context) {
+            return DatePickerDialog(
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now(),
+              lastDate: DateTime(2030),
+            );
+          }));
+      if (value != null) {
+        final TimeOfDay? timePicked = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay(
+              hour: TimeOfDay.now().hour,
+              minute: TimeOfDay.now().minute,
+            ));
+
+        if (typeDate == TypeDate.start) {
+          final DateTime temp = DateTime(
+            value.year,
+            value.month,
+            value.day,
+            timePicked != null ? timePicked.hour : 0,
+            timePicked != null ? timePicked.minute : 0,
+          );
+          timeMilisecondStart = temp;
+          startDate.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);
+        } else {
+          final DateTime temp = DateTime(
+            value.year,
+            value.month,
+            value.day,
+            timePicked != null ? timePicked.hour : 0,
+            timePicked != null ? timePicked.minute : 0,
+          );
+          timeMilisecondEnd = temp;
+          endDate.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);
+        }
+      }
+    } else {
+      final value = await showDialog(
+        barrierDismissible: true,
+        useSafeArea: false,
+        barrierColor: Colors.transparent,
+        context: context,
+        builder: ((context) {
+          return Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              Container(
+                height: 200,
+                color: Colors.grey[200],
+                child: CupertinoDatePicker(
+                  use24hFormat: true,
+                  onDateTimeChanged: (value) {
+                    if (typeDate == TypeDate.start) {
+                      timeMilisecondStart = value;
+                      startDate.text =
+                          DateFormat('dd.MM.yyyy HH:mm').format(value);
+                    } else {
+                      timeMilisecondEnd = value;
+                      endDate.text =
+                          DateFormat('dd.MM.yyyy HH:mm').format(value);
+                    }
+                  },
+                ),
+              ),
+            ],
+          );
+        }),
+      );
+    }
+    fetchTrips(context, page: searchPageIndex);
+    setState(() {});
   }
 
   void pickDestinition(
@@ -734,8 +944,12 @@ class _SearchRidesState extends State<SearchRides>
         twoPlacesInBehind: filter.isTwoBackSeat,
         conditioner: filter.isConditioner,
         gender: filter.gender?.apiTitle,
-        start: filter.start,
-        end: filter.end,
+        start: timeMilisecondStart == null
+            ? null
+            : (timeMilisecondStart!.microsecondsSinceEpoch),
+        end: timeMilisecondEnd == null
+            ? null
+            : (timeMilisecondEnd!.microsecondsSinceEpoch),
       ),
     );
 
@@ -769,8 +983,12 @@ class _SearchRidesState extends State<SearchRides>
       "twoPlacesInBehind": filter.isTwoBackSeat,
       "conditioner": filter.isConditioner,
       "gender": filter.gender?.apiTitle,
-      "start": filter.start,
-      "end": filter.end
+      "start": timeMilisecondStart == null
+          ? null
+          : (timeMilisecondStart!.microsecondsSinceEpoch),
+      "end": timeMilisecondEnd == null
+          ? null
+          : (timeMilisecondEnd!.microsecondsSinceEpoch),
     };
 
     final tripsBlocSecond = BlocProvider.of<TripsPassengerBloc>(context);
@@ -803,6 +1021,8 @@ class _SearchRidesState extends State<SearchRides>
     final FilterModel? newFilter = await btmSheet.wait(context,
         child: SearchTripBottomSheet(
           initFilter: filter,
+          timeMilisecondStart: timeMilisecondStart,
+          timeMilisecondEnd: timeMilisecondEnd,
         ));
     if (newFilter != null) {
       setState(() {

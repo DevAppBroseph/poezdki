@@ -11,6 +11,7 @@ import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -55,37 +56,70 @@ class _BookTripState extends State<BookTripReserves> {
     if (bookedSeats.contains(3)) seat3.isEmpty = false;
     if (bookedSeats.contains(4)) seat4.isEmpty = false;
 
-    return KScaffoldScreen(
-        isLeading: true,
-        backgroundColor: Colors.white,
-        title: "Бронирование",
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(
-                height: 40,
+    return BlocBuilder<TripsBloc, TripsState>(builder: (context, snapshot) {
+      print('object state ${snapshot}');
+      // if(snapshot is TripsLoaded) {
+      //   Navigator.pop(context, true);
+      // }
+      return Stack(
+        children: [
+          KScaffoldScreen(
+            isLeading: true,
+            backgroundColor: Colors.white,
+            title: "Бронирование",
+            body: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  // const Text("Количество мест"),
+                  // _rangeSlider(),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  const Text(
+                    "Выберите занятые места в салоне автомобиля",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  _placePicker(context),
+                  _submit()
+                ],
               ),
-              // const Text("Количество мест"),
-              // _rangeSlider(),
-              const SizedBox(
-                height: 40,
-              ),
-              const Text(
-                "Выберите занятые места в салоне автомобиля",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w600,
+            ),
+          ),
+          if (snapshot is TripsLoadingTime)
+            Positioned.fill(
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                color: Colors.transparent,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: const CupertinoActivityIndicator(),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(
-                height: 40,
-              ),
-              _placePicker(context),
-              _submit()
-            ],
-          ),
-        ));
+            )
+        ],
+      );
+    });
   }
 
   Widget _submit() {
@@ -97,6 +131,7 @@ class _BookTripState extends State<BookTripReserves> {
           onPressed: () async {
             final state = BlocProvider.of<ProfileBloc>(context).state;
             final List<int> seats = [];
+            print('object ${state}');
             if (state is ProfileLoaded) {
               if (state.user.phone == null || state.user.phone == '') {
                 phoneController.text = '';
@@ -135,7 +170,7 @@ class _BookTripState extends State<BookTripReserves> {
                 widget.tripData.seats = seats;
                 tripBloc.add(CreateUserTrip(context, widget.tripData));
                 // Navigator.pop(context, true);
-                Navigator.pop(context, true);
+                // Navigator.pop(context, true);
               }
             }
           }),

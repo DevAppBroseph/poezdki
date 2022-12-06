@@ -2,6 +2,7 @@ import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/src/auth/components/social_buttons.dart';
 import 'package:app_poezdka/src/auth/confirm_phone_email.dart';
 import 'package:app_poezdka/widget/button/full_width_leveated_button_child.dart';
+import 'package:app_poezdka/widget/dialog/message_dialog.dart';
 import 'package:flutter/material.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -105,8 +106,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             if (!personalData)
               Positioned.fill(
-                child: Container(
-                  color: Colors.transparent,
+                child: GestureDetector(
+                onTap: () {
+                  MessageDialogs().showAlert(
+                    'Ooops, что-то не так',
+                    'Тыкните кружочек внизу, думаю это поможет😉',
+                  );
+                },
+                  child: Container(
+                    color: Colors.transparent,
+                  ),
                 ),
               ),
           ],

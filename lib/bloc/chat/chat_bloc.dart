@@ -63,6 +63,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     channel?.stream.listen(
       (event) async {
         try {
+          print('object ${event}');
           var newMessage = NewMessageAnswer.fromJson(jsonDecode(event));
           if (newMessage.message == 'answer from support') {
             updateSupportChat();

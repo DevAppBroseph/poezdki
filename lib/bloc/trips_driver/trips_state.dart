@@ -9,6 +9,12 @@ class TripsInitial extends TripsState {}
 
 class TripsLoading extends TripsState {}
 
+class TripsLoadingTime extends TripsState {}
+
+class TripsCreateSuccess extends TripsState {}
+
+class TripsCreateError extends TripsState {}
+
 class TripsLoaded extends TripsState {
   final List<TripModel> trips;
 

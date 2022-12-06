@@ -7,6 +7,7 @@ import 'dart:convert';
 import 'package:app_poezdka/export/server_url.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
@@ -27,6 +28,9 @@ class TripService {
     int? start,
     int? end,
   }) async {
+
+    String? fcm = await FirebaseMessaging.instance.getToken();
+    print('object token fcm ${fcm}');
     Map<String, dynamic> filter = {
       if (departure != null) "departure": departure,
       if (destination != null) "destination": destination,
@@ -40,15 +44,20 @@ class TripService {
       "conditioner": conditioner,
       "start": start,
       "end": end,
+      "fcm_token": fcm
     };
+
+    print('object ${filter}');
 
     Response response;
     var dio = Dio();
+    final token = await SecureStorage.instance.getToken();
 
     try {
       final userHeader = {
         "Content-type": "application/json",
-        "Accept": "application/json"
+        "Accept": "application/json",
+        "Authorization": token
       };
       response = await dio.post(
         getAllTripsUrl,
@@ -202,6 +211,7 @@ class TripService {
 
     try {
       // final token = await SecureStorage.instance.getToken();
+      print('object send ${DateTime.now()}');
       response = await dio.post(
         addTripUrl,
         data: json.encode(data),
@@ -212,6 +222,7 @@ class TripService {
         ),
       );
       if (response.statusCode == 200) {
+        print('object response ${DateTime.now()}');
         final responceData = ResponceServerData.fromMap(response.data);
         if (responceData.success == true) {
           InfoDialog().show(
@@ -219,15 +230,13 @@ class TripService {
             title: "Ваша поездка создана!",
             description: "Ожидайте попутчиков.",
           );
-          // Navigator.pop(context, true);
+          Navigator.pop(context, true);
           return responceData.success;
         } else {
-          print('object log 2  ${response.data}');
           errorDialog.showError(responceData.status);
           // return false;
         }
       } else {
-        print(response);
         errorDialog.showError(
           'Минимальная стоимость поездки составляет: ' +
               response.toString().split(':')[2].replaceAll(' ', '') +
@@ -243,7 +252,7 @@ class TripService {
       //   description: "Цена по данному направление ниже минимальной.",
       // );
       errorDialog.showError(e.toString());
-      print('$token object log 3 ${e}');
+      print('object response $token object log 3 ${e}');
       // errorDialog.showError(e.toString());
       return false;
     }

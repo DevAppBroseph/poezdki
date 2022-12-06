@@ -86,3 +86,5 @@ class DeletePassengerInTrip extends TripsEvent {
 }
 
 class ThrowAllTripsError extends TripsEvent {}
+
+class CreateTripLoad extends TripsEvent {}

@@ -18,6 +18,11 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
     on<DeletePassengerInTrip>(_deletePassengerInTrip);
     on<AddReview>(_addReview);
     on<ThrowAllTripsError>(_throwTripsError);
+    on<CreateTripLoad>(_creatTripLoad);
+  }
+
+  void _creatTripLoad(CreateTripLoad event, Emitter<TripsState> emit) {
+    emit(TripsLoadingTime());
   }
 
   void _loadTripsList(LoadAllTripsList event, Emitter<TripsState> emit) async {
@@ -44,9 +49,16 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
   }
 
   void _createTrip(CreateUserTrip event, Emitter<TripsState> emit) async {
+    emit(TripsLoadingTime());
+    print('object send trips log _createTrip');
     final success = await tripService.createTripDriver(
         context: event.context, trip: event.trip);
-    if (success) add(LoadAllTripsList());
+    if (success) {
+      emit(TripsCreateSuccess());
+      add(LoadAllTripsList());
+    } else {
+      emit(TripsCreateError());
+    }
   }
 
   void _bookTrip(BookThisTrip event, Emitter<TripsState> emit) async {
@@ -55,7 +67,10 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
       seats: event.seats,
       tripId: event.tripId,
     );
-    if (success) add(LoadAllTripsList());
+    if (success) {
+      add(LoadAllTripsList());
+      emit(TripsCreateSuccess());
+    }
   }
 
   void _bookPackage(BookThisPackage event, Emitter<TripsState> emit) async {
