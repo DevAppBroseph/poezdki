@@ -870,18 +870,19 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
   void chatToDriver(context, {int? id, String? phone}) async {
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
-    final userId = await userRepo.getUserId();
+    final userId = BlocProvider.of<ProfileBloc>(context).userModel!.id;
+    // print('object ${BlocProvider.of<ProfileBloc>(context).userModel!.id}');
     if (token != null) {
       if (id == null) {
         final passengers = widget.trip.passengers;
-        if (passengers!.any((p) => p.id == int.parse(userId!))) {
+        if (passengers!.any((p) => p.id == userId)) {
           BlocProvider.of<ChatBloc>(context).testController.add([]);
           pushNewScreen(
             context,
             withNavBar: false,
             screen: ChatsBuilder(
               ownerId: widget.trip.owner!.id!,
-              senderId: int.parse(userId!),
+              senderId: userId!,
               token: token,
               phone: phone!,
               receiverId: widget.trip.owner!.id!,
@@ -892,13 +893,13 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
               .showError("Только пассажиры могут связаться с водителем.");
         }
       } else {
-        if (int.parse(userId!) != id) {
+        if (userId != id) {
           pushNewScreen(
             context,
             withNavBar: false,
             screen: ChatsBuilder(
               ownerId: id,
-              senderId: int.parse(userId),
+              senderId: userId!,
               token: token,
               phone: phone,
               receiverId: id,

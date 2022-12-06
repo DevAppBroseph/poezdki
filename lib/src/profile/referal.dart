@@ -31,10 +31,16 @@ class _ReferalState extends State<Referal> {
     UserModel? userModel = BlocProvider.of<ProfileBloc>(context).userModel;
     referalStr = userModel != null ? referalStr + userModel.ref! : '';
     final dynamicLinkParams = DynamicLinkParameters(
-        link: Uri.parse("https://apppoezdka.page.link/"),
-        uriPrefix: "https://apppoezdka.page.link/n3UL",
-        longDynamicLink:
-            Uri.parse('https://apppoezdka.page.link/${userModel!.ref!}'));
+      link: Uri.parse("https://apppoezdka.page.link/"),
+      uriPrefix: "https://apppoezdka.page.link/n3UL",
+      longDynamicLink:
+          Uri.parse('https://apppoezdka.page.link/${userModel!.ref!}'),
+      iosParameters: const IOSParameters(
+        bundleId: 'dev.broseph.poezdka',
+        minimumVersion: '13.0',
+        appStoreId: '6443941402',
+      ),
+    );
     final dynamicLink =
         await FirebaseDynamicLinks.instance.buildLink(dynamicLinkParams);
 

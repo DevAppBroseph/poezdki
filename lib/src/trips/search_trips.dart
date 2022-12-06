@@ -165,7 +165,7 @@ class _SearchRidesState extends State<SearchRides>
 
   PreferredSize _bottomFilter() {
     return PreferredSize(
-      preferredSize: const Size(200, 404),
+      preferredSize: const Size(200, 405),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
