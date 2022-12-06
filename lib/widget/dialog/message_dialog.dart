@@ -38,7 +38,7 @@ class MessageDialogs {
                           ),
                     title: Text(from == 'BAZA' ? 'Внимание' : from!),
                     subtitle: Text(from == 'BAZA'
-                        ? message != 'trip deleted'
+                        ? message != 'cancel booking'
                             ? "Вашу поездку забронировали"
                             : 'Забронированная поездка была отменена.'
                         : message),
@@ -49,4 +49,12 @@ class MessageDialogs {
         alignment: Alignment.topLeft,
         maskColor: Colors.transparent);
   }
+  //TODO прикрутить логику вывода алертов с Валерой
+
+  // String _getStatus(String message) {
+  //   if (message == 'cancel booking') {
+  //     return 'Ваша бронь была отменена';
+  //   }
+
+  // }
 }
