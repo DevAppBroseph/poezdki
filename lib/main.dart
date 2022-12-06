@@ -115,8 +115,10 @@ class _AppState extends State<App> {
         ),
         BlocProvider<ProfileBloc>(
           create: (context) {
-            BlocProvider.of<ProfileBloc>(context).add(SetReferal(referalLink));
-            return ProfileBloc(userRepository)..add(LoadProfile());
+            // BlocProvider.of<ProfileBloc>(context).add(SetReferal(referalLink));
+            return ProfileBloc(userRepository)
+              ..add(LoadProfile())
+              ..add(SetReferal(referalLink));
           },
         ),
         BlocProvider<AuthBloc>(

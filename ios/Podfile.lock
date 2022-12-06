@@ -352,7 +352,7 @@ SPEC CHECKSUMS:
   FirebaseDynamicLinks: f832045bdb98db10ecaca9ab7e258f1602395d7c
   FirebaseInstallations: 004915af170935e3a583faefd5f8bc851afc220f
   FirebaseMessaging: cc9f40f5b7494680f3844d08e517e92aa4e8d9f7
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   flutter_image_compress: 5a5e9aee05b6553048b8df1c3bc456d0afaac433
   flutter_login_vk: 3ca1f7f18d014a6ff7855b660488fb539fdeec52
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be

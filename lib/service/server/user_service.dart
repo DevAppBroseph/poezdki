@@ -76,6 +76,7 @@ class UserService {
     // try {
     Response res;
     var dio = Dio();
+    user.fcmToken = token;
 
     // try {
     res = await dio.put(
@@ -117,7 +118,8 @@ class UserService {
 
   Future<Rating?> getRatingUser({required String token}) async {
     try {
-      var response = await http.get(Uri.parse(rating), headers: {"Authorization": token});
+      var response =
+          await http.get(Uri.parse(rating), headers: {"Authorization": token});
 
       if (response.statusCode == 200) {
         Map<String, dynamic> body = json.decode(response.body);

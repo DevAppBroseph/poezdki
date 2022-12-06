@@ -9,47 +9,47 @@ class PersonalDataBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profileBloc = BlocProvider.of<ProfileBloc>(context)
-      ..add(LoadProfile());
-    return BlocBuilder(
-        bloc: profileBloc,
+    final profileBloc = BlocProvider.of<ProfileBloc>(context);
+    // ..add(LoadProfile());
+    return BlocBuilder<ProfileBloc, ProfileState>(
+        // bloc: profileBloc,
         builder: (context, state) {
-          if (state is ProfileLoading) {
-            return const KScaffoldScreen(
-              backgroundColor: Colors.white,
-              title: "Личные данные",
-              isLeading: true,
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          if (state is ProfileError) {
-            return const KScaffoldScreen(
-              backgroundColor: Colors.white,
-              title: "Личные данные",
-              isLeading: true,
-              body: Center(
-                child: Text(
-                  "Ooops! Возникла ошибка.\nУже исправляем =)",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
-          if (state is ProfileLoaded) {
-            return PersonalData(
-              user: state.user,
-            );
-          }
-          return const KScaffoldScreen(
-            backgroundColor: Colors.white,
-            title: "Личные данные",
-            isLeading: true,
-            body: Center(
-              child: CircularProgressIndicator(),
+      if (state is ProfileLoading) {
+        return const KScaffoldScreen(
+          backgroundColor: Colors.white,
+          title: "Личные данные",
+          isLeading: true,
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+      if (state is ProfileError) {
+        return const KScaffoldScreen(
+          backgroundColor: Colors.white,
+          title: "Личные данные",
+          isLeading: true,
+          body: Center(
+            child: Text(
+              "Ooops! Возникла ошибка.\nУже исправляем =)",
+              textAlign: TextAlign.center,
             ),
-          );
-        });
+          ),
+        );
+      }
+      if (state is ProfileLoaded) {
+        return PersonalData(
+          user: state.user,
+        );
+      }
+      return const KScaffoldScreen(
+        backgroundColor: Colors.white,
+        title: "Личные данные",
+        isLeading: true,
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    });
   }
 }
