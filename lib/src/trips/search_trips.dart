@@ -195,15 +195,8 @@ class _SearchRidesState extends State<SearchRides>
             labelColor: Colors.white,
             unselectedLabelColor: Colors.black,
             tabs: const [
-              // first tab [you can add an icon using the icon property]
-              Tab(
-                text: 'Я пассажир',
-              ),
-
-              // second tab [you can add an icon using the icon property]
-              Tab(
-                text: 'Я водитель',
-              ),
+              Tab(text: 'Я пассажир'),
+              Tab(text: 'Я водитель'),
             ],
           ),
           Padding(
@@ -344,7 +337,7 @@ class _SearchRidesState extends State<SearchRides>
                                             border: InputBorder.none,
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
-                                                    horizontal: 10,
+                                                    horizontal: 5,
                                                     vertical: 20),
                                             hintText:
                                                 DateFormat('dd.MM.yyyy HH:mm')
@@ -357,7 +350,8 @@ class _SearchRidesState extends State<SearchRides>
                                     ),
                                     if (startDate.text.isNotEmpty)
                                       Padding(
-                                        padding: EdgeInsets.all(8.0),
+                                        padding:
+                                            const EdgeInsets.only(right: 5.0),
                                         child: GestureDetector(
                                             onTap: () {
                                               startDate.text = '';
@@ -366,7 +360,7 @@ class _SearchRidesState extends State<SearchRides>
                                               fetchTrips(context,
                                                   page: searchPageIndex);
                                             },
-                                            child: Icon(Icons.close)),
+                                            child: const Icon(Icons.close)),
                                       )
                                   ],
                                 ),
@@ -408,7 +402,7 @@ class _SearchRidesState extends State<SearchRides>
                                             border: InputBorder.none,
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
-                                                    horizontal: 10,
+                                                    horizontal: 5,
                                                     vertical: 20),
                                             hintText:
                                                 DateFormat('dd.MM.yyyy HH:mm')
@@ -421,7 +415,8 @@ class _SearchRidesState extends State<SearchRides>
                                     ),
                                     if (endDate.text.isNotEmpty)
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding:
+                                            const EdgeInsets.only(right: 5.0),
                                         child: GestureDetector(
                                             onTap: () {
                                               endDate.text = '';
@@ -699,14 +694,15 @@ class _SearchRidesState extends State<SearchRides>
   void funcDate(TypeDate typeDate) async {
     if (Platform.isAndroid) {
       final value = await showDialog(
-          context: context,
-          builder: ((context) {
-            return DatePickerDialog(
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime(2030),
-            );
-          }));
+        context: context,
+        builder: ((context) {
+          return DatePickerDialog(
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime(2030),
+          );
+        }),
+      );
       if (value != null) {
         final TimeOfDay? timePicked = await showTimePicker(
             context: context,
@@ -738,36 +734,56 @@ class _SearchRidesState extends State<SearchRides>
         }
       }
     } else {
-      final value = await showDialog(
+      await showDialog(
         barrierDismissible: true,
         useSafeArea: false,
         barrierColor: Colors.transparent,
         context: context,
-        builder: ((context) {
+        builder: (context) {
           return Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              Container(
-                height: 200,
-                color: Colors.grey[200],
-                child: CupertinoDatePicker(
-                  use24hFormat: true,
-                  onDateTimeChanged: (value) {
-                    if (typeDate == TypeDate.start) {
-                      timeMilisecondStart = value;
-                      startDate.text =
-                          DateFormat('dd.MM.yyyy HH:mm').format(value);
-                    } else {
-                      timeMilisecondEnd = value;
-                      endDate.text =
-                          DateFormat('dd.MM.yyyy HH:mm').format(value);
-                    }
-                  },
-                ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  Colors.grey.shade300)),
+                          child: const Text('Готово'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 200,
+                    color: Colors.grey[200],
+                    child: CupertinoDatePicker(
+                      use24hFormat: true,
+                      onDateTimeChanged: (value) {
+                        if (typeDate == TypeDate.start) {
+                          timeMilisecondStart = value;
+                          startDate.text =
+                              DateFormat('dd.MM.yyyy HH:mm').format(value);
+                        } else {
+                          timeMilisecondEnd = value;
+                          endDate.text =
+                              DateFormat('dd.MM.yyyy HH:mm').format(value);
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           );
-        }),
+        },
       );
     }
     fetchTrips(context, page: searchPageIndex);

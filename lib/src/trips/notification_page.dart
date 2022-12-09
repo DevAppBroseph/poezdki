@@ -407,7 +407,7 @@ class _NotificationPageState extends State<NotificationPage> {
         }
       }
     } else {
-      final value = await showDialog(
+      await showDialog(
         barrierDismissible: true,
         useSafeArea: false,
         barrierColor: Colors.transparent,
@@ -416,23 +416,43 @@ class _NotificationPageState extends State<NotificationPage> {
           return Stack(
             alignment: Alignment.bottomCenter,
             children: [
-              Container(
-                height: 200,
-                color: Colors.grey[200],
-                child: CupertinoDatePicker(
-                  use24hFormat: true,
-                  onDateTimeChanged: (value) {
-                    if (typeDate == TypeDate.start) {
-                      timeMilisecondStart = value;
-                      startDate.text =
-                          DateFormat('dd.MM.yyyy HH:mm').format(value);
-                    } else {
-                      timeMilisecondEnd = value;
-                      endDate.text =
-                          DateFormat('dd.MM.yyyy HH:mm').format(value);
-                    }
-                  },
-                ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  Colors.grey.shade300)),
+                          child: const Text('Готово'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 200,
+                    color: Colors.grey[200],
+                    child: CupertinoDatePicker(
+                      use24hFormat: true,
+                      onDateTimeChanged: (value) {
+                        if (typeDate == TypeDate.start) {
+                          timeMilisecondStart = value;
+                          startDate.text =
+                              DateFormat('dd.MM.yyyy HH:mm').format(value);
+                        } else {
+                          timeMilisecondEnd = value;
+                          endDate.text =
+                              DateFormat('dd.MM.yyyy HH:mm').format(value);
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           );

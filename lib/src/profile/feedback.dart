@@ -9,6 +9,7 @@ import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:parse_server_sdk_flutter/generated/i18n.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -93,6 +94,8 @@ class _FeedBackState extends State<FeedBack> {
             // });
           },
           messages: messages,
+          messageListOptions: MessageListOptions(
+              dateSeparatorFormat: DateFormat('EEE, hh:mm', 'RU')),
           messageOptions: const MessageOptions(
             messagePadding: EdgeInsets.all(16),
             showTime: true,

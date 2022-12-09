@@ -89,7 +89,7 @@ class SocialAuthButtons extends StatelessWidget {
         // nonce: nonce,
       );
 
-      print(appleCredential);
+      print('log ${appleCredential}-${appleCredential.email}-${appleCredential.familyName}-${appleCredential.givenName}');
 
       if (appleCredential.email != null) {
         BlocProvider.of<AuthBloc>(context).add(
@@ -106,9 +106,9 @@ class SocialAuthButtons extends StatelessWidget {
       final displayName =
           '${appleCredential.givenName} ${appleCredential.familyName}';
       final userEmail = '${appleCredential.email}';
-      print(displayName);
+      print('log $displayName');
     } catch (exception) {
-      print(exception);
+      print('log $exception');
     }
   }
 }

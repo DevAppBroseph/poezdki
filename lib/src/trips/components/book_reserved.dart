@@ -131,7 +131,6 @@ class _BookTripState extends State<BookTripReserves> {
           onPressed: () async {
             final state = BlocProvider.of<ProfileBloc>(context).state;
             final List<int> seats = [];
-            print('object ${state}');
             if (state is ProfileLoaded) {
               if (state.user.phone == null || state.user.phone == '') {
                 phoneController.text = '';

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
-import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
@@ -159,7 +158,6 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                         ],
                         decoration: const InputDecoration(
                           border: InputBorder.none,
-                          // suffixText: "1000",
                           hintStyle: TextStyle(wordSpacing: 5),
                           contentPadding: EdgeInsets.only(right: 5.0, top: 10),
                         ),
@@ -168,12 +166,18 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                         onChanged: (val) => setState(() {}),
                       )
                     : KeyboardActions(
-                        config: KeyboardActionsConfig(actions: [
-                          KeyboardActionsItem(
-                            focusNode: _nodeText1,
-                            onTapAction: () => _nodeText1.unfocus(),
+                        config: KeyboardActionsConfig(
+                          defaultDoneWidget: GestureDetector(
+                            onTap: () => _nodeText1.unfocus(),
+                            child: const Text('Готово'),
                           ),
-                        ]),
+                          actions: [
+                            KeyboardActionsItem(
+                              focusNode: _nodeText1,
+                              onTapAction: () => _nodeText1.unfocus(),
+                            ),
+                          ],
+                        ),
                         child: TextFormField(
                           scrollPadding: const EdgeInsets.only(bottom: 100),
                           focusNode: _nodeText1,
@@ -315,7 +319,10 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
   void bookTrip(context, TripModel trip) async {
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
-    if (token != null) {
+    if (widget.car.countOfPassengers! > 4) {
+      final tripBloc = BlocProvider.of<TripsBloc>(context, listen: false);
+      tripBloc.add(CreateUserTrip(context, trip));
+    } else if (token != null) {
       // if (passengers!.any((p) => p.id == int.parse(userId!))) {
       //   null;
       // } else {

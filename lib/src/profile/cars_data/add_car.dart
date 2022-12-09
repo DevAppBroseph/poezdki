@@ -36,6 +36,8 @@ class _AddCarWidgetState extends State<AddCarWidget> {
 
   CarsModel? cars;
 
+  ScrollController scrollController = ScrollController();
+
   void loadDB() async {
     String jsCode = await rootBundle.loadString('assets/car/cars1.json');
     cars = carsFromJson(jsCode);
@@ -51,7 +53,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
 
   void loadModel(String key) {
     model = cars!.list[key];
-    setState(() { });
+    setState(() {});
   }
 
   @override
@@ -73,6 +75,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
       body: Stack(
         children: [
           SingleChildScrollView(
+            controller: scrollController,
             child: Column(
               children: [
                 Form(
@@ -85,13 +88,13 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                           GestureDetector(
                             onTap: () async {
                               String? select = await btmSheet.wait(context,
-                                useRootNavigator: true,
-                                child: PickCarSearch(
-                                  list: mark,
-                                title: 'Марка',
-                              ));
+                                  useRootNavigator: true,
+                                  child: PickCarSearch(
+                                    list: mark,
+                                    title: 'Марка',
+                                  ));
 
-                              if(select != null) {
+                              if (select != null) {
                                 selectMark = select;
                                 selectModel = null;
                                 loadModel(selectMark!);
@@ -100,37 +103,60 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                             child: Container(
                               height: 65,
                               width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.symmetric(horizontal: 5),
-                              decoration: BoxDecoration(color: kPrimaryWhite, borderRadius: BorderRadius.circular(10)),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                  color: kPrimaryWhite,
+                                  borderRadius: BorderRadius.circular(10)),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                                child: Text(selectMark != null ? selectMark! : 'Марка', style: const TextStyle(color: Colors.black, overflow: TextOverflow.ellipsis,fontSize: 15),),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 10),
+                                child: Text(
+                                  selectMark != null ? selectMark! : 'Марка',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontSize: 15),
+                                ),
                               ),
                             ),
                           ),
                           const SizedBox(height: 15),
                           GestureDetector(
-                            onTap: selectMark == null ? null :  () async {
-                              String? select = await btmSheet.wait(context,
-                                useRootNavigator: true,
-                                child: PickCarSearch(
-                                  list: model,
-                                title: 'Модель',
-                              ));
+                            onTap: selectMark == null
+                                ? null
+                                : () async {
+                                    String? select =
+                                        await btmSheet.wait(context,
+                                            useRootNavigator: true,
+                                            child: PickCarSearch(
+                                              list: model,
+                                              title: 'Модель',
+                                            ));
 
-                              if(select != null) {
-                                selectModel = select;
-                                setState(() {});
-                              }
-                            },
+                                    if (select != null) {
+                                      selectModel = select;
+                                      setState(() {});
+                                    }
+                                  },
                             child: Container(
                               height: 65,
                               width: MediaQuery.of(context).size.width,
-                              padding: const EdgeInsets.symmetric(horizontal: 5),
-                              decoration: BoxDecoration(color: kPrimaryWhite, borderRadius: BorderRadius.circular(10)),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              decoration: BoxDecoration(
+                                  color: kPrimaryWhite,
+                                  borderRadius: BorderRadius.circular(10)),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                                child: Text(selectModel != null ? selectModel! : 'Модель', style: const TextStyle(color: Colors.black, overflow: TextOverflow.ellipsis,fontSize: 15),),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 20, horizontal: 10),
+                                child: Text(
+                                  selectModel != null ? selectModel! : 'Модель',
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontSize: 15),
+                                ),
                               ),
                             ),
                           ),
@@ -152,6 +178,13 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                             inputAction: TextInputAction.done,
                           ),
                           KFormField(
+                            onTap: () {
+                              scrollController.animateTo(
+                                scrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.bounceIn,
+                              );
+                            },
                             validateFunction: Validations.validateNumber,
                             hintText: 'С777СС799',
                             formatters: [
@@ -162,10 +195,14 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                             inputAction: TextInputAction.next,
                           ),
                           KFormField(
+                            onTap: () {
+                              scrollController.animateTo(
+                                scrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.bounceIn,
+                              );
+                            },
                             hintText: 'Количество пассажирских мест',
-                            // formatters: [
-                            //   LengthLimitingTextInputFormatter(1),
-                            // ],
                             textInputType: TextInputType.number,
                             textEditingController: carSeats,
                             validateFunction: Validations.validateTitle,
@@ -174,9 +211,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                         ],
                       ),
                     )),
-                const SizedBox(
-                  height: 60,
-                ),
+                const SizedBox(height: 350),
               ],
             ),
           ),
@@ -186,7 +221,9 @@ class _AddCarWidgetState extends State<AddCarWidget> {
               margin: const EdgeInsets.symmetric(vertical: 40, horizontal: 10),
               title: "Добавить",
               onPressed: () {
-                if (_carKeyForm.currentState!.validate() && selectMark != '' && selectModel != '') {
+                if (_carKeyForm.currentState!.validate() &&
+                    selectMark != '' &&
+                    selectModel != '') {
                   profileBloc.add(
                     CreateCar(
                       context,

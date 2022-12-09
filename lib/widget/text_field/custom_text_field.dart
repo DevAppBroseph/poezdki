@@ -27,31 +27,31 @@ class KFormField extends StatelessWidget {
   final String? prefixText;
   final bool? enabled;
   final EdgeInsets? contentPadding;
-  const KFormField(
-      {Key? key,
-      this.onTap,
-      this.readOnly,
-      this.inputAction,
-      this.focusNode,
-      required this.hintText,
-      this.icon,
-      this.onChanged,
-      required this.textEditingController,
-      this.mainColor,
-      this.bgColor,
-      this.maxLines,
-      this.formatters,
-      this.textInputType,
-      this.obscureText,
-      this.validateFunction,
-      this.suffix,
-      this.suffixIcon,
-      this.suffixText,
-      this.prefixicon,
-      this.prefixText,
-      this.enabled,
-      this.contentPadding,})
-      : super(key: key);
+  const KFormField({
+    Key? key,
+    this.onTap,
+    this.readOnly,
+    this.inputAction,
+    this.focusNode,
+    required this.hintText,
+    this.icon,
+    this.onChanged,
+    required this.textEditingController,
+    this.mainColor,
+    this.bgColor,
+    this.maxLines,
+    this.formatters,
+    this.textInputType,
+    this.obscureText,
+    this.validateFunction,
+    this.suffix,
+    this.suffixIcon,
+    this.suffixText,
+    this.prefixicon,
+    this.prefixText,
+    this.enabled,
+    this.contentPadding,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +60,8 @@ class KFormField extends StatelessWidget {
     Color hintTextColor = Colors.grey;
 
     var widthOfScreen = MediaQuery.of(context).size.width;
-    var contentPadding = this.contentPadding ?? const EdgeInsets.symmetric(
-                        vertical: 20, horizontal: 20);
+    var contentPadding = this.contentPadding ??
+        const EdgeInsets.symmetric(vertical: 20, horizontal: 20);
     return SizedBox(
       height: 75,
       width: widthOfScreen,
@@ -138,12 +138,18 @@ class KFormField extends StatelessWidget {
                   hintText: hintText),
             )
           : KeyboardActions(
-              config: KeyboardActionsConfig(actions: [
-                KeyboardActionsItem(
-                  focusNode: nodeText,
-                  onTapAction: () => nodeText.unfocus(),
+              config: KeyboardActionsConfig(
+                defaultDoneWidget: GestureDetector(
+                  onTap: () => nodeText.unfocus(),
+                  child: const Text('Готово'),
                 ),
-              ]),
+                actions: [
+                  KeyboardActionsItem(
+                    focusNode: nodeText,
+                    onTapAction: () => nodeText.unfocus(),
+                  ),
+                ],
+              ),
               child: TextFormField(
                 enabled: enabled,
                 focusNode: nodeText,
