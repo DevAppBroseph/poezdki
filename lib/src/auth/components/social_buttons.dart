@@ -89,7 +89,8 @@ class SocialAuthButtons extends StatelessWidget {
         // nonce: nonce,
       );
 
-      print('log ${appleCredential}-${appleCredential.email}-${appleCredential.familyName}-${appleCredential.givenName}');
+      print(
+          'log ${appleCredential}-${appleCredential.email}-${appleCredential.familyName}-${appleCredential.givenName}');
 
       if (appleCredential.email != null) {
         BlocProvider.of<AuthBloc>(context).add(
@@ -113,26 +114,63 @@ class SocialAuthButtons extends StatelessWidget {
   }
 }
 
-class WebViewPage extends StatelessWidget {
+class WebViewPage extends StatefulWidget {
   WebViewPage({Key? key}) : super(key: key);
 
+  @override
+  State<WebViewPage> createState() => _WebViewPageState();
+}
+
+class _WebViewPageState extends State<WebViewPage> {
+  bool visible = true;
   late SecureStorage userRepository = SecureStorage.instance;
   late WebViewController _controller;
+
   @override
   Widget build(BuildContext context) {
+    print('start visible ${visible}');
     return KScaffoldScreen(
       isLeading: true,
       title: 'Вконтакте',
-      body: WebView(
-        backgroundColor: Colors.white,
-        javascriptMode: JavascriptMode.unrestricted,
-        onPageFinished: (url) {
-          readJS(context);
-        },
-        onWebViewCreated: (controller) {
-          _controller = controller;
-        },
-        initialUrl: authVK,
+      body: Stack(
+        children: [
+          WebView(
+            backgroundColor: Colors.white,
+            javascriptMode: JavascriptMode.unrestricted,
+            onPageStarted: (url) {
+              if (url.contains('https://oauth.vk.com/authorize') ||
+                  url.contains(
+                      'http://194.87.145.140/users/login/vk-oauth2/')) {
+                setState(() {
+                  visible = false;
+                });
+                Future.delayed(Duration(seconds: 2), () {
+                  setState(() {
+                    visible = true;
+                  });
+                });
+              }
+              print('start page ${url}');
+            },
+            onPageFinished: (url) {
+              print('start finish ${url}');
+              readJS(context);
+              if (url.contains('http://194.87.145.140/users/new_oauth_user')) {
+                setState(() {
+                  visible = false;
+                });
+              }
+            },
+            onWebViewCreated: (controller) {
+              _controller = controller;
+            },
+            initialUrl: authVK,
+          ),
+          if (!visible)
+            Container(
+              color: Colors.white,
+            )
+        ],
       ),
     );
   }
