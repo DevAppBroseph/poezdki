@@ -28,7 +28,6 @@ class TripService {
     int? start,
     int? end,
   }) async {
-
     String? fcm = await FirebaseMessaging.instance.getToken();
     print('object token fcm ${fcm}');
     Map<String, dynamic> filter = {
@@ -168,9 +167,7 @@ class TripService {
         return responceData.success;
       } else {
         errorDialog.showError(
-          'Минимальная стоимость поездки составляет: ' +
-              response.toString().split(':')[2].replaceAll(' ', '') +
-              ' руб.',
+          'Минимальная стоимость поездки составляет: ${response.toString().split(':')[2].replaceAll(' ', '')} руб.',
         );
         return false;
       }
@@ -238,9 +235,7 @@ class TripService {
         }
       } else {
         errorDialog.showError(
-          'Минимальная стоимость поездки составляет: ' +
-              response.toString().split(':')[2].replaceAll(' ', '') +
-              ' руб.',
+          'Минимальная стоимость поездки составляет: ${response.toString().split(':')[2].replaceAll(' ', '')} руб.',
         );
         return false;
       }
@@ -276,7 +271,7 @@ class TripService {
           validateStatus: (status) => status! <= 400,
         ),
       );
-      if(response.statusCode == 400) {
+      if (response.statusCode == 400) {
         errorDialog.showError(response.data);
         return false;
       }
@@ -465,5 +460,61 @@ class TripService {
         ),
       );
     } catch (e) {}
+  }
+
+  Future<bool> checkMinPrice(
+      {required BuildContext context, required TripModel trip}) async {
+    Response response;
+    var dio = Dio();
+
+    final List stops = [];
+    for (var item in trip.stops!) {
+      final stop = item.toJson();
+      stops.add(stop);
+    }
+
+    final data = {
+      "car": trip.car!.pk,
+      "price": trip.price,
+      "start": trip.timeStart,
+      "departure": trip.departure!.toJson(),
+      "stops": stops,
+      "package": trip.package,
+      "baggage": trip.baggage,
+      "baby_chair": trip.babyChair,
+      "smoke": trip.smoke,
+      "animals": trip.animals,
+      "two_places_in_behind": trip.twoPlacesInBehind,
+      "conditioner": trip.conditioner,
+      "seats": trip.seats
+    };
+
+    final token = await SecureStorage.instance.getToken();
+
+    try {
+      response = await dio.post(
+        checkTripUrl,
+        data: json.encode(data),
+        options: Options(
+          headers: {"Authorization": token},
+          responseType: ResponseType.json,
+          validateStatus: (status) => status! <= 400,
+        ),
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+      if (response.statusCode == 400) {
+        errorDialog.showError(
+          'Внимание: по данному направлению установлена минимальная стоимость: ${response.toString().split(':')[2].replaceAll(' ', '')} руб.',
+        );
+        return false;
+      }
+      return false;
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      print('object response $token object log 3 ${e}');
+      return false;
+    }
   }
 }

@@ -3,6 +3,7 @@ import 'server_data.dart';
 // all trips
 const tripsUrl = '$serverURL/trips';
 const addTripUrl = '$tripsUrl/add_trip';
+const checkTripUrl = '$tripsUrl/check';
 const deleteTripUrl = '$tripsUrl/delete';
 const getAllTripsUrl = '$tripsUrl/get_all_trips'; // все поездки
 const getAllDriverTripsUrl = '$tripsUrl/get_all_drivers_trips'; // все поездки созданные пассажирами

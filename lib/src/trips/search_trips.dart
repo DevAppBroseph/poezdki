@@ -314,7 +314,15 @@ class _SearchRidesState extends State<SearchRides>
               height: 60,
               child: Row(
                 children: [
-                  // const Expanded(child: Text('С:   ')),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 18.0),
+                    child: Icon(
+                      Icons.calendar_month,
+                      color: kPrimaryColor,
+                      size: 30,
+                    ),
+                  ),
+                  const SizedBox(width: 15),
                   Expanded(
                     flex: 5,
                     child: Row(
@@ -334,14 +342,13 @@ class _SearchRidesState extends State<SearchRides>
                                         onTap: () => funcDate(TypeDate.start),
                                         child: TextFormField(
                                           textAlign: TextAlign.center,
-                                          decoration: InputDecoration(
+                                          decoration: const InputDecoration(
                                             border: InputBorder.none,
                                             contentPadding:
-                                                const EdgeInsets.symmetric(
+                                                EdgeInsets.symmetric(
                                                     horizontal: 5,
                                                     vertical: 20),
-                                            hintText: DateFormat('dd.MM.yyyy')
-                                                .format(DateTime.now()),
+                                            hintText: 'Сегодня',
                                           ),
                                           enabled: false,
                                           controller: startDate,
@@ -371,71 +378,72 @@ class _SearchRidesState extends State<SearchRides>
                       ],
                     ),
                   ),
+                  // Spacer(),
                   // const SizedBox(width: 20),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      Icons.arrow_forward_rounded,
-                      color: kPrimaryColor,
-                    ),
-                  ),
+                  // const Padding(
+                  //   padding: EdgeInsets.all(8.0),
+                  //   child: Icon(
+                  //     Icons.arrow_forward_rounded,
+                  //     color: kPrimaryColor,
+                  //   ),
+                  // ),
                   // const Expanded(child: Text('По:')),
-                  Expanded(
-                    flex: 5,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 75,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: kPrimaryWhite),
-                            child: Stack(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () => funcDate(TypeDate.end),
-                                        child: TextFormField(
-                                          textAlign: TextAlign.center,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 5,
-                                                    vertical: 20),
-                                            hintText: DateFormat('dd.MM.yyyy')
-                                                .format(DateTime.now()),
-                                          ),
-                                          enabled: false,
-                                          controller: endDate,
-                                        ),
-                                      ),
-                                    ),
-                                    if (endDate.text.isNotEmpty)
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(right: 5.0),
-                                        child: GestureDetector(
-                                            onTap: () {
-                                              endDate.text = '';
-                                              timeMilisecondEnd = null;
-                                              setState(() {});
-                                              fetchTrips(context,
-                                                  page: searchPageIndex);
-                                            },
-                                            child: const Icon(Icons.close)),
-                                      )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Expanded(
+                  //   flex: 5,
+                  //   child: Row(
+                  //     children: [
+                  //       Expanded(
+                  //         child: Container(
+                  //           height: 75,
+                  //           decoration: BoxDecoration(
+                  //               borderRadius: BorderRadius.circular(10),
+                  //               color: kPrimaryWhite),
+                  //           child: Stack(
+                  //             children: [
+                  //               Row(
+                  //                 children: [
+                  //                   Expanded(
+                  //                     child: GestureDetector(
+                  //                       onTap: () => funcDate(TypeDate.end),
+                  //                       child: TextFormField(
+                  //                         textAlign: TextAlign.center,
+                  //                         decoration: InputDecoration(
+                  //                           border: InputBorder.none,
+                  //                           contentPadding:
+                  //                               const EdgeInsets.symmetric(
+                  //                                   horizontal: 5,
+                  //                                   vertical: 20),
+                  //                           hintText: DateFormat('dd.MM.yyyy')
+                  //                               .format(DateTime.now()),
+                  //                         ),
+                  //                         enabled: false,
+                  //                         controller: endDate,
+                  //                       ),
+                  //                     ),
+                  //                   ),
+                  //                   if (endDate.text.isNotEmpty)
+                  //                     Padding(
+                  //                       padding:
+                  //                           const EdgeInsets.only(right: 5.0),
+                  //                       child: GestureDetector(
+                  //                           onTap: () {
+                  //                             endDate.text = '';
+                  //                             timeMilisecondEnd = null;
+                  //                             setState(() {});
+                  //                             fetchTrips(context,
+                  //                                 page: searchPageIndex);
+                  //                           },
+                  //                           child: const Icon(Icons.close)),
+                  //                     )
+                  //                 ],
+                  //               ),
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),
@@ -713,40 +721,43 @@ class _SearchRidesState extends State<SearchRides>
           return DatePickerDialog(
             initialDate: DateTime.now(),
             firstDate: DateTime.now(),
-            lastDate: DateTime(2030),
+            lastDate: DateTime(DateTime.now().year + 5),
           );
         }),
       );
-      if (value != null) {
-        final TimeOfDay? timePicked = await showTimePicker(
-            context: context,
-            initialTime: TimeOfDay(
-              hour: TimeOfDay.now().hour,
-              minute: TimeOfDay.now().minute,
-            ));
 
-        if (typeDate == TypeDate.start) {
-          final DateTime temp = DateTime(
-            value.year,
-            value.month,
-            value.day,
-            timePicked != null ? timePicked.hour : 0,
-            timePicked != null ? timePicked.minute : 0,
-          );
-          timeMilisecondStart = temp;
-          startDate.text = DateFormat('dd.MM.yyyy').format(temp);
-        } else {
-          final DateTime temp = DateTime(
-            value.year,
-            value.month,
-            value.day,
-            timePicked != null ? timePicked.hour : 0,
-            timePicked != null ? timePicked.minute : 0,
-          );
-          timeMilisecondEnd = temp;
-          endDate.text = DateFormat('dd.MM.yyyy').format(temp);
-        }
-      }
+      timeMilisecondStart = value;
+      startDate.text = DateFormat('dd.MM.yyyy').format(value);
+      // if (value != null) {
+      //   final TimeOfDay? timePicked = await showTimePicker(
+      //       context: context,
+      //       initialTime: TimeOfDay(
+      //         hour: TimeOfDay.now().hour,
+      //         minute: TimeOfDay.now().minute,
+      //       ));
+
+      //   if (typeDate == TypeDate.start) {
+      //     final DateTime temp = DateTime(
+      //       value.year,
+      //       value.month,
+      //       value.day,
+      //       timePicked != null ? timePicked.hour : 0,
+      //       timePicked != null ? timePicked.minute : 0,
+      //     );
+      // timeMilisecondStart = temp;
+      // startDate.text = DateFormat('dd.MM.yyyy').format(temp);
+      //   } else {
+      //     final DateTime temp = DateTime(
+      //       value.year,
+      //       value.month,
+      //       value.day,
+      //       timePicked != null ? timePicked.hour : 0,
+      //       timePicked != null ? timePicked.minute : 0,
+      //     );
+      //     timeMilisecondEnd = temp;
+      //     endDate.text = DateFormat('dd.MM.yyyy').format(temp);
+      //   }
+      // }
     } else {
       await showDialog(
         barrierDismissible: true,
@@ -779,6 +790,7 @@ class _SearchRidesState extends State<SearchRides>
                     height: 200,
                     color: Colors.grey[200],
                     child: CupertinoDatePicker(
+                      mode: CupertinoDatePickerMode.date,
                       use24hFormat: true,
                       onDateTimeChanged: (value) {
                         if (typeDate == TypeDate.start) {
@@ -799,6 +811,8 @@ class _SearchRidesState extends State<SearchRides>
         },
       );
     }
+    timeMilisecondEnd = DateTime.fromMillisecondsSinceEpoch(
+        timeMilisecondStart!.millisecondsSinceEpoch + 86400000);
     fetchTrips(context, page: searchPageIndex);
     setState(() {});
   }

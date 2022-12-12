@@ -4,6 +4,7 @@ import 'package:app_poezdka/const/server/server_user.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/model/user_model.dart';
+import 'package:app_poezdka/service/server/trip_service.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
 import 'package:app_poezdka/util/validation.dart';
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
@@ -14,6 +15,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
@@ -153,12 +155,12 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                               onPressed: () => pickCar(context),
                               child: selectedCar != null
                                   ? SizedBox(
-                                    width: 150,
-                                    child: Text(
+                                      width: 150,
+                                      child: Text(
                                         "${selectedCar!.mark} ${selectedCar!.model} ${selectedCar!.color}",
                                         style: carStyle,
                                       ),
-                                  )
+                                    )
                                   : const Text(
                                       "Выберите автомобиль",
                                       style: pickerStyle,
@@ -194,6 +196,117 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
               date != null &&
               time != null &&
               selectedCar != null) {
+            List<Stops> stops = [];
+            int index = 0;
+
+            for (var element in stopsList) {
+              var distance = Geolocator.distanceBetween(
+                    index == 0
+                        ? from!.coords!.lat!
+                        : stopsList[index - 1].coords!.lat!,
+                    index == 0
+                        ? from!.coords!.lon!
+                        : stopsList[index - 1].coords!.lon!,
+                    element.coords!.lat!,
+                    element.coords!.lon!,
+                  ) /
+                  1000;
+              stops.add(
+                Stops(
+                  element.coords,
+                  element.district,
+                  element.name,
+                  element.population,
+                  element.subject,
+                  stops.isEmpty
+                      ? DateTime(
+                            date!.year,
+                            date!.month,
+                            date!.day,
+                            time!.hour,
+                            time!.minute,
+                          ).microsecondsSinceEpoch +
+                          distance / 80 * 3600000000
+                      : stops.last.approachTime! + distance / 80 * 3600000000,
+                  distance.toInt(),
+                ),
+              );
+              index++;
+            }
+            var approachTime = Geolocator.distanceBetween(
+                  stopsList.isEmpty
+                      ? from!.coords!.lat!
+                      : stopsList[stopsList.length - 1].coords!.lat!,
+                  stopsList.isEmpty
+                      ? from!.coords!.lon!
+                      : stopsList[stopsList.length - 1].coords!.lon!,
+                  to!.coords!.lat!,
+                  to!.coords!.lon!,
+                ) /
+                1000 /
+                80 *
+                3600000000;
+            stops.add(
+              Stops(
+                to!.coords,
+                to!.district,
+                to!.name,
+                to!.population,
+                to!.subject,
+                stopsList.isNotEmpty
+                    ? stops.last.approachTime! + approachTime
+                    : DateTime(
+                          date!.year,
+                          date!.month,
+                          date!.day,
+                          time!.hour,
+                          time!.minute,
+                        ).microsecondsSinceEpoch +
+                        approachTime,
+                Geolocator.distanceBetween(
+                      stopsList.isEmpty
+                          ? from!.coords!.lat!
+                          : stopsList[stopsList.length - 1].coords!.lat!,
+                      stopsList.isEmpty
+                          ? from!.coords!.lon!
+                          : stopsList[stopsList.length - 1].coords!.lon!,
+                      to!.coords!.lat!,
+                      to!.coords!.lon!,
+                    ) ~/
+                    1000,
+              ),
+            );
+
+            bool _isPackageTransfer = false;
+            bool _isTwoBackSeat = false;
+            bool _isBagadgeTransfer = false;
+            bool _isChildSeat = false;
+            bool _isCondition = false;
+            bool _isSmoking = false;
+            bool _isPetTransfer = false;
+            bool _isPickUpFromHome = false;
+
+            final TripModel trip = TripModel(
+                car: selectedCar!,
+                departure: from,
+                timeStart: DateTime(
+                  date!.year,
+                  date!.month,
+                  date!.day,
+                  time!.hour,
+                  time!.minute,
+                ).microsecondsSinceEpoch,
+                stops: stops,
+                package: _isPackageTransfer,
+                twoPlacesInBehind: _isTwoBackSeat,
+                baggage: _isBagadgeTransfer,
+                babyChair: _isChildSeat,
+                conditioner: _isCondition,
+                smoke: _isSmoking,
+                animals: _isPetTransfer,
+                price: 0);
+            final temp =
+                TripService().checkMinPrice(context: context, trip: trip);
             final bool success = await pushNewScreen(
               context,
               withNavBar: false,
@@ -217,37 +330,67 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
           } else {
             final state = BlocProvider.of<ProfileBloc>(context).state;
             if (state is ProfileLoaded) {
-              if(state.user.phone == null || state.user.phone == '') {
+              if (state.user.phone == null || state.user.phone == '') {
                 phoneController.text = '';
                 InfoDialog().show(
-                  buttonTitle: 'Подтвердить',
-                  title: 'Введите ваш номер',
-                  children: [
-                    KFormField(
-                      hintText: '+79876543210',
-                      textInputType: TextInputType.phone,
-                      textEditingController: phoneController,
-                      validateFunction: Validations.validatePhone,
-                      inputAction: TextInputAction.done,
-                      formatters: [
-                        LengthLimitingTextInputFormatter(12),
-                      ],
-                    ),
-                  ],
-                  onPressed: () {
-                    final validate = Validations.validatePhone(phoneController.text);
-                    if(validate == null) {
-                      final dio = Dio();
-                      dio.options.headers["Authorization"] = state.user.token;
-                      dio.put(addPhone, data: {'phone_number': phoneController.text}).then((value) {
-                        _editUser(state);
-                        SmartDialog.dismiss();
-                      });
-                  }
-                  }
-                );
+                    buttonTitle: 'Подтвердить',
+                    title: 'Введите ваш номер',
+                    children: [
+                      KFormField(
+                        hintText: '+79876543210',
+                        textInputType: TextInputType.phone,
+                        textEditingController: phoneController,
+                        validateFunction: Validations.validatePhone,
+                        inputAction: TextInputAction.done,
+                        formatters: [
+                          LengthLimitingTextInputFormatter(12),
+                        ],
+                      ),
+                    ],
+                    onPressed: () {
+                      final validate =
+                          Validations.validatePhone(phoneController.text);
+                      if (validate == null) {
+                        final dio = Dio();
+                        dio.options.headers["Authorization"] = state.user.token;
+                        dio.put(addPhone, data: {
+                          'phone_number': phoneController.text
+                        }).then((value) {
+                          _editUser(state);
+                          SmartDialog.dismiss();
+                        });
+                      }
+                    });
               } else {
                 InfoDialog().show(
+                    customIcon: const Icon(
+                      CupertinoIcons.info_circle,
+                      size: 90,
+                      color: kPrimaryColor,
+                    ),
+                    title: "Что то не так:",
+                    children: [
+                      const ListTile(
+                        title: Text("Необходимо указать:"),
+                      ),
+                      _infoChecker(title: "Откуда поедете", object: from),
+                      _infoChecker(title: "Куда держите путь", object: to),
+                      _infoChecker(
+                        title: "Дата поездки",
+                        object: date,
+                      ),
+                      _infoChecker(
+                        title: "Время выезда",
+                        object: time,
+                      ),
+                      _infoChecker(
+                        title: "Автомобиль",
+                        object: selectedCar,
+                      ),
+                    ]);
+              }
+            } else {
+              InfoDialog().show(
                   customIcon: const Icon(
                     CupertinoIcons.info_circle,
                     size: 90,
@@ -273,34 +416,6 @@ class _CreateRideDriverState extends State<CreateRideDriver> {
                       object: selectedCar,
                     ),
                   ]);
-              }
-            } else {
-              InfoDialog().show(
-                customIcon: const Icon(
-                  CupertinoIcons.info_circle,
-                  size: 90,
-                  color: kPrimaryColor,
-                ),
-                title: "Что то не так:",
-                children: [
-                  const ListTile(
-                    title: Text("Необходимо указать:"),
-                  ),
-                  _infoChecker(title: "Откуда поедете", object: from),
-                  _infoChecker(title: "Куда держите путь", object: to),
-                  _infoChecker(
-                    title: "Дата поездки",
-                    object: date,
-                  ),
-                  _infoChecker(
-                    title: "Время выезда",
-                    object: time,
-                  ),
-                  _infoChecker(
-                    title: "Автомобиль",
-                    object: selectedCar,
-                  ),
-                ]);
             }
           }
         },

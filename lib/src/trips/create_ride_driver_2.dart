@@ -4,6 +4,7 @@ import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
+import 'package:app_poezdka/service/server/trip_service.dart';
 import 'package:app_poezdka/src/trips/components/book_reserved.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
@@ -310,7 +311,10 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                 //   tripDriverBloc.add(LoadUserTripsList());
                 // }
 
-                bookTrip(context, trip);
+                final checkCoast = await TripService()
+                    .checkMinPrice(context: context, trip: trip);
+
+                if (checkCoast) bookTrip(context, trip);
               },
             ),
           );
