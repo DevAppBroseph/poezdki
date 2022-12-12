@@ -211,7 +211,7 @@ class _AddCarWidgetState extends State<AddCarWidget> {
                         ],
                       ),
                     )),
-                const SizedBox(height: 350),
+                const SizedBox(height: 200),
               ],
             ),
           ),

@@ -34,28 +34,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(child: _authSection()),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-            child: Row(
-              children: [
-                Checkbox(
-                  value: personalData,
-                  shape: const CircleBorder(),
-                  onChanged: (value) {
-                    personalData = !personalData;
-                    setState(() {});
-                  },
-                ),
-                const Expanded(
-                  child: Text(
-                    "Я соглашаюсь с условиями обработки персональных данеых",
-                    style: TextStyle(color: kPrimaryLightGrey),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
+          //   child: Row(
+          //     children: [
+          //       Checkbox(
+          //         value: personalData,
+          //         shape: const CircleBorder(),
+          //         onChanged: (value) {
+          //           personalData = !personalData;
+          //           setState(() {});
+          //         },
+          //       ),
+          //       const Expanded(
+          //         child: Text(
+          //           "Я соглашаюсь с условиями обработки персональных данеых",
+          //           style: TextStyle(color: kPrimaryLightGrey),
+          //           textAlign: TextAlign.center,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.only(bottom: 40),
             child: InkWell(
@@ -107,18 +107,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
             if (!personalData)
               Positioned.fill(
                 child: GestureDetector(
-                onTap: () {
-                  MessageDialogs().showAlert(
-                    'Ooops, что-то не так',
-                    'Тыкните кружочек внизу, думаю это поможет😉',
-                  );
-                },
+                  onTap: () {
+                    MessageDialogs().showAlert(
+                      'Ooops, что-то не так',
+                      'Тыкните кружочек внизу, думаю это поможет😉',
+                    );
+                  },
                   child: Container(
                     color: Colors.transparent,
                   ),
                 ),
               ),
           ],
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Row(
+            children: [
+              Checkbox(
+                value: personalData,
+                shape: const CircleBorder(),
+                onChanged: (value) {
+                  personalData = !personalData;
+                  setState(() {});
+                },
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  "Я соглашаюсь с условиями обработки персональных данеых",
+                  style: TextStyle(color: kPrimaryDarkGrey),
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

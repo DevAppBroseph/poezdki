@@ -51,15 +51,15 @@ class TripTileDefault extends StatelessWidget {
         child: Stack(
           alignment: Alignment.bottomRight,
           children: [
-            trip.isPremium != null && trip.isPremium!
-                ? Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: SvgPicture.asset(
-                      'assets/icon/premium.svg',
-                      height: 40,
-                    ),
-                  )
-                : const SizedBox(),
+            // trip.isPremium != null && trip.isPremium!
+            //     ? Padding(
+            //         padding: const EdgeInsets.all(15.0),
+            //         child: SvgPicture.asset(
+            //           'assets/icon/premium.svg',
+            //           height: 40,
+            //         ),
+            //       )
+            //     : const SizedBox(),
             Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,

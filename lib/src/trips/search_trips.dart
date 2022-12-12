@@ -333,15 +333,15 @@ class _SearchRidesState extends State<SearchRides>
                                       child: GestureDetector(
                                         onTap: () => funcDate(TypeDate.start),
                                         child: TextFormField(
+                                          textAlign: TextAlign.center,
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     horizontal: 5,
                                                     vertical: 20),
-                                            hintText:
-                                                DateFormat('dd.MM.yyyy HH:mm')
-                                                    .format(DateTime.now()),
+                                            hintText: DateFormat('dd.MM.yyyy')
+                                                .format(DateTime.now()),
                                           ),
                                           enabled: false,
                                           controller: startDate,
@@ -398,15 +398,15 @@ class _SearchRidesState extends State<SearchRides>
                                       child: GestureDetector(
                                         onTap: () => funcDate(TypeDate.end),
                                         child: TextFormField(
+                                          textAlign: TextAlign.center,
                                           decoration: InputDecoration(
                                             border: InputBorder.none,
                                             contentPadding:
                                                 const EdgeInsets.symmetric(
                                                     horizontal: 5,
                                                     vertical: 20),
-                                            hintText:
-                                                DateFormat('dd.MM.yyyy HH:mm')
-                                                    .format(DateTime.now()),
+                                            hintText: DateFormat('dd.MM.yyyy')
+                                                .format(DateTime.now()),
                                           ),
                                           enabled: false,
                                           controller: endDate,
@@ -499,6 +499,7 @@ class _SearchRidesState extends State<SearchRides>
                                     ),
                                   ]),
                               child: SingleChildScrollView(
+                                physics: const NeverScrollableScrollPhysics(),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -518,7 +519,13 @@ class _SearchRidesState extends State<SearchRides>
                                     const SizedBox(height: 30),
                                     searchHistory.isEmpty
                                         ? const Text('Пусто')
-                                        : _listView(searchHistory),
+                                        : SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height /
+                                                2,
+                                            child: _listView(searchHistory),
+                                          ),
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -557,131 +564,138 @@ class _SearchRidesState extends State<SearchRides>
     return ListView.builder(
       shrinkWrap: true,
       itemCount: searchHistory.length,
+      // physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.zero,
       itemBuilder: (context, index) {
         return Column(
           children: [
-            GestureDetector(
-              onTap: () async {
-                final tripsBloc = BlocProvider.of<TripsBloc>(context);
-                tripsBloc.add(
-                  LoadAllTripsList(
-                    page: 0,
-                    departure: searchHistory[index].departure,
-                    destination: searchHistory[index].destination,
-                    animals: searchHistory[index].animals,
-                    package: searchHistory[index].package,
-                    baggage: searchHistory[index].baggage,
-                    babyChair: searchHistory[index].babyChair,
-                    smoke: searchHistory[index].smoke,
-                    twoPlacesInBehind: searchHistory[index].twoPlacesInBehind,
-                    conditioner: searchHistory[index].conditioner,
-                    gender: searchHistory[index].gender,
-                    start: searchHistory[index].start,
-                    end: searchHistory[index].end,
-                  ),
-                );
+            SizedBox(
+              height: 50,
+              child: GestureDetector(
+                onTap: () async {
+                  final tripsBloc = BlocProvider.of<TripsBloc>(context);
+                  tripsBloc.add(
+                    LoadAllTripsList(
+                      page: 0,
+                      departure: searchHistory[index].departure,
+                      destination: searchHistory[index].destination,
+                      animals: searchHistory[index].animals,
+                      package: searchHistory[index].package,
+                      baggage: searchHistory[index].baggage,
+                      babyChair: searchHistory[index].babyChair,
+                      smoke: searchHistory[index].smoke,
+                      twoPlacesInBehind: searchHistory[index].twoPlacesInBehind,
+                      conditioner: searchHistory[index].conditioner,
+                      gender: searchHistory[index].gender,
+                      start: searchHistory[index].start,
+                      end: searchHistory[index].end,
+                    ),
+                  );
 
-                Map<String, dynamic> tripOne = {
-                  "page": 1,
-                  "departure": {
-                    "coords": {
-                      "lat": searchHistory[index].departure!.coords!.lat,
-                      "lon": searchHistory[index].departure!.coords!.lon
+                  Map<String, dynamic> tripOne = {
+                    "page": 1,
+                    "departure": {
+                      "coords": {
+                        "lat": searchHistory[index].departure!.coords!.lat,
+                        "lon": searchHistory[index].departure!.coords!.lon
+                      },
+                      "district": searchHistory[index].departure!.district,
+                      "name": searchHistory[index].departure!.name,
+                      "population": searchHistory[index].departure!.population
                     },
-                    "district": searchHistory[index].departure!.district,
-                    "name": searchHistory[index].departure!.name,
-                    "population": searchHistory[index].departure!.population
-                  },
-                  "destination": {
-                    "coords": {
-                      "lat": searchHistory[index].destination!.coords!.lat,
-                      "lon": searchHistory[index].destination!.coords!.lon
+                    "destination": {
+                      "coords": {
+                        "lat": searchHistory[index].destination!.coords!.lat,
+                        "lon": searchHistory[index].destination!.coords!.lon
+                      },
+                      "district": searchHistory[index].destination!.district,
+                      "name": searchHistory[index].destination!.name,
+                      "population": searchHistory[index].destination!.population
                     },
-                    "district": searchHistory[index].destination!.district,
-                    "name": searchHistory[index].destination!.name,
-                    "population": searchHistory[index].destination!.population
-                  },
-                  "animals": searchHistory[index].animals,
-                  "package": searchHistory[index].package,
-                  "baggage": searchHistory[index].baggage,
-                  "babyChair": searchHistory[index].babyChair,
-                  "smoke": searchHistory[index].smoke,
-                  "twoPlacesInBehind": searchHistory[index].twoPlacesInBehind,
-                  "conditioner": searchHistory[index].conditioner,
-                  "gender": searchHistory[index].gender,
-                  "start": searchHistory[index].start,
-                  "end": searchHistory[index].end
-                };
+                    "animals": searchHistory[index].animals,
+                    "package": searchHistory[index].package,
+                    "baggage": searchHistory[index].baggage,
+                    "babyChair": searchHistory[index].babyChair,
+                    "smoke": searchHistory[index].smoke,
+                    "twoPlacesInBehind": searchHistory[index].twoPlacesInBehind,
+                    "conditioner": searchHistory[index].conditioner,
+                    "gender": searchHistory[index].gender,
+                    "start": searchHistory[index].start,
+                    "end": searchHistory[index].end
+                  };
 
-                print('objecthjh $tripOne');
+                  print('objecthjh $tripOne');
 
-                final tripsBlocSecond =
-                    BlocProvider.of<TripsPassengerBloc>(context);
-                tripsBlocSecond.add(
-                  LoadPassengerTripsList(
-                    // page: page,
-                    departure: searchHistory[index].departure,
-                    destination: searchHistory[index].destination,
-                    animals: searchHistory[index].animals,
-                    package: searchHistory[index].package,
-                    baggage: searchHistory[index].baggage,
-                    babyChair: searchHistory[index].babyChair,
-                    smoke: searchHistory[index].smoke,
-                    twoPlacesInBehind: searchHistory[index].twoPlacesInBehind,
-                    conditioner: searchHistory[index].conditioner,
-                    // gender: filter.gender?.apiTitle,
-                  ),
-                );
+                  final tripsBlocSecond =
+                      BlocProvider.of<TripsPassengerBloc>(context);
+                  tripsBlocSecond.add(
+                    LoadPassengerTripsList(
+                      // page: page,
+                      departure: searchHistory[index].departure,
+                      destination: searchHistory[index].destination,
+                      animals: searchHistory[index].animals,
+                      package: searchHistory[index].package,
+                      baggage: searchHistory[index].baggage,
+                      babyChair: searchHistory[index].babyChair,
+                      smoke: searchHistory[index].smoke,
+                      twoPlacesInBehind: searchHistory[index].twoPlacesInBehind,
+                      conditioner: searchHistory[index].conditioner,
+                      // gender: filter.gender?.apiTitle,
+                    ),
+                  );
 
-                startWay.text = searchHistory[index].departure!.name!;
-                endWay.text = searchHistory[index].destination!.name!;
+                  startWay.text = searchHistory[index].departure!.name!;
+                  endWay.text = searchHistory[index].destination!.name!;
+                  from = searchHistory[index].departure;
+                  to = searchHistory[index].destination;
 
-                // if (from != null &&
-                //     to != null) {
-                String jsonStr = jsonEncode(tripOne);
-                final settings = await LocalStorageService.getInstance();
-                String? allSearch = settings.getSearch();
-                settings.setSearch(
-                    allSearch == null ? '$jsonStr' : '$jsonStr#$allSearch');
-                setState(() {});
-                SmartDialog.dismiss();
-                // }
-              },
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      searchHistory[index].departure!.name!,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                  // if (from != null &&
+                  //     to != null) {
+                  String jsonStr = jsonEncode(tripOne);
+                  final settings = await LocalStorageService.getInstance();
+                  String? allSearch = settings.getSearch();
+                  settings.setSearch(
+                      allSearch == null ? '$jsonStr' : '$jsonStr#$allSearch');
+                  setState(() {});
+                  SmartDialog.dismiss();
+                  // }
+                },
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        searchHistory[index].departure!.name!,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.right,
                       ),
-                      textAlign: TextAlign.right,
                     ),
-                  ),
-                  const Expanded(
-                    child: Icon(
-                      Icons.arrow_right_alt_sharp,
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Text(
-                      searchHistory[index].destination!.name!,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                    const Expanded(
+                      child: Icon(
+                        Icons.arrow_right_alt_sharp,
                       ),
-                      textAlign: TextAlign.left,
                     ),
-                  ),
-                  const Expanded(
-                    child: Icon(
-                      Icons.chevron_right,
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        searchHistory[index].destination!.name!,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
                     ),
-                  ),
-                ],
+                    const Expanded(
+                      child: Icon(
+                        Icons.chevron_right,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const Divider()
@@ -720,7 +734,7 @@ class _SearchRidesState extends State<SearchRides>
             timePicked != null ? timePicked.minute : 0,
           );
           timeMilisecondStart = temp;
-          startDate.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);
+          startDate.text = DateFormat('dd.MM.yyyy').format(temp);
         } else {
           final DateTime temp = DateTime(
             value.year,
@@ -730,7 +744,7 @@ class _SearchRidesState extends State<SearchRides>
             timePicked != null ? timePicked.minute : 0,
           );
           timeMilisecondEnd = temp;
-          endDate.text = DateFormat('dd.MM.yyyy HH:mm').format(temp);
+          endDate.text = DateFormat('dd.MM.yyyy').format(temp);
         }
       }
     } else {
@@ -770,11 +784,10 @@ class _SearchRidesState extends State<SearchRides>
                         if (typeDate == TypeDate.start) {
                           timeMilisecondStart = value;
                           startDate.text =
-                              DateFormat('dd.MM.yyyy HH:mm').format(value);
+                              DateFormat('dd.MM.yyyy').format(value);
                         } else {
                           timeMilisecondEnd = value;
-                          endDate.text =
-                              DateFormat('dd.MM.yyyy HH:mm').format(value);
+                          endDate.text = DateFormat('dd.MM.yyyy').format(value);
                         }
                       },
                     ),
