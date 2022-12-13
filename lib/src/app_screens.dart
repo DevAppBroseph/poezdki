@@ -17,6 +17,7 @@ class AppScreens extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<ChatBloc>(context).add(CheckNewMessageSupport());
     PersistentTabController _controller;
 
     _controller = PersistentTabController(initialIndex: 0);
@@ -55,9 +56,39 @@ class AppScreens extends StatelessWidget {
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
         PersistentBottomNavBarItem(
-          icon: SvgPicture.asset('$svgPath/user_active.svg'),
-          inactiveIcon: SvgPicture.asset("$svgPath/user_inactive.svg",
-              semanticsLabel: 'A red up arrow'),
+          icon: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              SvgPicture.asset('$svgPath/user_active.svg'),
+              BlocBuilder<ChatBloc, ChatState>(builder: (context, snapshot) {
+                if (snapshot is MessageUnRead) {
+                  return SvgPicture.asset(
+                    'assets/icon/new_message.svg',
+                    color: Colors.red,
+                    height: 15,
+                  );
+                }
+                return const SizedBox();
+              })
+            ],
+          ),
+          inactiveIcon: Stack(
+            alignment: Alignment.bottomRight,
+            children: [
+              SvgPicture.asset("$svgPath/user_inactive.svg",
+                  semanticsLabel: 'A red up arrow'),
+              BlocBuilder<ChatBloc, ChatState>(builder: (context, snapshot) {
+                if (snapshot is MessageUnRead) {
+                  return SvgPicture.asset(
+                    'assets/icon/new_message.svg',
+                    color: Colors.red,
+                    height: 15,
+                  );
+                }
+                return const SizedBox();
+              })
+            ],
+          ),
           title: ("Профиль"),
           activeColorPrimary: kPrimaryColor,
           inactiveColorPrimary: CupertinoColors.systemGrey,
@@ -74,8 +105,9 @@ class AppScreens extends StatelessWidget {
     return PersistentTabView(
       context,
       onItemSelected: (value) {
-        if (value == _buildScreens().length - 1)
+        if (value == _buildScreens().length - 1) {
           BlocProvider.of<ChatBloc>(context).add(CheckNewMessageSupport());
+        }
       },
       controller: _controller,
       screens: _buildScreens(),
