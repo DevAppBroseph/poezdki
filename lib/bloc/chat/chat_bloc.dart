@@ -44,6 +44,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<UpdateChat>(_updateChat);
     on<StartSocket>(_startSocket);
     on<GetChatSupport>(_getChatSupport);
+    on<CheckNewMessageSupport>(_checkMessageSupport);
   }
   WebSocketChannel? channel;
 
@@ -63,10 +64,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     channel?.stream.listen(
       (event) async {
         try {
-          print('object ${event}');
+          Future.delayed(const Duration(seconds: 1), (() {
+            _checkRead();
+          }));
           var newMessage = NewMessageAnswer.fromJson(jsonDecode(event));
           if (newMessage.message == 'answer from support') {
-            updateSupportChat();
             MessageDialogs().showMessage(
               'Служба поддержки',
               'Новое сообщение',
@@ -121,6 +123,21 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       cancelOnError: false,
     );
     // }
+  }
+
+  void _checkMessageSupport(
+      CheckNewMessageSupport event, Emitter<ChatState> emit) async {
+    _checkRead();
+  }
+
+  void _checkRead() async {
+    bool state = await chatService.checkReadMessage();
+    print('object mes log state ${state}');
+    if (state) {
+      emit(MessageRead());
+    } else {
+      emit(MessageUnRead());
+    }
   }
 
   void _onChatStarted(ChatStarted event, Emitter<ChatState> emit) async {

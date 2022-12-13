@@ -25,3 +25,7 @@ class SupportMessageState extends ChatState {
   List<AnswerSupport> answer;
   SupportMessageState({required this.answer});
 }
+
+class MessageRead extends ChatState {}
+
+class MessageUnRead extends ChatState {}

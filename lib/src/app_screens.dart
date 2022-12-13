@@ -1,3 +1,4 @@
+import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/src/profile/profile_screen.dart';
@@ -5,6 +6,7 @@ import 'package:app_poezdka/src/trips/create_ride.dart';
 import 'package:app_poezdka/src/trips/search_trips.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
@@ -71,6 +73,10 @@ class AppScreens extends StatelessWidget {
 
     return PersistentTabView(
       context,
+      onItemSelected: (value) {
+        if (value == _buildScreens().length - 1)
+          BlocProvider.of<ChatBloc>(context).add(CheckNewMessageSupport());
+      },
       controller: _controller,
       screens: _buildScreens(),
       items: _navBarsItems(),

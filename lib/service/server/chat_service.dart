@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:app_poezdka/const/server/sever_chat.dart';
 import 'package:app_poezdka/model/messages_answer.dart';
+import 'package:app_poezdka/service/local/secure_storage.dart';
 
 import 'package:app_poezdka/widget/dialog/error_dialog.dart';
 import 'package:http/http.dart' as http;
@@ -8,6 +9,7 @@ import 'package:http/http.dart' as http;
 class ChatService {
   final errorDialog = ErrorDialogs();
   static var chatsUrl = Uri.parse(getChatUrl);
+  static var chatSupport = Uri.parse(checkChatSupport);
 
   Future<List<MessagesAnswer>?> getChat({
     required int senderId,
@@ -41,5 +43,21 @@ class ChatService {
       errorDialog.showError(e.toString());
       return null;
     }
+  }
+
+  Future<bool> checkReadMessage() async {
+    final token = await SecureStorage.instance.getToken();
+    var response = await http.get(
+      chatSupport,
+      headers: {
+        "Accept": "application/json",
+        "Authorization": token!,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['state'];
+    }
+    return false;
   }
 }

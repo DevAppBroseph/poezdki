@@ -8,9 +8,14 @@ class ProfileBtn extends StatelessWidget {
   final Function? onPressed;
   final String title;
   final String icon;
+  final bool? unreadMessage;
   // final IconData icon;
   const ProfileBtn(
-      {Key? key, required this.title, required this.icon, this.onPressed})
+      {Key? key,
+      required this.title,
+      required this.icon,
+      this.onPressed,
+      this.unreadMessage})
       : super(key: key);
 
   @override
@@ -19,14 +24,28 @@ class ProfileBtn extends StatelessWidget {
     return ListTile(
       onTap: onPressed as void Function()?,
       minLeadingWidth: 5,
-      leading: SizedBox(
-        width: 24,
-        child: SvgPicture.asset(
-          "$path/$icon.svg",
-          height: 23,
-          // width: ,
-          color: Colors.black,
-        ),
+      leading: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          SizedBox(
+            width: 24,
+            child: SvgPicture.asset(
+              "$path/$icon.svg",
+              height: 23,
+              // width: ,
+              color: Colors.black,
+            ),
+          ),
+          if (unreadMessage != null && unreadMessage!)
+            Container(
+              height: 10,
+              width: 10,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.red,
+              ),
+            )
+        ],
       ),
       title: Text(
         title,

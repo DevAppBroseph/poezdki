@@ -27,6 +27,20 @@ class _FeedBackState extends State<FeedBack> {
     super.initState();
     final WebSocketChannel channel;
     BlocProvider.of<ChatBloc>(context).add(GetChatSupport());
+    func();
+  }
+
+  WebSocketChannel? channel;
+
+  void func() async {
+    final token = await SecureStorage.instance.getToken();
+    channel = WebSocketChannel.connect(
+      Uri.parse('ws://194.87.145.140:80/ws/$token'),
+    );
+
+    channel?.stream.listen((event) async {
+      BlocProvider.of<ChatBloc>(context).add(GetChatSupport());
+    });
   }
 
   void _sendMessage(String message) async {
@@ -48,6 +62,7 @@ class _FeedBackState extends State<FeedBack> {
   @override
   void dispose() {
     _controller.dispose();
+    // channel.
     super.dispose();
   }
 

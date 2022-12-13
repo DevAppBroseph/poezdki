@@ -1,4 +1,6 @@
+import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/bloc/profile/profile_builder.dart';
+import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/src/policy/policy.dart';
 import 'package:app_poezdka/src/profile/about_project.dart';
 import 'package:app_poezdka/src/profile/components/profile_button.dart';
@@ -17,6 +19,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // BlocProvider.of<ChatBloc>(context).add(CheckNewMessageSupport());
     return KScaffoldScreen(
         backgroundColor: Colors.white,
         title: "Профиль",
@@ -40,8 +43,7 @@ class ProfileScreen extends StatelessWidget {
                   icon: 'rate_star'),
               // const ProfileBtn(title: "Бонусы", icon: 'dollar-circlebonus'),
               ProfileBtn(
-                  onPressed: () =>
-                      pushNewScreen(context, screen: Referal()),
+                  onPressed: () => pushNewScreen(context, screen: Referal()),
                   title: "Реферальная система",
                   icon: 'profile-2user'),
               // ProfileBtn(
@@ -54,11 +56,14 @@ class ProfileScreen extends StatelessWidget {
                 title: "Вопросы и ответы",
                 icon: 'message-question',
               ),
-              ProfileBtn(
-                onPressed: () => pushNewScreen(context, screen: FeedBack()),
-                title: "Обратная связь",
-                icon: 'feedback',
-              ),
+              BlocBuilder<ChatBloc, ChatState>(builder: (context, snapshot) {
+                return ProfileBtn(
+                  onPressed: () => pushNewScreen(context, screen: FeedBack()),
+                  title: "Обратная связь",
+                  icon: 'feedback',
+                  unreadMessage: snapshot is MessageUnRead,
+                );
+              }),
               // ProfileBtn(
               //     onPressed: () => pushNewScreen(context, screen: const Blog()),
               //     title: "Блог",
