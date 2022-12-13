@@ -1,4 +1,3 @@
-// ignore_for_file: unused_field
 import 'dart:convert';
 import 'dart:io';
 import 'package:app_poezdka/bloc/trips_driver/trips_bloc.dart';
@@ -8,6 +7,7 @@ import 'package:app_poezdka/bloc/trips_passenger/trips_passenger_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/filter_model.dart';
+import 'package:app_poezdka/model/model_search.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/service/local/shared_preferences.dart';
 import 'package:app_poezdka/src/auth/signin.dart';
@@ -19,7 +19,6 @@ import 'package:app_poezdka/src/trips/notification_page.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
-import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:app_poezdka/widget/text_field/form_location_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -341,12 +340,11 @@ class _SearchRidesState extends State<SearchRides>
                                       child: GestureDetector(
                                         onTap: () => funcDate(TypeDate.start),
                                         child: TextFormField(
-                                          textAlign: TextAlign.center,
                                           decoration: const InputDecoration(
                                             border: InputBorder.none,
                                             contentPadding:
                                                 EdgeInsets.symmetric(
-                                                    horizontal: 5,
+                                                    horizontal: 20,
                                                     vertical: 20),
                                             hintText: 'Сегодня',
                                           ),
@@ -363,6 +361,7 @@ class _SearchRidesState extends State<SearchRides>
                                             onTap: () {
                                               startDate.text = '';
                                               timeMilisecondStart = null;
+                                              timeMilisecondEnd = null;
                                               setState(() {});
                                               fetchTrips(context,
                                                   page: searchPageIndex);
@@ -378,72 +377,6 @@ class _SearchRidesState extends State<SearchRides>
                       ],
                     ),
                   ),
-                  // Spacer(),
-                  // const SizedBox(width: 20),
-                  // const Padding(
-                  //   padding: EdgeInsets.all(8.0),
-                  //   child: Icon(
-                  //     Icons.arrow_forward_rounded,
-                  //     color: kPrimaryColor,
-                  //   ),
-                  // ),
-                  // const Expanded(child: Text('По:')),
-                  // Expanded(
-                  //   flex: 5,
-                  //   child: Row(
-                  //     children: [
-                  //       Expanded(
-                  //         child: Container(
-                  //           height: 75,
-                  //           decoration: BoxDecoration(
-                  //               borderRadius: BorderRadius.circular(10),
-                  //               color: kPrimaryWhite),
-                  //           child: Stack(
-                  //             children: [
-                  //               Row(
-                  //                 children: [
-                  //                   Expanded(
-                  //                     child: GestureDetector(
-                  //                       onTap: () => funcDate(TypeDate.end),
-                  //                       child: TextFormField(
-                  //                         textAlign: TextAlign.center,
-                  //                         decoration: InputDecoration(
-                  //                           border: InputBorder.none,
-                  //                           contentPadding:
-                  //                               const EdgeInsets.symmetric(
-                  //                                   horizontal: 5,
-                  //                                   vertical: 20),
-                  //                           hintText: DateFormat('dd.MM.yyyy')
-                  //                               .format(DateTime.now()),
-                  //                         ),
-                  //                         enabled: false,
-                  //                         controller: endDate,
-                  //                       ),
-                  //                     ),
-                  //                   ),
-                  //                   if (endDate.text.isNotEmpty)
-                  //                     Padding(
-                  //                       padding:
-                  //                           const EdgeInsets.only(right: 5.0),
-                  //                       child: GestureDetector(
-                  //                           onTap: () {
-                  //                             endDate.text = '';
-                  //                             timeMilisecondEnd = null;
-                  //                             setState(() {});
-                  //                             fetchTrips(context,
-                  //                                 page: searchPageIndex);
-                  //                           },
-                  //                           child: const Icon(Icons.close)),
-                  //                     )
-                  //                 ],
-                  //               ),
-                  //             ],
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -728,36 +661,6 @@ class _SearchRidesState extends State<SearchRides>
 
       timeMilisecondStart = value;
       startDate.text = DateFormat('dd.MM.yyyy').format(value);
-      // if (value != null) {
-      //   final TimeOfDay? timePicked = await showTimePicker(
-      //       context: context,
-      //       initialTime: TimeOfDay(
-      //         hour: TimeOfDay.now().hour,
-      //         minute: TimeOfDay.now().minute,
-      //       ));
-
-      //   if (typeDate == TypeDate.start) {
-      //     final DateTime temp = DateTime(
-      //       value.year,
-      //       value.month,
-      //       value.day,
-      //       timePicked != null ? timePicked.hour : 0,
-      //       timePicked != null ? timePicked.minute : 0,
-      //     );
-      // timeMilisecondStart = temp;
-      // startDate.text = DateFormat('dd.MM.yyyy').format(temp);
-      //   } else {
-      //     final DateTime temp = DateTime(
-      //       value.year,
-      //       value.month,
-      //       value.day,
-      //       timePicked != null ? timePicked.hour : 0,
-      //       timePicked != null ? timePicked.minute : 0,
-      //     );
-      //     timeMilisecondEnd = temp;
-      //     endDate.text = DateFormat('dd.MM.yyyy').format(temp);
-      //   }
-      // }
     } else {
       await showDialog(
         barrierDismissible: true,
@@ -771,20 +674,39 @@ class _SearchRidesState extends State<SearchRides>
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  Colors.grey.shade300)),
-                          child: const Text('Готово'),
+                  Container(
+                    color: Colors.grey[100],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        const Spacer(),
+                        Stack(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                timeMilisecondStart = timeMilisecondStart ??
+                                    DateTime(
+                                        DateTime.now().year,
+                                        DateTime.now().month,
+                                        DateTime.now().day);
+                                startDate.text = DateFormat('dd.MM.yyyy')
+                                    .format(timeMilisecondStart!);
+                                Navigator.of(context).pop();
+                              },
+                              style: ButtonStyle(
+                                  overlayColor: MaterialStateProperty.all(
+                                      Colors.transparent),
+                                  shadowColor: MaterialStateProperty.all(
+                                      Colors.transparent),
+                                  backgroundColor: MaterialStateProperty.all(
+                                    Colors.grey[100],
+                                  )),
+                              child: const Text('Готово'),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   Container(
                     height: 200,
@@ -944,55 +866,5 @@ class _SearchRidesState extends State<SearchRides>
         fetchTrips(context, page: searchPageIndex);
       });
     }
-  }
-}
-
-class ModelSearch {
-  int? page;
-  Departure? departure;
-  Departure? destination;
-  bool animals;
-  bool package;
-  bool baggage;
-  bool babyChair;
-  bool smoke;
-  bool twoPlacesInBehind;
-  bool conditioner;
-  String? gender;
-  int? start;
-  int? end;
-
-  ModelSearch({
-    required this.page,
-    required this.departure,
-    required this.destination,
-    required this.animals,
-    required this.package,
-    required this.baggage,
-    required this.babyChair,
-    required this.smoke,
-    required this.twoPlacesInBehind,
-    required this.conditioner,
-    required this.gender,
-    required this.start,
-    required this.end,
-  });
-
-  factory ModelSearch.fromJson(Map<String, dynamic> json) {
-    return ModelSearch(
-      page: json['page'],
-      departure: Departure.fromJson(json['departure']),
-      destination: Departure.fromJson(json['destination']),
-      animals: json['animals'],
-      package: json['package'],
-      baggage: json['baggage'],
-      babyChair: json['babyChair'],
-      smoke: json['smoke'],
-      twoPlacesInBehind: json['twoPlacesInBehind'],
-      conditioner: json['conditioner'],
-      gender: json['gender'],
-      start: json['start'],
-      end: json['end'],
-    );
   }
 }
