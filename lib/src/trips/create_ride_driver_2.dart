@@ -310,7 +310,6 @@ class _CreateRideDriverInfoState extends State<CreateRideDriverInfo> {
                 //   tripBloc.add(CreateUserTrip(context, trip));
                 //   tripDriverBloc.add(LoadUserTripsList());
                 // }
-
                 final checkCoast = await TripService()
                     .checkMinPrice(context: context, trip: trip);
 

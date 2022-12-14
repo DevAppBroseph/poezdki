@@ -56,38 +56,63 @@ class AppScreens extends StatelessWidget {
           inactiveColorPrimary: CupertinoColors.systemGrey,
         ),
         PersistentBottomNavBarItem(
-          icon: Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              SvgPicture.asset('$svgPath/user_active.svg'),
-              BlocBuilder<ChatBloc, ChatState>(builder: (context, snapshot) {
-                if (snapshot is MessageUnRead) {
-                  return SvgPicture.asset(
-                    'assets/icon/new_message.svg',
-                    color: Colors.red,
-                    height: 15,
-                  );
-                }
-                return const SizedBox();
-              })
-            ],
+          icon: SizedBox(
+            // height: 50,
+            width: 50,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SvgPicture.asset(
+                  '$svgPath/user_active.svg',
+                ),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: BlocBuilder<ChatBloc, ChatState>(
+                        builder: (context, snapshot) {
+                      if (snapshot is MessageUnRead) {
+                        return SvgPicture.asset(
+                          'assets/icon/new_message.svg',
+                          color: Colors.red,
+                          height: 15,
+                        );
+                      }
+                      return const SizedBox();
+                    }),
+                  ),
+                ),
+              ],
+            ),
           ),
-          inactiveIcon: Stack(
-            alignment: Alignment.bottomRight,
-            children: [
-              SvgPicture.asset("$svgPath/user_inactive.svg",
-                  semanticsLabel: 'A red up arrow'),
-              BlocBuilder<ChatBloc, ChatState>(builder: (context, snapshot) {
-                if (snapshot is MessageUnRead) {
-                  return SvgPicture.asset(
-                    'assets/icon/new_message.svg',
-                    color: Colors.red,
-                    height: 15,
-                  );
-                }
-                return const SizedBox();
-              })
-            ],
+          inactiveIcon: SizedBox(
+            width: 50,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SvgPicture.asset("$svgPath/user_inactive.svg",
+                    semanticsLabel: 'A red up arrow'),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: BlocBuilder<ChatBloc, ChatState>(
+                        builder: (context, snapshot) {
+                      if (snapshot is MessageUnRead) {
+                        return Stack(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/icon/new_message.svg',
+                              color: Colors.red,
+                              height: 15,
+                            ),
+                          ],
+                        );
+                      }
+                      return const SizedBox();
+                    }),
+                  ),
+                )
+              ],
+            ),
           ),
           title: ("Профиль"),
           activeColorPrimary: kPrimaryColor,

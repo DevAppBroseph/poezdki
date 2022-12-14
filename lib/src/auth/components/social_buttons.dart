@@ -183,6 +183,11 @@ class _WebViewPageState extends State<WebViewPage> {
     if (vkModel != null) {
       if (vkModel.phoneNumber == null) {
         // ignore: use_build_context_synchronously
+        await userRepository.persistEmailAndToken(
+          vkModel.email,
+          vkModel.token,
+          vkModel.id,
+        );
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

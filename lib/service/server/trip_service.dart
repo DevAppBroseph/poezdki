@@ -130,6 +130,7 @@ class TripService {
   }
 
   Future<bool> createTripPassanger({required TripModel trip}) async {
+    ProgressDialog().show(title: 'Создание поездки', width: 200, height: 100);
     Response response;
     var dio = Dio();
     final List stops = [];
@@ -159,6 +160,7 @@ class TripService {
               headers: {"Authorization": token},
               responseType: ResponseType.json));
 
+      SmartDialog.dismiss();
       if (response.statusCode == 200) {
         final responceData = ResponceServerData.fromMap(response.data);
         return responceData.success;
@@ -176,6 +178,7 @@ class TripService {
 
   Future<bool> createTripDriver(
       {required BuildContext context, required TripModel trip}) async {
+    ProgressDialog().show(title: 'Создание поездки', width: 200, height: 100);
     Response response;
     var dio = Dio();
 
@@ -214,6 +217,7 @@ class TripService {
           validateStatus: (status) => status! <= 400,
         ),
       );
+      SmartDialog.dismiss();
       if (response.statusCode == 200) {
         final responceData = ResponceServerData.fromMap(response.data);
         if (responceData.success == true) {
@@ -345,7 +349,6 @@ class TripService {
           responseType: ResponseType.json,
         ),
       );
-
     } catch (e) {
       errorDialog.showError(e.toString());
     }

@@ -46,8 +46,27 @@ class _TripTileState extends State<TripTile> {
   @override
   void initState() {
     initUserId();
+    check();
     passengers = widget.trip.passengers ?? [];
     super.initState();
+  }
+
+  bool stateCancel = false;
+  bool stateCancelTrip = false;
+
+  void check() async {
+    final id = await userRepo.getUserId();
+    if (widget.trip.passengers!.isNotEmpty) {
+      for (var element in widget.trip.passengers!) {
+        if (int.parse(id!) == element.id) {
+          stateCancel = true;
+        }
+      }
+      if(widget.trip.owner!.id! != id) {
+        stateCancelTrip = true;
+      }
+      setState(() {});
+    }
   }
 
   @override
@@ -105,18 +124,20 @@ class _TripTileState extends State<TripTile> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.trip.passenger! ? 'Ищу поездку': 'Я Подвезу Вас'),
+                    Text(widget.trip.passenger!
+                        ? 'Ищу поездку'
+                        : 'Я Подвезу Вас'),
                     widget.trip.car == null
-                    ? const SizedBox()
-                    : Text(
-                      widget.trip.car == null 
-                      ? ''
-                      : "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
-                      maxLines: 1,
-                      overflow: TextOverflow.clip,
-                    ),
+                        ? const SizedBox()
+                        : Text(
+                            widget.trip.car == null
+                                ? ''
+                                : "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
+                            maxLines: 1,
+                            overflow: TextOverflow.clip,
+                          ),
                     // Text(
-                    //   widget.trip.car == null 
+                    //   widget.trip.car == null
                     //   ? ''
                     //   : "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
                     //   maxLines: 1,
@@ -125,9 +146,9 @@ class _TripTileState extends State<TripTile> {
                     // Padding(
                     //   padding: const EdgeInsets.only(left: 5, right: 5),
                     //   child: Container(
-                    //     height: 5, 
+                    //     height: 5,
                     //     width: 5,
-                    //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50), 
+                    //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50),
                     //     color: const Color.fromRGBO(191,212,228, 1))),
                     // ),
                     Text('${widget.trip.price} ₽')
@@ -138,40 +159,45 @@ class _TripTileState extends State<TripTile> {
               _trip(widget.trip),
               if (!widget.last)
                 // passengers.any((element) => element.id == userId)
-                    // ? 
-                    FullWidthElevButton(
+                stateCancel
+                    ? FullWidthElevButton(
                         color: kPrimaryRed,
                         title: "Отменить бронь",
                         onPressed: () {
                           // final tripsBloc =
                           //   BlocProvider.of<TripsBloc>(context, listen: false);
-                        // tripsBloc.add(DeletePassengerInTrip(widget.trip.tripId!,
-                        //     widget.trip.tripId!));
-                        //   // tripsBloc.add(DeleteTrip(widget.trip.tripId!));
-                        //   // tripsDriverBloc.add(LoadUserTripsList());
-                        //   Future.delayed(const Duration(seconds: 1), () => BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList()));
-                          tripsPassangerBloc.add(CancelBookTrip(widget.trip.tripId!));
+                          // tripsBloc.add(DeletePassengerInTrip(widget.trip.tripId!,
+                          //     widget.trip.tripId!));
+                          //   // tripsBloc.add(DeleteTrip(widget.trip.tripId!));
+                          //   // tripsDriverBloc.add(LoadUserTripsList());
+                          //   Future.delayed(const Duration(seconds: 1), () => BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList()));
+                          tripsPassangerBloc
+                              .add(CancelBookTrip(widget.trip.tripId!));
                           tripsBloc.add(LoadAllTripsList());
                           Future.delayed(const Duration(seconds: 1), () {
-                            BlocProvider.of<UserTripsDriverBloc>(context).add(LoadUserTripsList());
+                            BlocProvider.of<UserTripsDriverBloc>(context)
+                                .add(LoadUserTripsList());
                             // BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList());
                             // setState(() {
-                              
+
                             // });
                           });
-                        }
-                      ),
-                    // : const SizedBox(),
+                        })
+                    : const SizedBox(),
               if (!widget.last)
-                widget.trip.owner!.id == userId
+                // widget.trip.owner!.id == userId
+                !stateCancelTrip
                     ? FullWidthElevButton(
                         title: "Отменить поездку",
                         onPressed: () {
                           tripsBloc.add(DeleteTrip(widget.trip.tripId!));
                           tripsDriverBloc.add(LoadUserTripsList());
-                          Future.delayed(const Duration(seconds: 1), () => BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList()));
-                        }
-                      )
+                          Future.delayed(
+                              const Duration(seconds: 1),
+                              () => BlocProvider.of<UserTripsPassengerBloc>(
+                                      context)
+                                  .add(LoadUserPassengerTripsList()));
+                        })
                     : const SizedBox()
               // isUpcoming!
               //     ? FullWidthElevButton(
@@ -186,12 +212,20 @@ class _TripTileState extends State<TripTile> {
 
   Widget _trip(TripModel? tripData) {
     double distance = 0;
-    
-    distance += calculateDistance(tripData!.departure!.coords!.lat!, tripData.departure!.coords!.lon!, tripData.stops![0].coords!.lat!, tripData.stops![0].coords!.lon!);
-    for(int i = 1; i < tripData.stops!.length - 1; i++) {
-      distance += calculateDistance(tripData.stops![i].coords!.lat!, tripData.stops![i].coords!.lon!, tripData.stops![i+1].coords!.lat!, tripData.stops![i+1].coords!.lon!);
+
+    distance += calculateDistance(
+        tripData!.departure!.coords!.lat!,
+        tripData.departure!.coords!.lon!,
+        tripData.stops![0].coords!.lat!,
+        tripData.stops![0].coords!.lon!);
+    for (int i = 1; i < tripData.stops!.length - 1; i++) {
+      distance += calculateDistance(
+          tripData.stops![i].coords!.lat!,
+          tripData.stops![i].coords!.lon!,
+          tripData.stops![i + 1].coords!.lat!,
+          tripData.stops![i + 1].coords!.lon!);
     }
-    distance += (distance * 20)/100;
+    distance += (distance * 20) / 100;
 
     final startTime = DateTime.fromMicrosecondsSinceEpoch(tripData.timeStart!);
     final endTime = DateTime.fromMicrosecondsSinceEpoch(
@@ -246,12 +280,12 @@ class _TripTileState extends State<TripTile> {
     );
   }
 
-  double calculateDistance(lat1, lon1, lat2, lon2){
+  double calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
     var c = cos;
-    var a = 0.5 - c((lat2 - lat1) * p)/2 +
-        c(lat1 * p) * c(lat2 * p) *
-            (1 - c((lon2 - lon1) * p))/2;
+    var a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
     return 12742 * asin(sqrt(a));
   }
 

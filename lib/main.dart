@@ -113,10 +113,7 @@ class _AppState extends State<App> {
         ),
         BlocProvider<ProfileBloc>(
           create: (context) {
-            // BlocProvider.of<ProfileBloc>(context).add(SetReferal(referalLink));
-            return ProfileBloc(userRepository)
-              ..add(LoadProfile())
-              ..add(SetReferal(referalLink));
+            return ProfileBloc(userRepository)..add(SetReferal(referalLink));
           },
         ),
         BlocProvider<AuthBloc>(
@@ -134,25 +131,30 @@ class _AppState extends State<App> {
           },
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Poezdka',
-        theme: appTheme,
-        builder: FlutterSmartDialog.init(),
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [Locale('ru')],
-        home: loading == false
-            ? AppInitBuilder(referal: referalLink)
-            : const Scaffold(
-                body: Center(
-                  child: CircularProgressIndicator(),
+      child: StreamBuilder<Object>(
+          // stream: null,
+          builder: (context, snapshot) {
+        BlocProvider.of<ProfileBloc>(context).add(LoadProfile());
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Poezdka',
+          theme: appTheme,
+          builder: FlutterSmartDialog.init(),
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [Locale('ru')],
+          home: loading == false
+              ? AppInitBuilder(referal: referalLink)
+              : const Scaffold(
+                  body: Center(
+                    child: CircularProgressIndicator(),
+                  ),
                 ),
-              ),
-      ),
+        );
+      }),
     );
   }
 }
