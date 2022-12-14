@@ -94,6 +94,19 @@ class _FeedBackState extends State<FeedBack> {
               );
             }
           }
+
+          for (int i = 0; i < messagesTemp.length; i++) {
+            for (int j = 0; j < messagesTemp.length - 1; j++) {
+              if (messagesTemp[j]
+                  .createdAt
+                  .isAfter(messagesTemp[j + 1].createdAt)) {
+                ChatMessage b = messagesTemp[j];
+                messagesTemp[j] = messagesTemp[j + 1];
+                messagesTemp[j + 1] = b;
+              }
+            }
+          }
+
           for (int i = messagesTemp.length - 1; i >= 0; i--) {
             messages.add(messagesTemp[i]);
           }
