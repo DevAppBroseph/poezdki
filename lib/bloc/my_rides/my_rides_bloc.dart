@@ -30,7 +30,6 @@
 //       emit(MyRidesLoaded(pastRidesDriver?.trips));
 //     } catch (e) {
 //       if (kDebugMode) {
-//         print(e.toString());
 //       }
 //     }
 //   }
@@ -60,7 +59,6 @@
 //   //       if (response.statusCode == 400) {}
 //   //     }
 //   //   } catch (e) {
-//   //     print(e.toString());
 //   //   }
 //   // }
 // }

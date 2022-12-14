@@ -82,7 +82,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // print('object ${widget.phone}');
     return KScaffoldScreen(
       backgroundColor: Colors.white,
       isLeading: true,

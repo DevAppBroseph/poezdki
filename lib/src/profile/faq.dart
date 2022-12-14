@@ -37,7 +37,6 @@ class _FAQState extends State<FAQ> {
   Widget build(BuildContext context) {
     // List<FAQItem> _faqList = generateItems(8);
     return BlocBuilder<ProfileBloc, ProfileState>(builder: (context, event) {
-      print(event);
       // if (event is QuestionsLoading) {
       //   return Container(
       //     width: double.infinity,

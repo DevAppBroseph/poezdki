@@ -47,7 +47,6 @@ class _ReferalState extends State<Referal> {
     setState(() {
       referalStr = dynamicLink.toString();
     });
-    print(dynamicLink);
   }
 
   @override

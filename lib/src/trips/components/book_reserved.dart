@@ -57,7 +57,6 @@ class _BookTripState extends State<BookTripReserves> {
     if (bookedSeats.contains(4)) seat4.isEmpty = false;
 
     return BlocBuilder<TripsBloc, TripsState>(builder: (context, snapshot) {
-      print('object state ${snapshot}');
       // if(snapshot is TripsLoaded) {
       //   Navigator.pop(context, true);
       // }
@@ -177,7 +176,6 @@ class _BookTripState extends State<BookTripReserves> {
   }
 
   void _editUser(ProfileLoaded state) {
-    print('1212');
     BlocProvider.of<ProfileBloc>(context).add(
       UpdateProfile(
         UserModel(

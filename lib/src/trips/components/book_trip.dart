@@ -98,49 +98,49 @@ class _BookTripState extends State<BookTrip> {
           onPressed: () async {
             final state = BlocProvider.of<ProfileBloc>(context).state;
             final List<int> seats = [];
-            if (state is ProfileLoaded) {
-              if(state.user.phone == null || state.user.phone == '') {
-                phoneController.text = '';
-                InfoDialog().show(
-                  buttonTitle: 'Подтвердить',
-                  title: 'Введите ваш номер',
-                  children: [
-                    PhoneTextField(
-                            hintText: 'Телефон',
-                            prefixIcon: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                              child: Text('+7'),
-                            ),
-                            controller: phoneController,
-                            textInputType: TextInputType.number,
-                            textInputAction: TextInputAction.done,
-                            inputFormatters: [LengthLimitingTextInputFormatter(10)],
-                            validateFunction: Validations.validatePhone)
-                  ],
-                  onPressed: () {
-                    final validate = Validations.validatePhone(phoneController.text);
-                    if(validate == null) {
-                      final dio = Dio();
-                      dio.options.headers["Authorization"] = state.user.token;
-                      dio.put(addPhone, data: {'phone_number': '+7' + phoneController.text}).then((value) {
-                        _editUser(state);
-                        SmartDialog.dismiss();
-                      });
-                  }
-                  }
-                );
-              } else {
-                if (selectedSeats.isEmpty) {
-                  ErrorDialogs().showError("Необходимо выбрать место");
-                } else {
-                  for (var element in selectedSeats) {
-                    seats.add(element.seatNumber);
-                  }
-                  tripBloc
-                      .add(BookThisTrip(context, seats, widget.tripData.tripId!));
-                }
+            // if (state is ProfileLoaded) {
+            // if(state.user.phone == null || state.user.phone == '') {
+            //   phoneController.text = '';
+            //   InfoDialog().show(
+            //     buttonTitle: 'Подтвердить',
+            //     title: 'Введите ваш номер',
+            //     children: [
+            //       PhoneTextField(
+            //               hintText: 'Телефон',
+            //               prefixIcon: const Padding(
+            //                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+            //                 child: Text('+7'),
+            //               ),
+            //               controller: phoneController,
+            //               textInputType: TextInputType.number,
+            //               textInputAction: TextInputAction.done,
+            //               inputFormatters: [LengthLimitingTextInputFormatter(10)],
+            //               validateFunction: Validations.validatePhone)
+            //     ],
+            //     onPressed: () {
+            //       final validate = Validations.validatePhone(phoneController.text);
+            //       if(validate == null) {
+            //         final dio = Dio();
+            //         dio.options.headers["Authorization"] = state.user.token;
+            //         dio.put(addPhone, data: {'phone_number': '+7' + phoneController.text}).then((value) {
+            //           _editUser(state);
+            //           SmartDialog.dismiss();
+            //         });
+            //     }
+            //     }
+            //   );
+            // } else {
+            if (selectedSeats.isEmpty) {
+              ErrorDialogs().showError("Необходимо выбрать место");
+            } else {
+              for (var element in selectedSeats) {
+                seats.add(element.seatNumber);
               }
+              tripBloc
+                  .add(BookThisTrip(context, seats, widget.tripData.tripId!));
             }
+            // }
+            // }
           }),
     );
   }
@@ -162,8 +162,6 @@ class _BookTripState extends State<BookTrip> {
       ),
     );
   }
-
-  
 
   Widget _placePicker(context) {
     return Stack(

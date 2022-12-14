@@ -16,6 +16,7 @@ import 'package:app_poezdka/model/country_code.dart';
 import 'package:app_poezdka/model/passenger_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/model/user_model.dart';
+import 'package:app_poezdka/service/server/trip_service.dart';
 import 'package:app_poezdka/src/auth/signin.dart';
 import 'package:app_poezdka/src/trips/components/book_trip.dart';
 import 'package:app_poezdka/util/validation.dart';
@@ -106,7 +107,8 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
   }
 
   Widget _tripButtons(context) {
-    BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList());
+    BlocProvider.of<UserTripsPassengerBloc>(context)
+        .add(LoadUserPassengerTripsList());
     return Row(
       children: [
         widget.trip.package!
@@ -121,8 +123,10 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
             : const SizedBox(),
         BlocBuilder<UserTripsDriverBloc, UserTripsDriverState>(
             builder: (context, state) {
-          List<List<TripModel>> tripsModelsDriver = BlocProvider.of<UserTripsDriverBloc>(context).tripsModel;
-          List<List<TripModel>> tripsModelPass = BlocProvider.of<UserTripsPassengerBloc>(context).tripsModel;
+          List<List<TripModel>> tripsModelsDriver =
+              BlocProvider.of<UserTripsDriverBloc>(context).tripsModel;
+          List<List<TripModel>> tripsModelPass =
+              BlocProvider.of<UserTripsPassengerBloc>(context).tripsModel;
 
           List<List<TripModel>> list = [];
 
@@ -763,7 +767,6 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                       'phone_number': selectCode + phoneController.text
                     }).then((value) {
                       _editUser(state, context);
-                      // SmartDialog.dismiss();
                     });
                   }
                 });
@@ -772,24 +775,14 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
           }
         }
       } else {
-        bool statebutton = false;
+        final check = await TripService().checkTripOrder(widget.trip.tripId!);
 
-        for (var element in tripsModels) {
-          for (var element1 in element) {
-            print('object ${element1.tripId} ${widget.trip.tripId}');
-            if (element1.tripId == widget.trip.tripId) {
-              // print('object ${element1.tripId} ${widget.trip.tripId}');
-              statebutton = true;
-              break;
-            }
-          }
-        }
-        if (statebutton) {
+        if (check is String) {
           InfoDialog().show(
             height: 100,
             buttonTitle: 'А, ой, точняк',
             title: 'Невозможно забронировать!',
-            description: 'Вы уже забронировали место в данной поездке',
+            description: check,
             children: [],
           );
         } else {
@@ -802,9 +795,6 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
             children: [],
             onPressed: () async {
               await SmartDialog.dismiss();
-              // print(
-              //     'object ${widget.trip.car!.countOfPassengers} ${widget.trip.car!.countOfPassengers}');
-              // print('object ${widget.trip.passengers!.length + 1} ${widget.trip.tripId!}');
               if (widget.trip.car!.countOfPassengers! > 4) {
                 tripBloc.add(
                   BookThisTrip(
@@ -871,7 +861,6 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
     final userRepo = SecureStorage.instance;
     final token = await userRepo.getToken();
     final userId = BlocProvider.of<ProfileBloc>(context).userModel!.id;
-    // print('object ${BlocProvider.of<ProfileBloc>(context).userModel!.id}');
     if (token != null) {
       if (id == null) {
         final passengers = widget.trip.passengers;

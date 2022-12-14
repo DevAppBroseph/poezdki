@@ -2,6 +2,7 @@ import 'package:app_poezdka/model/server_responce.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
 import 'package:app_poezdka/service/local/shared_preferences.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
+import 'package:app_poezdka/widget/dialog/progress_dialog.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:app_poezdka/export/server_url.dart';
@@ -45,8 +46,6 @@ class TripService {
       "end": end,
       "fcm_token": fcm
     };
-
-    print('object ${filter}');
 
     Response response;
     var dio = Dio();
@@ -105,7 +104,6 @@ class TripService {
       "over4seats": null
     };
 
-    print('object log ${json.encode(filter)} ${getAllDriverTripsUrl}');
     Response response;
     var dio = Dio();
 
@@ -126,7 +124,6 @@ class TripService {
         throw Exception('Ошибка сервера. Код ошибки: ${response.statusCode}');
       }
     } catch (e) {
-      print('object ${e}');
       errorDialog.showError(e.toString());
       return null;
     }
@@ -208,7 +205,6 @@ class TripService {
 
     try {
       // final token = await SecureStorage.instance.getToken();
-      print('object send ${DateTime.now()}');
       response = await dio.post(
         addTripUrl,
         data: json.encode(data),
@@ -219,7 +215,6 @@ class TripService {
         ),
       );
       if (response.statusCode == 200) {
-        print('object response ${DateTime.now()}');
         final responceData = ResponceServerData.fromMap(response.data);
         if (responceData.success == true) {
           InfoDialog().show(
@@ -247,7 +242,6 @@ class TripService {
       //   description: "Цена по данному направление ниже минимальной.",
       // );
       errorDialog.showError(e.toString());
-      print('object response $token object log 3 ${e}');
       // errorDialog.showError(e.toString());
       return false;
     }
@@ -255,6 +249,7 @@ class TripService {
 
   Future<bool> bookTrip(context,
       {required int tripId, required List<int?> seats}) async {
+    ProgressDialog().show(title: 'Бронирование', width: 200, height: 100);
     Response response;
     var dio = Dio();
     final data = {
@@ -277,6 +272,7 @@ class TripService {
       }
       final responceData = ResponceServerData.fromMap(response.data);
       if (responceData.success) {
+        await SmartDialog.dismiss();
         InfoDialog().show(
             title: "Ваше место забронировано!",
             img: "assets/img/like.svg",
@@ -350,7 +346,6 @@ class TripService {
         ),
       );
 
-      print('object ${res.statusCode}');
     } catch (e) {
       errorDialog.showError(e.toString());
     }
@@ -460,6 +455,30 @@ class TripService {
         ),
       );
     } catch (e) {}
+  }
+
+  Future<dynamic> checkTripOrder(int id) async {
+    final dio = Dio();
+    try {
+      final token = await SecureStorage.instance.getToken();
+      final options = Options(
+          headers: {"Authorization": token},
+          responseType: ResponseType.json,
+          validateStatus: (status) => status! <= 400);
+      var result = await dio.post(
+        "$serverURL/booking/check$id",
+        options: options,
+      );
+      if (result.statusCode == 200) {
+        return result.data['valid'];
+      }
+      if (result.statusCode == 400) {
+        return result.data;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<bool> checkMinPrice(

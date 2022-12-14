@@ -54,7 +54,6 @@ class _FeedBackState extends State<FeedBack> {
         body: body,
       );
       _controller.clear();
-      // print(object)
       BlocProvider.of<ChatBloc>(context).add(GetChatSupport());
     }
   }

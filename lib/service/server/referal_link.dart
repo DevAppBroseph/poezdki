@@ -16,14 +16,12 @@
 //       // 3a. handle link that has been retrieved
 //       _handleDeepLink(dynamicLink);
 //     }, onError: (OnLinkErrorException e) async {
-//       print('Link Failed: ${e.message}');
 //     });
 //   }
 
 //   void _handleDeepLink(PendingDynamicLinkData data) {
 //     final Uri deepLink = data?.link;
 //     if (deepLink != null && sl<AuthConfig>().userEntity != null) {
-//       print('_handleDeepLink | deeplink: $deepLink');
 
 //       // Check if we want to make a post
 //       var isPost = deepLink.pathSegments.contains('post');
@@ -41,8 +39,6 @@
 //   }
 
 //   Future<String> createFirstPostLink(String fullName, int id) async {
-//     print(
-//         'RESULT URL IS: https://www.compound.com/post?title=$fullName&id=$id');
 //     final DynamicLinkParameters parameters = DynamicLinkParameters(
 //       uriPrefix: 'https://kerek.page.link',
 //       link: Uri.parse('https://www.compound.com/post?id=$id'),
@@ -57,7 +53,6 @@
 //     );
 
 //     final Uri dynamicUrl = await parameters.buildUrl();
-//     print('DYNAMIC URL: ${dynamicUrl}');
 //     return dynamicUrl.toString();
 //   }
 // }

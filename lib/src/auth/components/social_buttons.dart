@@ -89,9 +89,6 @@ class SocialAuthButtons extends StatelessWidget {
         // nonce: nonce,
       );
 
-      print(
-          'log ${appleCredential}-${appleCredential.email}-${appleCredential.familyName}-${appleCredential.givenName}');
-
       if (appleCredential.email != null) {
         BlocProvider.of<AuthBloc>(context).add(
           SignInWithVk(
@@ -107,9 +104,7 @@ class SocialAuthButtons extends StatelessWidget {
       final displayName =
           '${appleCredential.givenName} ${appleCredential.familyName}';
       final userEmail = '${appleCredential.email}';
-      print('log $displayName');
     } catch (exception) {
-      print('log $exception');
     }
   }
 }
@@ -128,7 +123,6 @@ class _WebViewPageState extends State<WebViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('start visible ${visible}');
     return KScaffoldScreen(
       isLeading: true,
       title: 'Вконтакте',
@@ -150,10 +144,8 @@ class _WebViewPageState extends State<WebViewPage> {
                   });
                 });
               }
-              print('start page ${url}');
             },
             onPageFinished: (url) {
-              print('start finish ${url}');
               readJS(context);
               if (url.contains('http://194.87.145.140/users/new_oauth_user')) {
                 setState(() {
@@ -180,14 +172,11 @@ class _WebViewPageState extends State<WebViewPage> {
         "document.querySelector('body pre').innerHTML");
 
     final jsons = jsonDecode(html);
-    print(jsons);
 
     VKModel? vkModel;
     if (Platform.isIOS) {
-      print('ios');
       vkModel = VKModel.fromJson(jsons);
     } else if (Platform.isAndroid) {
-      print('android');
       vkModel = VKModel.fromJson(jsonDecode(jsons));
     }
 

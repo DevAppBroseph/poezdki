@@ -483,10 +483,8 @@ class _NotificationPageState extends State<NotificationPage> {
         notifications.clear();
         notifications.addAll(notifModel);
         setState(() {});
-        print('object log123 ${notifications.length}');
       }
     } catch (e) {
-      print('object log ${e}');
       return null;
     }
   }

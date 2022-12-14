@@ -155,7 +155,6 @@ class _TripTileState extends State<TripTile> {
                           Future.delayed(const Duration(seconds: 1), () {
                             BlocProvider.of<UserTripsDriverBloc>(context).add(LoadUserTripsList());
                             // BlocProvider.of<UserTripsPassengerBloc>(context).add(LoadUserPassengerTripsList());
-                            // print('object cancel бронь');
                             // setState(() {
                               
                             // });

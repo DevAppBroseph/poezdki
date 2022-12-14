@@ -1,7 +1,10 @@
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/service/server/trip_service.dart';
+import 'package:app_poezdka/widget/dialog/info_dialog.dart';
+import 'package:app_poezdka/widget/dialog/progress_dialog.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 
 part 'trips_event.dart';
 part 'trips_state.dart';
@@ -50,7 +53,6 @@ class TripsBloc extends Bloc<TripsEvent, TripsState> {
 
   void _createTrip(CreateUserTrip event, Emitter<TripsState> emit) async {
     emit(TripsLoadingTime());
-    print('object send trips log _createTrip');
     final success = await tripService.createTripDriver(
         context: event.context, trip: event.trip);
     if (success) {

@@ -565,7 +565,6 @@ class _SearchRidesState extends State<SearchRides>
                     "end": searchHistory[index].end
                   };
 
-                  print('objecthjh $tripOne');
 
                   final tripsBlocSecond =
                       BlocProvider.of<TripsPassengerBloc>(context);

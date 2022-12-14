@@ -68,7 +68,6 @@ class _AppState extends State<App> {
       referalLink = ref.last;
       // Future.delayed(const Duration(seconds: 1), () {
       // BlocProvider.of<ProfileBloc>(context).add(SetReferal(referalLink));
-      // print('object set link referal ${referalLink}');
       // SmartDialog.show(
       //   builder: (context) {
       //     return Text(referalLink!);

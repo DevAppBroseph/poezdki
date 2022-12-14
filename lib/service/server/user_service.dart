@@ -23,7 +23,6 @@ class UserService {
     );
     if (response.statusCode == 200) {
       Map<String, dynamic> body = json.decode(response.body);
-      print('object ${body}');
       final UserModel user = UserModel.fromJson(body);
       return user;
     } else {
@@ -87,7 +86,6 @@ class UserService {
       data: user.toJson(),
     );
     if (res.statusCode == 200) {
-      print(res.data);
       return UserModel.fromJson(res.data);
     } else {
       ErrorDialogs().showError('Ошибка сервера, повторите попытку позже');

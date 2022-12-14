@@ -118,7 +118,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       },
       onDone: () {
         // _startSocket(event, emit);
-        debugPrint('ws channel closed');
       },
       cancelOnError: false,
     );
@@ -132,7 +131,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   void _checkRead() async {
     bool state = await chatService.checkReadMessage();
-    print('object mes log state ${state}');
     if (state) {
       emit(MessageRead());
     } else {
@@ -180,7 +178,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       headers: {"Authorization": token!},
     );
 
-    print(response.body);
     if (response.statusCode == 200) {
       List<AnswerSupport> answer = [];
       for (var element in jsonDecode(response.body)) {
@@ -193,7 +190,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   // void _initApp(AppInit event, Emitter<AuthState> emit) async {
   //   emit(AuthLoading());
   //   final hasToken = await userRepository.hasToken();
-  //   print(await userRepository.getToken());
 
   //   hasToken == true ? emit(AuthSuccess()) : emit(AuthUnauthenticated());
   // }

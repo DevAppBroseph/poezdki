@@ -16,7 +16,6 @@ class AppInitBuilder extends StatelessWidget {
     // BlocProvider.of<ProfileBloc>(context);
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (referal == null) {
-        print(state);
         if (state is AuthInitial) {
           return const Scaffold(body: CircularProgressIndicator());
         }

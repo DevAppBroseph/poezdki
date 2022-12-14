@@ -46,7 +46,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   //       await FirebaseDynamicLinks.instance.getInitialLink();
   //   if (data != null) {
   //     emit(ReferalSuccess(referalLink: data.));
-  //     print('object ${data}');
   //   }
   // }
 

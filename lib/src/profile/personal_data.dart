@@ -80,8 +80,6 @@ class ProfileInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    // print('asdasdasd $imageUrl');
     return Center(
       child: SizedBox(
         height: 230,
@@ -109,7 +107,6 @@ class ProfileInfo extends StatelessWidget {
                         .add(ChangePhoto(media));
                   }
                 }).catchError((error) {
-                  print(error);
                 });
               },
               child: CircleAvatar(

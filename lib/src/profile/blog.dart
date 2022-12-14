@@ -24,7 +24,6 @@ class _BlogState extends State<Blog> {
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        print(state);
         var bloc = BlocProvider.of<ProfileBloc>(context);
         return KScaffoldScreen(
           isLeading: true,

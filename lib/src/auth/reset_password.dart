@@ -120,7 +120,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
                 child: FullWidthElevButton(
                   title: currentPage != 2 ? "Отправить" : 'Сохранить',
                   onPressed: () async {
-                    print('object ${selectCode} ${email.text}');
                     if (currentPage == 0) {
                       _resetPasswordOne(selectCode + email.text);
                     } else if (currentPage == 1) {
@@ -204,7 +203,6 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
         // });
       }
     } catch (e) {
-      // print('log1 ${res.data}');
       errorDialog.showError('Введите Телефон.');
     }
   }
