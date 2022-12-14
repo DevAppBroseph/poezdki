@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>1012550997572-mm53nmjqa0cta50kabrdv2f6rs2q98i0.apps.googleusercontent.com</string>
+	<string>1012550997572-ee4ropdsb2ffktgkdr4637o581t1gk6a.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.1012550997572-mm53nmjqa0cta50kabrdv2f6rs2q98i0</string>
+	<string>com.googleusercontent.apps.1012550997572-ee4ropdsb2ffktgkdr4637o581t1gk6a</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1012550997572-83609t012aubv55autl5o1n8d8l6fecb.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAp4Vo8nfqM3vd-JaAFvHeuIbsf6uTdiI8</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.broseph.poezdka</string>
+	<string>dev.broseph.poezdka</string>
 	<key>PROJECT_ID</key>
 	<string>poezdka</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:1012550997572:ios:d4e57e09eff512a2260e11</string>
+	<string>1:1012550997572:ios:937c9fca860eba80260e11</string>
 </dict>
 </plist>
