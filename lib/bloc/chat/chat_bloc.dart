@@ -19,6 +19,8 @@ part 'chat_event.dart';
 part 'chat_state.dart';
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
+  bool showPersonChat = true;
+  bool showSupportChat = true;
   final chatService = ChatService();
   final secureStorage = SecureStorage.instance;
 
@@ -55,6 +57,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   ///
 
+  void editShowPersonChat(bool value) {
+    showPersonChat = value;
+  }
+
+  void editShowSupportChat(bool value) {
+    showSupportChat = value;
+  }
+
   void _startSocket(StartSocket event, Emitter<ChatState> emit) async {
     final token = await SecureStorage.instance.getToken();
     channel = WebSocketChannel.connect(
@@ -69,20 +79,27 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           }));
           var newMessage = NewMessageAnswer.fromJson(jsonDecode(event));
           if (newMessage.message == 'answer from support') {
-            MessageDialogs().showMessage(
-              'Служба поддержки',
-              'Новое сообщение',
-            );
+            if (showSupportChat) {
+              MessageDialogs().showMessage(
+                'Служба поддержки',
+                'Новое сообщение',
+              );
+            }
+            else {
+              add(GetChatSupport());
+            }
           } else if (newMessage.fromName == 'BAZA' && newMessage.from == '-1') {
             MessageDialogs().showMessage(
               NewMessageAnswer.fromJson(jsonDecode(event)).fromName,
               NewMessageAnswer.fromJson(jsonDecode(event)).message,
             );
           } else {
-            MessageDialogs().showMessage(
-              NewMessageAnswer.fromJson(jsonDecode(event)).fromName,
-              NewMessageAnswer.fromJson(jsonDecode(event)).message,
-            );
+            if (showPersonChat) {
+              MessageDialogs().showMessage(
+                NewMessageAnswer.fromJson(jsonDecode(event)).fromName,
+                NewMessageAnswer.fromJson(jsonDecode(event)).message,
+              );
+            }
             messages.add(
               ChatMessage(
                 user: ChatUser(

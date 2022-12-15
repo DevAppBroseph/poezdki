@@ -26,8 +26,15 @@ class _FeedBackState extends State<FeedBack> {
   void initState() {
     super.initState();
     // final WebSocketChannel channel;
+    BlocProvider.of<ChatBloc>(context).editShowSupportChat(false);
     BlocProvider.of<ChatBloc>(context).add(GetChatSupport());
     // func();
+  }
+
+  @override
+  void deactivate() {
+    BlocProvider.of<ChatBloc>(context).editShowSupportChat(true);
+    super.deactivate();
   }
 
   // WebSocketChannel? channel;

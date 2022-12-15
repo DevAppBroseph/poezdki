@@ -37,7 +37,14 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<ChatBloc>(context).editShowPersonChat(false);
     // func();
+  }
+
+  @override
+  void deactivate() {
+    BlocProvider.of<ChatBloc>(context).editShowPersonChat(true);
+    super.deactivate();
   }
 
   // void func() async {
