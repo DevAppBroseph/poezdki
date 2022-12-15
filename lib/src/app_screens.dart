@@ -17,7 +17,6 @@ class AppScreens extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<ChatBloc>(context).add(CheckNewMessageSupport());
     PersistentTabController _controller;
 
     _controller = PersistentTabController(initialIndex: 0);

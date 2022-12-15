@@ -132,9 +132,9 @@ class _AppState extends State<App> {
         ),
       ],
       child: StreamBuilder<Object>(
-          // stream: null,
           builder: (context, snapshot) {
         BlocProvider.of<ProfileBloc>(context).add(LoadProfile());
+        BlocProvider.of<ChatBloc>(context).add(CheckNewMessageSupport());
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Poezdka',

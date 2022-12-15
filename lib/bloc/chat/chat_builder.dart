@@ -30,27 +30,29 @@ class ChatsBuilder extends StatelessWidget {
     return BlocBuilder(
       bloc: chatBloc,
       builder: ((context, state) {
-        if (state is ChatLoading) {
-          return const Padding(
-            padding: EdgeInsets.all(20.0),
-            child: Center(
-              child: CircularProgressIndicator.adaptive(),
-            ),
-          );
-        }
-        if (state is ChatLoaded) {
+        print('object ${state}');
+        // if (state is ChatLoading) {
+        //   return const Padding(
+        //     padding: EdgeInsets.all(20.0),
+        //     child: Center(
+        //       child: CircularProgressIndicator.adaptive(),
+        //     ),
+        //   );
+        // }
+        // if (state is ChatLoaded) {
           return ChatScreen(
             senderId: senderId,
             ownerId: ownerId,
-            message: state.messages,
+            message: state is ChatLoaded ? state.messages : [],
             phone: phone,
             channel: chatBloc.channel!,
           );
         }
-        return const Center(
-          child: Text(""),
-        );
-      }),
+        // return const Center(
+        //   child: Text(""),
+        // );
+      // }
+      ),
     );
   }
 }
