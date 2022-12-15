@@ -15,10 +15,10 @@ class AnswerSupport {
 
   AnswerSupport.fromJson(Map<String, dynamic> json) {
     text = json['text'];
-    datetime = DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["datetime"], true);
+    datetime = DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["datetime"], true).toLocal();
     answer = json['answer'];
     answerDatetime = json["answer_datetime"] != null
-        ? DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["answer_datetime"], true)
+        ? DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["answer_datetime"], true).toLocal()
         : null;
   }
 

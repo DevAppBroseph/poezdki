@@ -15,16 +15,8 @@ class AppInitBuilder extends StatelessWidget {
     // BlocProvider.of<ChatBloc>(context);
     // BlocProvider.of<ProfileBloc>(context);
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      print('object state $state');
       if (referal == null) {
-        if (state is AuthInitial) {
-          return const Scaffold(body: CircularProgressIndicator());
-        }
-        if (state is AuthLoading) {
-          return const Scaffold(body: CircularProgressIndicator());
-        }
-        if (state is AuthLoading) {
-          return const Scaffold(body: CircularProgressIndicator());
-        }
         if (state is AuthOnboardingIncomplete) {
           return const IntroScreenDefault();
         }
@@ -36,6 +28,13 @@ class AppInitBuilder extends StatelessWidget {
             isAuthorized: false,
           );
         }
+        return Scaffold(body: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            Text(state.toString())
+          ],
+        ));
         // if (state is ReferalSuccess) {
         //   return Scaffold(
         //     body: Center(
@@ -46,9 +45,6 @@ class AppInitBuilder extends StatelessWidget {
       } else {
         return SignUpScreen(referal: referal);
       }
-
-      // Default screen
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     });
   }
 }

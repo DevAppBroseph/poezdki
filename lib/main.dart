@@ -61,28 +61,11 @@ class _AppState extends State<App> {
   }
 
   Future handleDynamicLinks() async {
-    final PendingDynamicLinkData? data =
-        await FirebaseDynamicLinks.instance.getInitialLink();
+    final data = await FirebaseDynamicLinks.instance.getInitialLink();
     if (data != null) {
       final ref = data.link.toString().split('/');
       referalLink = ref.last;
-      // Future.delayed(const Duration(seconds: 1), () {
-      // BlocProvider.of<ProfileBloc>(context).add(SetReferal(referalLink));
-      // SmartDialog.show(
-      //   builder: (context) {
-      //     return Text(referalLink!);
-      //   },
-      // );
-      // });
-      // setState(() {
-      //   loading = false;
-      // });
     }
-    // else {
-    //   setState(() {
-    //     loading = false;
-    //   });
-    // }
     setState(() {
       loading = false;
     });
@@ -131,8 +114,7 @@ class _AppState extends State<App> {
           },
         ),
       ],
-      child: StreamBuilder<Object>(
-          builder: (context, snapshot) {
+      child: StreamBuilder<Object>(builder: (context, snapshot) {
         BlocProvider.of<ProfileBloc>(context).add(LoadProfile());
         BlocProvider.of<ChatBloc>(context).add(CheckNewMessageSupport());
         return MaterialApp(
@@ -148,9 +130,15 @@ class _AppState extends State<App> {
           supportedLocales: const [Locale('ru')],
           home: loading == false
               ? AppInitBuilder(referal: referalLink)
-              : const Scaffold(
+              : Scaffold(
                   body: Center(
-                    child: CircularProgressIndicator(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(),
+                        Text('main'),
+                      ],
+                    ),
                   ),
                 ),
         );

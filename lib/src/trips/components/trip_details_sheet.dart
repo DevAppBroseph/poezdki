@@ -60,11 +60,23 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
 
   final btmSheet = BottomSheetCallAwait();
 
+  final userRepo = SecureStorage.instance;
+
   CountryCode? countryCode;
 
   int maxLength = 10;
 
   String selectCode = '+7';
+
+  int? userId;
+  void initUserId() async {
+    final id = await userRepo.getUserId();
+    if (id != null) {
+      setState(() {
+        userId = int.parse(id);
+      });
+    }
+  }
 
   void loadDB() async {
     String str = await rootBundle.loadString('assets/phone/code_phone.json');
@@ -73,6 +85,7 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
 
   @override
   void initState() {
+    initUserId();
     loadDB();
     super.initState();
   }
@@ -515,36 +528,38 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 65,
-                  child: Material(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.white,
-                    child: InkWell(
+                if (userId == widget.trip.owner!.id)
+                  SizedBox(
+                    height: 65,
+                    child: Material(
                       borderRadius: BorderRadius.circular(15),
-                      onTap: () async {
-                        final tripsBloc =
-                            BlocProvider.of<TripsBloc>(context, listen: false);
-                        tripsBloc.add(DeletePassengerInTrip(widget.trip.tripId!,
-                            widget.trip.passengers![index].id!));
-                        Navigator.of(context)
-                          ..pop()
-                          ..pop();
-                        BlocProvider.of<UserTripsDriverBloc>(context)
-                            .add(LoadUserTripsList());
-                      },
-                      child: const Center(
-                        child: ListTile(
-                          title: Text('Удалить'),
-                          trailing: Icon(
-                            Icons.delete,
-                            color: Colors.red,
+                      color: Colors.white,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(15),
+                        onTap: () async {
+                          final tripsBloc = BlocProvider.of<TripsBloc>(context,
+                              listen: false);
+                          tripsBloc.add(DeletePassengerInTrip(
+                              widget.trip.tripId!,
+                              widget.trip.passengers![index].id!));
+                          Navigator.of(context)
+                            ..pop()
+                            ..pop();
+                          BlocProvider.of<UserTripsDriverBloc>(context)
+                              .add(LoadUserTripsList());
+                        },
+                        child: const Center(
+                          child: ListTile(
+                            title: Text('Удалить'),
+                            trailing: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),
@@ -642,8 +657,13 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
   }
 
   void bookPackage(context) async {
-    BlocProvider.of<TripsBloc>(context, listen: false)
-        .add(BookThisPackage(context, const [], widget.trip.tripId!));
+    final token = await userRepo.getToken();
+    if (token != null) {
+      BlocProvider.of<TripsBloc>(context, listen: false)
+          .add(BookThisPackage(context, const [], widget.trip.tripId!));
+    } else {
+      pushNewScreen(context, withNavBar: false, screen: const SignInScreen());
+    }
   }
 
   void bookTrip(context, List<List<TripModel>> tripsModels) async {

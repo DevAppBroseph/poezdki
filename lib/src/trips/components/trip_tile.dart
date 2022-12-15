@@ -62,7 +62,7 @@ class _TripTileState extends State<TripTile> {
           stateCancel = true;
         }
       }
-      if(widget.trip.owner!.id! != id) {
+      if(widget.trip.owner!.id! != int.parse(id!)) {
         stateCancelTrip = true;
       }
       setState(() {});

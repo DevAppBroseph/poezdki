@@ -29,8 +29,12 @@ class ChatsBuilder extends StatelessWidget {
       ));
     return BlocBuilder(
       bloc: chatBloc,
+      buildWhen: (previous, current) {
+        if(current is MessageRead) return false;
+        return true;
+      },
       builder: ((context, state) {
-        print('object ${state}');
+        print('object chat state ${state}');
         // if (state is ChatLoading) {
         //   return const Padding(
         //     padding: EdgeInsets.all(20.0),

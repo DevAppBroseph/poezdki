@@ -2,6 +2,7 @@ import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/export/blocs.dart';
+import 'package:app_poezdka/service/local/secure_storage.dart';
 import 'package:app_poezdka/widget/src_template/k_statefull.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,11 +32,24 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
+  // WebSocketChannel? channel;
 
   @override
   void initState() {
     super.initState();
+    // func();
   }
+
+  // void func() async {
+  //   final token = await SecureStorage.instance.getToken();
+  //   channel = WebSocketChannel.connect(
+  //     Uri.parse('ws://194.87.145.140:80/ws/$token'),
+  //   );
+
+  //   channel?.stream.listen((event) async {
+  //     // BlocProvider.of<ChatBloc>(context).add(GetChatSupport());
+  //   });
+  // }
 
   void _sendMessage(String message) async {
     // widget.channel.sink.add(

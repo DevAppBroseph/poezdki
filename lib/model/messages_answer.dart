@@ -26,12 +26,13 @@ class MessagesAnswer {
   String message;
   DateTime time;
 
-  factory MessagesAnswer.fromJson(Map<String, dynamic> json) => MessagesAnswer(
+  factory MessagesAnswer.fromJson(Map<String, dynamic> json)  {
+    return MessagesAnswer(
         from: json["from"],
         to: json["to"],
         message: json["message"],
-        time: DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["time"]),
-      );
+        time: DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["time"], true).toLocal()
+      );}
 
   Map<String, dynamic> toJson() => {
         "from": from,
