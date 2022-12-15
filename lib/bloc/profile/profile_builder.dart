@@ -9,8 +9,8 @@ class PersonalDataBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profileBloc = BlocProvider.of<ProfileBloc>(context);
-    // ..add(LoadProfile());
+    final profileBloc = BlocProvider.of<ProfileBloc>(context)
+    .add(LoadProfile());
     return BlocBuilder<ProfileBloc, ProfileState>(
         // bloc: profileBloc,
         builder: (context, state) {
