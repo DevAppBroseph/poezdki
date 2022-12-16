@@ -47,16 +47,18 @@ class ChatService {
 
   Future<bool> checkReadMessage() async {
     final token = await SecureStorage.instance.getToken();
-    var response = await http.get(
-      chatSupport,
-      headers: {
-        "Accept": "application/json",
-        "Authorization": token!,
-      },
-    );
+    if (token != null) {
+      var response = await http.get(
+        chatSupport,
+        headers: {
+          "Accept": "application/json",
+          "Authorization": token,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      return json.decode(response.body)['state'];
+      if (response.statusCode == 200) {
+        return json.decode(response.body)['state'];
+      }
     }
     return false;
   }

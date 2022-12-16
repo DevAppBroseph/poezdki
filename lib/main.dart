@@ -66,6 +66,7 @@ class _AppState extends State<App> {
       final ref = data.link.toString().split('/');
       referalLink = ref.last;
     }
+    // HiveBoxService.instance.setFirstLaunch(false);
     setState(() {
       loading = false;
     });

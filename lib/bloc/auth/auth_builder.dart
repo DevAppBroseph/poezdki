@@ -15,7 +15,7 @@ class AppInitBuilder extends StatelessWidget {
     // BlocProvider.of<ChatBloc>(context);
     // BlocProvider.of<ProfileBloc>(context);
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      print('object state $state');
+      print('object auth_builder state $state');
       if (referal == null) {
         if (state is AuthOnboardingIncomplete) {
           return const IntroScreenDefault();

@@ -18,7 +18,7 @@ class SecureStorage {
   }
 
   Future<bool> hasToken() async {
-    String? value = await _storage.read(key: _tokenKey);
+    final value = await _storage.read(key: _tokenKey);
     if (value == null || value.isEmpty) {
       return false;
     } else {
