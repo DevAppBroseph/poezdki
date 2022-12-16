@@ -378,11 +378,9 @@ class _NotificationPageState extends State<NotificationPage> {
           }));
       if (value != null) {
         final TimeOfDay? timePicked = await showTimePicker(
+            initialEntryMode: TimePickerEntryMode.input,
             context: context,
-            initialTime: TimeOfDay(
-              hour: TimeOfDay.now().hour,
-              minute: TimeOfDay.now().minute,
-            ));
+            initialTime: TimeOfDay.now());
 
         if (typeDate == TypeDate.start) {
           final DateTime temp = DateTime(

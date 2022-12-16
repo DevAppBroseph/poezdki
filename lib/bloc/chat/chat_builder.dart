@@ -34,7 +34,6 @@ class ChatsBuilder extends StatelessWidget {
         return true;
       },
       builder: ((context, state) {
-        print('object chat state ${state}');
         // if (state is ChatLoading) {
         //   return const Padding(
         //     padding: EdgeInsets.all(20.0),

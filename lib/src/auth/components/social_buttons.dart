@@ -6,6 +6,7 @@ import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/model/vk.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
+import 'package:app_poezdka/service/server/user_service.dart';
 import 'package:app_poezdka/src/app_screens.dart';
 import 'package:app_poezdka/src/auth/signup_phone.dart';
 import 'package:app_poezdka/widget/button/full_width_leveated_button_child.dart';
@@ -54,7 +55,7 @@ class SocialAuthButtons extends StatelessWidget {
               ),
             ],
           ),
-          onPressed: () {
+          onPressed: () async {
             Navigator.push(context,
                 MaterialPageRoute(builder: ((context) => WebViewPage())));
           },
@@ -104,8 +105,7 @@ class SocialAuthButtons extends StatelessWidget {
       final displayName =
           '${appleCredential.givenName} ${appleCredential.familyName}';
       final userEmail = '${appleCredential.email}';
-    } catch (exception) {
-    }
+    } catch (exception) {}
   }
 }
 
@@ -181,6 +181,7 @@ class _WebViewPageState extends State<WebViewPage> {
     }
 
     if (vkModel != null) {
+      await UserService().sendFCMToken(vkModel.token);
       if (vkModel.phoneNumber == null) {
         // ignore: use_build_context_synchronously
         await userRepository.persistEmailAndToken(
@@ -188,6 +189,7 @@ class _WebViewPageState extends State<WebViewPage> {
           vkModel.token,
           vkModel.id,
         );
+        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

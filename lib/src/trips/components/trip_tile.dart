@@ -56,13 +56,13 @@ class _TripTileState extends State<TripTile> {
 
   void check() async {
     final id = await userRepo.getUserId();
-    if (widget.trip.passengers!.isNotEmpty) {
+    if (widget.trip.passengers!.isNotEmpty && id != null) {
       for (var element in widget.trip.passengers!) {
-        if (int.parse(id!) == element.id) {
+        if (int.parse(id) == element.id) {
           stateCancel = true;
         }
       }
-      if(widget.trip.owner!.id! != int.parse(id!)) {
+      if(widget.trip.owner!.id! != int.parse(id)) {
         stateCancelTrip = true;
       }
       setState(() {});

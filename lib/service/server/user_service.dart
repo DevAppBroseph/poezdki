@@ -2,7 +2,9 @@ import 'package:app_poezdka/model/blog.dart';
 import 'package:app_poezdka/model/questions.dart';
 import 'package:app_poezdka/model/rating.dart';
 import 'package:app_poezdka/model/user_model.dart';
+import 'package:app_poezdka/service/local/secure_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../widget/dialog/error_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -32,6 +34,30 @@ class UserService {
     //   errorDialog.showError(e.toString());
     //   return null;
     // }
+  }
+
+  Future<bool?> sendFCMToken(String token) async {
+    try {
+      String? fcm = await FirebaseMessaging.instance.getToken();
+      Map<String, String> fcmbody = {"fcm_token": fcm!};
+      Dio dio = Dio();
+      var response = await dio.post(fcmToken,
+          options: Options(
+            headers: {
+              "Authorization": token,
+              "Content-Type": "application/json"
+            },
+          ),
+          data: fcmbody);
+
+      if (response.statusCode == 200) {
+        return response.data['success'];
+      }
+      return false;
+    } catch (e) {
+      errorDialog.showError(e.toString());
+      return false;
+    }
   }
 
   Future<List<Question>?> getQuestions() async {

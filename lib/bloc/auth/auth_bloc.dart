@@ -35,9 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<OnDevLogIn>(_devLogIn);
     on<DeleteProfile>((event, emit) async {
       emit(AuthLoading());
-      print('object auth_bloc state 1');
       await userRepository.deleteUserData();
-      print('object auth_bloc state 2');
       add(AppInit());
     });
   }
@@ -54,24 +52,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final firstLaunch = appRepository.firstLaunch();
 
     if (firstLaunch == null || firstLaunch == true) {
-      print('object auth_bloc state 3');
       await userRepository.deleteAll();
-      print('object auth_bloc state 4');
       emit(AuthOnboardingIncomplete());
     } else {
-      print('object auth_bloc state 5');
       add(AppInit());
     }
   }
 
   void _initApp(AppInit event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
-    // print('object auth_bloc state 6');
     try {
       final hasToken = await userRepository.hasToken();
-      // print('object auth_bloc state 7');
-      // print('object auth_bloc token is: ${await userRepository.getToken()}');
-
       hasToken == true ? emit(AuthSuccess()) : emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthUnauthenticated());

@@ -15,6 +15,7 @@ const rating = '$serverURL/trips/rank';
 const info = '$usersUrl/info';
 const offer = '$usersUrl/offer';
 const politic = '$usersUrl/politic';
+const fcmToken = '$usersUrl/user_fcm';
 
 const serverUserLogin = "user@mail.ru";
 const serverUserPassword = "password";

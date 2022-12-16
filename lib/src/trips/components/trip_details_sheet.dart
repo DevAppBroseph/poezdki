@@ -106,7 +106,7 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
         _div(),
         _rideInfo(),
         _div(),
-        if (widget.isMyTrips)
+        // if (widget.isMyTrips)
           if (widget.trip.passengers!.isNotEmpty) _passengerInfo(),
         if (widget.isMyTrips)
           if (widget.trip.passengers!.isNotEmpty) _div(),
