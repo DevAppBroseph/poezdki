@@ -612,9 +612,9 @@ class TripService {
 
       // print('object catch ${response}');
 
-      // if (response.statusCode == 200) return true;
+      if (response.statusCode == 200) return true;
 
-      return true;
+      return false;
     } catch (e) {
       return false;
     }
