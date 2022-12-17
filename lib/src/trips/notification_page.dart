@@ -1,8 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/model/trip_model.dart';
-import 'package:app_poezdka/service/local/secure_storage.dart';
+import 'package:app_poezdka/service/server/trip_service.dart';
 import 'package:app_poezdka/src/rides/components/waypoint.dart';
 import 'package:app_poezdka/src/rides/components/waypoints.dart';
 import 'package:app_poezdka/src/trips/components/pick_city.dart';
@@ -11,7 +10,6 @@ import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:app_poezdka/widget/text_field/form_location_field.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -92,76 +90,106 @@ class _NotificationPageState extends State<NotificationPage> {
                   horizontal: 20,
                   vertical: 10,
                 ),
-                child: Container(
-                  // height: 80,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 20,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.notifications,
-                        size: 27,
-                        color: kPrimaryColor,
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    notifications[index].departure!,
-                                    style: const TextStyle(fontSize: 17),
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: Text(
-                                    DateFormat("dd MMMM, HH:mm", 'RU')
-                                        .format(
-                                            DateTime.fromMicrosecondsSinceEpoch(
-                                                notifications[index].fromDot!))
-                                        .toString(),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w400),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 5),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    notifications[index].destination!,
-                                    style: const TextStyle(fontSize: 17),
-                                  ),
-                                ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: Text(
-                                    DateFormat("dd MMMM, HH:mm", 'RU')
-                                        .format(
-                                            DateTime.fromMicrosecondsSinceEpoch(
-                                                notifications[index].toDot!))
-                                        .toString(),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                child: Dismissible(
+                  key: UniqueKey(),
+                  direction: DismissDirection.endToStart,
+                  confirmDismiss: (direction) async {
+                    bool res = await TripService()
+                        .deleteNotif(notifications[index].id!);
+                    return res;
+                  },
+                  background: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          'Удалить',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                    ],
+                    ),
+                  ),
+                  child: Container(
+                    // height: 80,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.notifications,
+                          size: 27,
+                          color: kPrimaryColor,
+                        ),
+                        const SizedBox(width: 15),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      notifications[index].departure!,
+                                      style: const TextStyle(fontSize: 17),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Expanded(
+                                    child: Text(
+                                      DateFormat("dd MMMM, HH:mm", 'RU')
+                                          .format(DateTime
+                                              .fromMicrosecondsSinceEpoch(
+                                                  notifications[index]
+                                                      .fromDot!))
+                                          .toString(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 5),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      notifications[index].destination!,
+                                      style: const TextStyle(fontSize: 17),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 20),
+                                  Expanded(
+                                    child: Text(
+                                      DateFormat("dd MMMM, HH:mm", 'RU')
+                                          .format(DateTime
+                                              .fromMicrosecondsSinceEpoch(
+                                                  notifications[index].toDot!))
+                                          .toString(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -460,30 +488,12 @@ class _NotificationPageState extends State<NotificationPage> {
   }
 
   void allNotification() async {
-    Response response;
-    var dio = Dio();
-    final token = await SecureStorage.instance.getToken();
+    List<NotificationModel>? res = await TripService().allNotification();
 
-    try {
-      response = await dio.get(
-        'http://194.87.145.140/trips/get_trip_nots',
-        options: Options(
-          headers: {"Authorization": token},
-        ),
-      );
-
-      List<NotificationModel> notifModel = [];
-
-      if (response.statusCode == 200) {
-        for (var element in response.data) {
-          notifModel.add(NotificationModel.fromJson(element));
-        }
-        notifications.clear();
-        notifications.addAll(notifModel);
-        setState(() {});
-      }
-    } catch (e) {
-      return null;
+    if (res != null) {
+      notifications.clear();
+      notifications.addAll(res);
+      setState(() {});
     }
   }
 
@@ -492,29 +502,13 @@ class _NotificationPageState extends State<NotificationPage> {
         endWay.text.isEmpty ||
         startDate.text.isEmpty ||
         endDate.text.isEmpty) return;
-    final body = {
-      "departure": {"name": startWay.text},
-      "destination": {"name": endWay.text},
-      "time_from": timeMilisecondStart!.microsecondsSinceEpoch,
-      "time_to": timeMilisecondEnd!.microsecondsSinceEpoch
-    };
 
-    Response response;
-    var dio = Dio();
-    final token = await SecureStorage.instance.getToken();
+    bool res = await TripService().setNotification(
+        startWay.text,
+        endWay.text,
+        timeMilisecondStart!.microsecondsSinceEpoch,
+        timeMilisecondEnd!.microsecondsSinceEpoch);
 
-    try {
-      response = await dio.post(
-        'http://194.87.145.140/trips/add_trip_not',
-        data: json.encode(body),
-        options: Options(
-          headers: {"Authorization": token},
-        ),
-      );
-
-      if (response.statusCode == 200) allNotification();
-    } catch (e) {
-      return null;
-    }
+    if (res) allNotification();
   }
 }

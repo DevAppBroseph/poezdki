@@ -1,6 +1,6 @@
 import 'package:app_poezdka/model/server_responce.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
-import 'package:app_poezdka/service/local/shared_preferences.dart';
+import 'package:app_poezdka/src/trips/notification_page.dart';
 import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/dialog/progress_dialog.dart';
 import 'package:dio/dio.dart';
@@ -536,6 +536,86 @@ class TripService {
     } catch (e) {
       errorDialog.showError(e.toString());
       print('object response $token object log 3 ${e}');
+      return false;
+    }
+  }
+
+  Future<bool> setNotification(String startWay, String endWay,
+      int timeMilisecondStart, int timeMilisecondEnd) async {
+    final body = {
+      "departure": {"name": startWay},
+      "destination": {"name": endWay},
+      "time_from": timeMilisecondStart,
+      "time_to": timeMilisecondEnd
+    };
+
+    Response response;
+    var dio = Dio();
+    final token = await SecureStorage.instance.getToken();
+
+    try {
+      response = await dio.post(
+        'http://194.87.145.140/trips/add_trip_not',
+        data: json.encode(body),
+        options: Options(
+          headers: {"Authorization": token},
+        ),
+      );
+
+      if (response.statusCode == 200) return true;
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<List<NotificationModel>?> allNotification() async {
+    Response response;
+    var dio = Dio();
+    final token = await SecureStorage.instance.getToken();
+
+    try {
+      response = await dio.get(
+        'http://194.87.145.140/trips/get_trip_nots',
+        options: Options(
+          headers: {"Authorization": token},
+        ),
+      );
+
+      List<NotificationModel> notifModel = [];
+
+      if (response.statusCode == 200) {
+        for (var element in response.data) {
+          notifModel.add(NotificationModel.fromJson(element));
+        }
+        return notifModel;
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future<bool> deleteNotif(int id) async {
+    Response response;
+    var dio = Dio();
+    final token = await SecureStorage.instance.getToken();
+
+    try {
+      response = await dio.delete(
+        'http://194.87.145.140/trips/del$id',
+        options: Options(
+          headers: {"Authorization": token},
+          validateStatus: (status) => status! <= 400
+        ),
+      );
+
+      // print('object catch ${response}');
+
+      // if (response.statusCode == 200) return true;
+
+      return true;
+    } catch (e) {
       return false;
     }
   }
