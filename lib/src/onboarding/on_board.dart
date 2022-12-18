@@ -69,7 +69,11 @@ class IntroScreenDefaultState extends State<IntroScreenDefault> {
               child: Padding(
                 padding: const EdgeInsets.only(bottom: 30),
                 child: FullWidthElevButton(
-                  title: currentPage == 2 ? "Поехали!" : "Далее",
+                  title: currentPage == 0
+                      ? "Все круто!"
+                      : currentPage == 1
+                          ? 'Ты сможешь!'
+                          : "Погнали!",
                   titleStyle: const TextStyle(color: Colors.white),
                   onPressed: () {
                     if (currentPage < 2) {

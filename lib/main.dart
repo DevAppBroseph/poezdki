@@ -131,15 +131,9 @@ class _AppState extends State<App> {
           supportedLocales: const [Locale('ru')],
           home: loading == false
               ? AppInitBuilder(referal: referalLink)
-              : Scaffold(
+              : const Scaffold(
                   body: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(),
-                        Text('main'),
-                      ],
-                    ),
+                    child: CircularProgressIndicator(),
                   ),
                 ),
         );
