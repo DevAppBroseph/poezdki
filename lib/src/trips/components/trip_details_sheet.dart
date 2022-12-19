@@ -107,7 +107,7 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
         _rideInfo(),
         _div(),
         // if (widget.isMyTrips)
-          if (widget.trip.passengers!.isNotEmpty) _passengerInfo(),
+        if (widget.trip.passengers!.isNotEmpty) _passengerInfo(),
         if (widget.isMyTrips)
           if (widget.trip.passengers!.isNotEmpty) _div(),
         // _rideComment(),
@@ -388,16 +388,17 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
   }
 
   BottomSheetChildren _passangerBottom(BuildContext context, int index) {
+    double heightReviews = userId == widget.trip.owner!.id ? 90 : 140;
     return BottomSheetChildren(
       children: [
         SizedBox(
-          height: 300,
+          height: 425,
           child: Padding(
             padding: const EdgeInsets.only(left: 15, right: 15),
             child: Column(
               children: [
                 SizedBox(
-                  height: 65,
+                  height: 60,
                   child: Material(
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.white,
@@ -419,7 +420,7 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                   ),
                 ),
                 SizedBox(
-                  height: 65,
+                  height: 60,
                   child: Material(
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.white,
@@ -503,7 +504,7 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                   ),
                 ),
                 SizedBox(
-                  height: 65,
+                  height: 60,
                   child: Material(
                     borderRadius: BorderRadius.circular(15),
                     color: Colors.white,
@@ -530,7 +531,7 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                 ),
                 if (userId == widget.trip.owner!.id)
                   SizedBox(
-                    height: 65,
+                    height: 60,
                     child: Material(
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
@@ -560,6 +561,58 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
                       ),
                     ),
                   ),
+                ListTile(
+                  title: const Text(
+                      'Средняя оценка:'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('${widget.trip.passengers![index].reviews?.average}'),
+                      const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    children: [
+                      const Text('Отзывы:'),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: heightReviews,
+                  child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount:
+                          widget.trip.passengers![index].reviews!.items.length,
+                      itemBuilder: (context, i) {
+                        return ListTile(
+                          leading: UserCachedImage(
+                            img: widget.trip.passengers![index].reviews!
+                                .items[i].from!.photo,
+                          ),
+                          subtitle: Text(
+                              '${DateFormat('yyyy-MM-dd hh:mm').format(widget.trip.passengers![index].reviews!.items[i].date!)}\n${widget.trip.passengers![index].reviews!.items[i].message}'),
+                          title: Text(
+                              '${widget.trip.passengers![index].reviews!.items[i].from!.firstname!} ${widget.trip.passengers![index].reviews!.items[i].from!.lastname!}'),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                  '${widget.trip.passengers![index].reviews!.items[i].mark}'),
+                              const Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              )
+                            ],
+                          ),
+                        );
+                      }),
+                )
               ],
             ),
           ),
@@ -594,13 +647,7 @@ class _TripDetailsSheetState extends State<TripDetailsSheet> {
           img: widget.trip.owner?.photo,
         ),
         title: Text(
-          (widget.trip.owner?.firstname != null
-                  ? widget.trip.owner!.firstname!
-                  : '') +
-              ' ' +
-              (widget.trip.owner?.lastname != null
-                  ? widget.trip.owner!.lastname!
-                  : ''),
+          '${widget.trip.owner?.firstname != null ? widget.trip.owner!.firstname! : ''} ${widget.trip.owner?.lastname != null ? widget.trip.owner!.lastname! : ''}',
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

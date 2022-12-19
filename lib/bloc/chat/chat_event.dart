@@ -30,3 +30,5 @@ class ShowTestEvent extends ChatEvent {
 class GetChatSupport extends ChatEvent {}
 
 class CheckNewMessageSupport extends ChatEvent {}
+
+class RefreshTripEvent extends ChatEvent {}

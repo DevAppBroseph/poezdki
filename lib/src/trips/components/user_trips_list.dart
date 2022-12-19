@@ -1,3 +1,4 @@
+import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/export/blocs.dart';
@@ -17,59 +18,69 @@ class UserTripsList extends StatelessWidget {
     final List<TripModel> upcomingTrips =
         tripsLists != null ? tripsLists![0] : [];
     final List<TripModel> pastTrips = tripsLists != null ? tripsLists![1] : [];
-    return RefreshIndicator(
-      onRefresh: () async {
-        Future.delayed(
-          const Duration(seconds: 1),
-          () {
-            if (screen == 1) {
-              BlocProvider.of<UserTripsDriverBloc>(context)
-                  .add(LoadUserTripsList());
-            } else {
-              BlocProvider.of<UserTripsPassengerBloc>(context)
-                  .add(LoadUserPassengerTripsList());
-            }
-          },
-        );
-      },
-      child: CustomScrollView(
-        slivers: [
-          // CupertinoSliverRefreshControl(onRefresh: () async {
-          //   Future.delayed(
-          //     const Duration(seconds: 1),
-          //     () {
-          //       if (screen == 1) {
-          //         BlocProvider.of<UserTripsDriverBloc>(context)
-          //             .add(LoadUserTripsList());
-          //       } else {
-          //         BlocProvider.of<UserTripsPassengerBloc>(context)
-          //             .add(LoadUserPassengerTripsList());
-          //       }
-          //     },
-          //   );
-          // }),
-          SliverToBoxAdapter(
-            child: upcomingList(upcomingTrips),
-          ),
-          SliverToBoxAdapter(
-            child: pastList(pastTrips),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(
-              height: 40,
+    return BlocBuilder<ChatBloc, ChatState>(buildWhen: (previous, current) {
+      if (current is RefreshTrip) {
+        BlocProvider.of<UserTripsDriverBloc>(context).add(LoadUserTripsList());
+        BlocProvider.of<UserTripsPassengerBloc>(context)
+            .add(LoadUserPassengerTripsList());
+        return true;
+      }
+      return false;
+    }, builder: (context, snapshot) {
+      return RefreshIndicator(
+        onRefresh: () async {
+          Future.delayed(
+            const Duration(seconds: 1),
+            () {
+              if (screen == 1) {
+                BlocProvider.of<UserTripsDriverBloc>(context)
+                    .add(LoadUserTripsList());
+              } else {
+                BlocProvider.of<UserTripsPassengerBloc>(context)
+                    .add(LoadUserPassengerTripsList());
+              }
+            },
+          );
+        },
+        child: CustomScrollView(
+          slivers: [
+            // CupertinoSliverRefreshControl(onRefresh: () async {
+            //   Future.delayed(
+            //     const Duration(seconds: 1),
+            //     () {
+            //       if (screen == 1) {
+            //         BlocProvider.of<UserTripsDriverBloc>(context)
+            //             .add(LoadUserTripsList());
+            //       } else {
+            //         BlocProvider.of<UserTripsPassengerBloc>(context)
+            //             .add(LoadUserPassengerTripsList());
+            //       }
+            //     },
+            //   );
+            // }),
+            SliverToBoxAdapter(
+              child: upcomingList(upcomingTrips),
             ),
-          ),
-          // SliverToBoxAdapter(
-          //   child: SingleChildScrollView(
+            SliverToBoxAdapter(
+              child: pastList(pastTrips),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 40,
+              ),
+            ),
+            // SliverToBoxAdapter(
+            //   child: SingleChildScrollView(
 
-          //     child: Column(
-          //       children: [pastList(pastTrips), upcomingList(upcomingTrips)],
-          //     ),
-          //   ),
-          // ),
-        ],
-      ),
-    );
+            //     child: Column(
+            //       children: [pastList(pastTrips), upcomingList(upcomingTrips)],
+            //     ),
+            //   ),
+            // ),
+          ],
+        ),
+      );
+    });
   }
 
   Widget pastList(List<TripModel> pastTrips) {

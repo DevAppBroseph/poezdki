@@ -40,7 +40,10 @@ class _UserTripsScreenState extends State<UserTripsScreen>
         child: TabBarView(
           controller: _tabController,
           physics: const NeverScrollableScrollPhysics(),
-          children: const [UserTripsPassengerBuilder(), UserTripsDriverBuilder()],
+          children: const [
+            UserTripsPassengerBuilder(),
+            UserTripsDriverBuilder()
+          ],
         ),
       ),
     );

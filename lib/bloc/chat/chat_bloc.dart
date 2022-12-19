@@ -47,6 +47,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     on<StartSocket>(_startSocket);
     on<GetChatSupport>(_getChatSupport);
     on<CheckNewMessageSupport>(_checkMessageSupport);
+    on<RefreshTripEvent>(_refresh);
   }
   WebSocketChannel? channel;
 
@@ -84,15 +85,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
                 'Служба поддержки',
                 'Новое сообщение',
               );
-            }
-            else {
+            } else {
               add(GetChatSupport());
             }
-          } else if (newMessage.fromName == 'BAZA' && newMessage.from == '-1') {
+          } else if (newMessage.fromName == 'BAZA') {
             MessageDialogs().showMessage(
               NewMessageAnswer.fromJson(jsonDecode(event)).fromName,
               NewMessageAnswer.fromJson(jsonDecode(event)).message,
             );
+            Future.delayed(Duration(seconds: 2), () {
+              print('object kfdfrr');
+              add(RefreshTripEvent());
+            });
           } else {
             if (showPersonChat) {
               MessageDialogs().showMessage(
@@ -111,7 +115,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               ),
             );
             testController.sink.add(messages);
-
             add(UpdateChat(messages: messages));
           }
         } catch (e) {
@@ -125,7 +128,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             ),
           );
           testController.sink.add(messages);
-
           add(UpdateChat(messages: messages));
         }
         var vibrator = await Vibration.hasVibrator();
@@ -180,7 +182,13 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   }
 
   void _updateChat(UpdateChat event, Emitter<ChatState> emit) {
+    // add(RefreshTripEvent());
     emit(ChatLoaded(event.messages.reversed.toList()));
+  }
+
+  void _refresh(RefreshTripEvent event, Emitter<ChatState> emit) {
+    // emit(ChatLoaded(event.messages.reversed.toList()));
+    emit(RefreshTrip());
   }
 
   void _getChatSupport(GetChatSupport event, Emitter<ChatState> emit) async {

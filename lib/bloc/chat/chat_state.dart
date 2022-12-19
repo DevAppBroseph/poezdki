@@ -29,3 +29,5 @@ class SupportMessageState extends ChatState {
 class MessageRead extends ChatState {}
 
 class MessageUnRead extends ChatState {}
+
+class RefreshTrip extends ChatState {}

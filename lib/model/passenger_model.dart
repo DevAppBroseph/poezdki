@@ -1,3 +1,5 @@
+import 'package:app_poezdka/model/trip_model.dart';
+
 class PassengerModel {
   int? id;
   String? phone;
@@ -6,8 +8,15 @@ class PassengerModel {
   String? firstname;
   String? lastname;
   List<int>? seat;
+  Reviews? reviews;
   PassengerModel(
-      {this.id, this.phone, this.phoneNumber, this.firstname, this.lastname, this.seat});
+      {this.id,
+      this.phone,
+      this.phoneNumber,
+      this.firstname,
+      this.lastname,
+      this.seat,
+      this.reviews});
 
   PassengerModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -17,6 +26,7 @@ class PassengerModel {
     firstname = json['firstname'];
     lastname = json['lastname'];
     seat = json['seat'].cast<int>();
+    reviews = Reviews.fromJson(json['reviews']);
   }
 
   Map<String, dynamic> toJson() {

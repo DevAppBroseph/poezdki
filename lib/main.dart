@@ -120,7 +120,7 @@ class _AppState extends State<App> {
         BlocProvider.of<ChatBloc>(context).add(CheckNewMessageSupport());
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Poezdka',
+          title: 'Поездка',
           theme: appTheme,
           builder: FlutterSmartDialog.init(),
           localizationsDelegates: const [

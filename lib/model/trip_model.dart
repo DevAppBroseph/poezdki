@@ -1,4 +1,5 @@
 import 'package:app_poezdka/model/passenger_model.dart';
+import 'package:intl/intl.dart';
 
 class TripModel {
   bool? passenger;
@@ -43,7 +44,7 @@ class TripModel {
       this.passengers,
       this.conditioner,
       this.ownerGender,
-      this.seats = const[],
+      this.seats = const [],
       this.bronSeat});
 
   TripModel.fromJson(Map<String, dynamic> json, bool state) {
@@ -121,6 +122,7 @@ class Owner {
   String? lastname;
   String? photo;
   String? seat;
+  Reviews? reviews;
 
   Owner(
       {this.id,
@@ -129,7 +131,8 @@ class Owner {
       this.firstname,
       this.lastname,
       this.photo,
-      this.seat});
+      this.seat,
+      this.reviews});
 
   Owner.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -139,6 +142,7 @@ class Owner {
     lastname = json['lastname'];
     photo = json['photo'];
     seat = json['seat'];
+    reviews = Reviews.fromJson(json['reviews']);
   }
 
   Map<String, dynamic> toJson() {
@@ -296,5 +300,55 @@ class Stops {
       approachTime ?? this.approachTime,
       distanceToPrevious ?? this.distanceToPrevious,
     );
+  }
+}
+
+class Reviews {
+  dynamic average;
+  List<ReviewsItems> items = [];
+
+  Reviews(this.average, this.items);
+
+  Reviews.fromJson(Map<String, dynamic> json) {
+    average = json['average'];
+    if (json['reviews'] != null) {
+      for (var element in json['reviews']) {
+        items.add(ReviewsItems.fromJson(element));
+      }
+    }
+  }
+}
+
+class ReviewsItems {
+  String? message;
+  dynamic mark;
+  DateTime? date;
+  From? from;
+
+  ReviewsItems(this.message, this.mark, this.date, this.from);
+
+  ReviewsItems.fromJson(Map<String, dynamic> json) {
+    message = json['message'];
+    mark = json['mark'];
+    date = json["date"] != null
+        ? DateFormat("yyyy-MM-ddThh:mm:ss").parse(json["date"], true).toLocal()
+        : null;
+    from = From.fromJson(json['from']);
+  }
+}
+
+class From {
+  int? id;
+  String? photo;
+  String? firstname;
+  String? lastname;
+
+  From(this.id, this.photo, this.firstname, this.lastname);
+
+  From.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    photo = json['photo'];
+    firstname = json['firstname'];
+    lastname = json['lastname'];
   }
 }
