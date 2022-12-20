@@ -8,6 +8,7 @@ import 'package:app_poezdka/src/trips/components/pick_city.dart';
 import 'package:app_poezdka/src/trips/components/search_trip_filter.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
+import 'package:app_poezdka/widget/dialog/info_dialog.dart';
 import 'package:app_poezdka/widget/text_field/custom_text_field.dart';
 import 'package:app_poezdka/widget/text_field/form_location_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -398,11 +399,19 @@ class _NotificationPageState extends State<NotificationPage> {
       final value = await showDialog(
           context: context,
           builder: ((context) {
-            return DatePickerDialog(
-              initialDate: DateTime.now(),
-              firstDate: DateTime.now(),
-              lastDate: DateTime(2030),
-            );
+            if (typeDate == TypeDate.start) {
+              return DatePickerDialog(
+                initialDate: timeMilisecondStart ?? DateTime.now(),
+                firstDate: DateTime.now(),
+                lastDate: timeMilisecondEnd ?? DateTime(2030),
+              );
+            } else {
+              return DatePickerDialog(
+                initialDate: timeMilisecondStart ?? DateTime.now(),
+                firstDate: timeMilisecondStart ?? DateTime.now(),
+                lastDate: DateTime(2030),
+              );
+            }
           }));
       if (value != null) {
         final TimeOfDay? timePicked = await showTimePicker(
@@ -509,6 +518,13 @@ class _NotificationPageState extends State<NotificationPage> {
         timeMilisecondStart!.microsecondsSinceEpoch,
         timeMilisecondEnd!.microsecondsSinceEpoch);
 
-    if (res) allNotification();
+    if (res) {
+      InfoDialog().show(
+        img: "assets/img/like.svg",
+        title: "Новое уведомление!",
+        description: "Ожидайте новые поездки.",
+      );
+      allNotification();
+    }
   }
 }

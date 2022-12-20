@@ -94,7 +94,6 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               NewMessageAnswer.fromJson(jsonDecode(event)).message,
             );
             Future.delayed(Duration(seconds: 2), () {
-              print('object kfdfrr');
               add(RefreshTripEvent());
             });
           } else {

@@ -39,7 +39,9 @@ class MessageDialogs {
                     title: Text(from == 'BAZA' ? 'Внимание' : from!),
                     subtitle: Text(from == 'BAZA'
                         ? message != 'cancel booking'
-                            ? "Вашу поездку забронировали"
+                            ? message == 'new trip'
+                                ? 'Появилась новая поездка'
+                                : "Вашу поездку забронировали"
                             : 'Забронированная поездка была отменена.'
                         : message),
                   ),
