@@ -172,18 +172,18 @@ class _ChatScreenState extends State<ChatScreen> {
               },
               icon: SvgPicture.asset("$svgPath/send.svg"),
             ),
-            trailing: [
-              IconButton(
-                onPressed: () {
-                  ///Example
-                  ///
-                },
-                icon: const Icon(
-                  CupertinoIcons.plus_circle_fill,
-                  color: kPrimaryLightGrey,
-                ),
-              )
-            ],
+            // trailing: [
+            //   IconButton(
+            //     onPressed: () {
+            //       ///Example
+            //       ///
+            //     },
+            //     icon: const Icon(
+            //       CupertinoIcons.plus_circle_fill,
+            //       color: kPrimaryLightGrey,
+            //     ),
+            //   )
+            // ],
           ),
         );
       }),

@@ -163,8 +163,9 @@ class _BookTripState extends State<BookTripReserves> {
                       }
                     });
               } else {
-                for (var element in selectedSeats)
+                for (var element in selectedSeats) {
                   seats.add(element.seatNumber);
+                }
                 widget.tripData.seats = seats;
                 tripBloc.add(CreateUserTrip(context, widget.tripData));
                 // Navigator.pop(context, true);
