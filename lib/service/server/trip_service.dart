@@ -43,7 +43,7 @@ class TripService {
       "two_places_in_behind": twoPlacesInBehind,
       "conditioner": conditioner,
       "start": start,
-      "end": end,
+      "end": 16755865065000000,
       "fcm_token": fcm
     };
 
@@ -605,9 +605,8 @@ class TripService {
       response = await dio.delete(
         'http://194.87.145.140/trips/del$id',
         options: Options(
-          headers: {"Authorization": token},
-          validateStatus: (status) => status! <= 400
-        ),
+            headers: {"Authorization": token},
+            validateStatus: (status) => status! <= 400),
       );
 
       // print('object catch ${response}');

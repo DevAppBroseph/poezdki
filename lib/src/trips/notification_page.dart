@@ -121,74 +121,106 @@ class _NotificationPageState extends State<NotificationPage> {
                   ),
                   child: Container(
                     // height: 80,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 20,
-                    ),
+                    // padding: const EdgeInsets.symmetric(
+                    //   horizontal: 20,
+                    //   vertical: 20,
+                    // ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(15),
                     ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    child: Stack(
                       children: [
-                        const Icon(
-                          Icons.notifications,
-                          size: 27,
-                          color: kPrimaryColor,
-                        ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 20,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      notifications[index].departure!,
-                                      style: const TextStyle(fontSize: 17),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    child: Text(
-                                      DateFormat("dd MMMM, HH:mm", 'RU')
-                                          .format(DateTime
-                                              .fromMicrosecondsSinceEpoch(
-                                                  notifications[index]
-                                                      .fromDot!))
-                                          .toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ),
-                                ],
+                              const Icon(
+                                Icons.notifications,
+                                size: 27,
+                                color: kPrimaryColor,
                               ),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      notifications[index].destination!,
-                                      style: const TextStyle(fontSize: 17),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            notifications[index].departure!,
+                                            style:
+                                                const TextStyle(fontSize: 17),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Expanded(
+                                          child: Text(
+                                            DateFormat("dd MMMM, HH:mm", 'RU')
+                                                .format(DateTime
+                                                    .fromMicrosecondsSinceEpoch(
+                                                        notifications[index]
+                                                            .fromDot!))
+                                                .toString(),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w400),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  const SizedBox(width: 20),
-                                  Expanded(
-                                    child: Text(
-                                      DateFormat("dd MMMM, HH:mm", 'RU')
-                                          .format(DateTime
-                                              .fromMicrosecondsSinceEpoch(
-                                                  notifications[index].toDot!))
-                                          .toString(),
+                                    const SizedBox(height: 5),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            notifications[index].destination!,
+                                            style:
+                                                const TextStyle(fontSize: 17),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 20),
+                                        Expanded(
+                                          child: Text(
+                                            DateFormat("dd MMMM, HH:mm", 'RU')
+                                                .format(DateTime
+                                                    .fromMicrosecondsSinceEpoch(
+                                                        notifications[index]
+                                                            .toDot!))
+                                                .toString(),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
+                              const SizedBox(width: 20),
                             ],
                           ),
                         ),
+                        GestureDetector(
+                          onTap: () async {
+                            bool res = await TripService()
+                                .deleteNotif(notifications[index].id!);
+                            notifications.removeAt(index);
+                            setState(() {});
+                          },
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -324,6 +356,8 @@ class _NotificationPageState extends State<NotificationPage> {
                           child: GestureDetector(
                             onTap: () => funcDate(TypeDate.start),
                             child: KFormField(
+                              center: true,
+                              fontSize: 14.5,
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 5, vertical: 20),
                               enabled: false,
@@ -347,10 +381,12 @@ class _NotificationPageState extends State<NotificationPage> {
                           child: GestureDetector(
                             onTap: () => funcDate(TypeDate.end),
                             child: KFormField(
+                              center: true,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 5,
                                 vertical: 20,
                               ),
+                              fontSize: 14.5,
                               enabled: false,
                               hintText: DateFormat('dd.MM.yyyy HH:mm')
                                   .format(DateTime.now()),

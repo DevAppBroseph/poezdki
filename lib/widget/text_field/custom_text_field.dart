@@ -26,6 +26,8 @@ class KFormField extends StatelessWidget {
   final Widget? prefixicon;
   final String? prefixText;
   final bool? enabled;
+  final bool? center;
+  final double? fontSize;
   final EdgeInsets? contentPadding;
   const KFormField({
     Key? key,
@@ -39,6 +41,8 @@ class KFormField extends StatelessWidget {
     required this.textEditingController,
     this.mainColor,
     this.bgColor,
+    this.center,
+    this.fontSize,
     this.maxLines,
     this.formatters,
     this.textInputType,
@@ -79,10 +83,17 @@ class KFormField extends StatelessWidget {
               obscureText: obscureText ?? false,
               maxLines: 1,
               minLines: 1,
+              textAlign: center != null
+                  ? center!
+                      ? TextAlign.center
+                      : TextAlign.start
+                  : TextAlign.start,
               inputFormatters: formatters,
               keyboardType: textInputType,
-              style: const TextStyle(
-                  color: Colors.black, overflow: TextOverflow.ellipsis),
+              style: TextStyle(
+                  color: Colors.black,
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: fontSize),
               decoration: InputDecoration(
                   icon: icon,
                   prefixIcon: prefixicon,
@@ -101,8 +112,8 @@ class KFormField extends StatelessWidget {
                     fontWeight: FontWeight.w400,
                   ),
                   errorStyle: const TextStyle(fontSize: 10.0),
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  contentPadding: EdgeInsets.symmetric(
+                      vertical: 20, horizontal: center != null ? 0 : 15),
                   filled: true,
                   fillColor: kPrimaryWhite,
                   border: OutlineInputBorder(
@@ -152,6 +163,11 @@ class KFormField extends StatelessWidget {
               ),
               child: TextFormField(
                 enabled: enabled,
+                textAlign: center != null
+                    ? center!
+                        ? TextAlign.center
+                        : TextAlign.start
+                    : TextAlign.start,
                 focusNode: nodeText,
                 onTap: onTap as void Function()?,
                 validator: validateFunction,
