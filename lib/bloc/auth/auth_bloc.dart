@@ -87,10 +87,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (data != null) {
       await userRepository.persistEmailAndToken(
           event.login, data.token, data.id);
-      BlocProvider.of<ChatBloc>(event.context).add(StartSocket());
+      // BlocProvider.of<ChatBloc>(event.context).add(StartSocket());
       Navigator.pushAndRemoveUntil(
         event.context,
-        MaterialPageRoute(builder: (context) => const AppScreens()),
+        MaterialPageRoute(builder: (context) => AppScreens()),
         (route) => false,
       );
       add(AppInit());
@@ -149,7 +149,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       Navigator.pushAndRemoveUntil(
         event.context,
-        MaterialPageRoute(builder: (context) => const AppScreens()),
+        MaterialPageRoute(builder: (context) => AppScreens()),
         (route) => false,
       );
       add(AppInit());
@@ -175,10 +175,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // result.token!,
         // result.id!,
       );
-      BlocProvider.of<ChatBloc>(event.context).add(StartSocket());
+      // BlocProvider.of<ChatBloc>(event.context).add(StartSocket());
       Navigator.pushAndRemoveUntil(
         event.context,
-        MaterialPageRoute(builder: (context) => const AppScreens()),
+        MaterialPageRoute(builder: (context) => AppScreens()),
         (route) => false,
       );
       add(AppInit());

@@ -27,19 +27,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   ChatBloc() : super(ChatInitial()) {
     //Example
     testController.stream.listen((event) {
-      if (event.last.replyTo?.user.id != null) {
+      // if (event.last.replyTo?.user.id != null) {
         channel?.sink.add(jsonEncode({
           "to": event.last.replyTo?.user.id,
           "from": event.last.user.id,
           "message": event.last.text,
         }));
-      }
+      // }
       add(UpdateChat(messages: event));
     });
-    on<ShowTestEvent>((event, emit) {
-      emit(TestState(message: event.message));
-    });
-
     ///
 
     on<ChatStarted>(_onChatStarted);
@@ -76,7 +72,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     print('object socket start');
     channel?.stream.listen(
       (event) async {
-        print('object socket $event');
+        print('object socket start ${event}');
         try {
           Future.delayed(const Duration(seconds: 1), (() {
             _checkRead();
@@ -116,7 +112,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
                 text: SendMessage.fromJson(jsonDecode(event)).message,
               ),
             );
-            testController.sink.add(messages);
+            // testController.sink.add(messages);
             add(UpdateChat(messages: messages));
           }
         } catch (e) {
@@ -129,7 +125,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
               text: SendMessage.fromJson(jsonDecode(event)).message,
             ),
           );
-          testController.sink.add(messages);
+          // testController.sink.add(messages);
           add(UpdateChat(messages: messages));
         }
         var vibrator = await Vibration.hasVibrator();

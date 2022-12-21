@@ -1,5 +1,6 @@
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/src/chat/chat_screen.dart';
+import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,7 @@ class ChatsBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<ChatMessage> message = [];
     final chatBloc = BlocProvider.of<ChatBloc>(context)
       ..add(ChatStarted(
         senderId: senderId,
@@ -30,33 +32,20 @@ class ChatsBuilder extends StatelessWidget {
     return BlocBuilder(
       bloc: chatBloc,
       buildWhen: (previous, current) {
-        if(current is MessageRead) return false;
-        return true;
-      },
-      builder: ((context, state) {
-        // if (state is ChatLoading) {
-        //   return const Padding(
-        //     padding: EdgeInsets.all(20.0),
-        //     child: Center(
-        //       child: CircularProgressIndicator.adaptive(),
-        //     ),
-        //   );
-        // }
-        // if (state is ChatLoaded) {
-          print('object kfdfrr ${state}');
-          return ChatScreen(
-            senderId: senderId,
-            ownerId: ownerId,
-            message: state is ChatLoaded ? state.messages : [],
-            phone: phone,
-            channel: chatBloc.channel!,
-          );
+        if (current is ChatLoaded) {
+          message = current.messages;
+          return true;
         }
-        // return const Center(
-        //   child: Text(""),
-        // );
-      // }
-      ),
+        return false;
+      },
+      builder: (context, state) {
+        return ChatScreen(
+          senderId: senderId,
+          ownerId: ownerId,
+          message: message,
+          phone: phone,
+        );
+      },
     );
   }
 }

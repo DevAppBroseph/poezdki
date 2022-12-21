@@ -263,6 +263,7 @@ class TripService {
     var dio = Dio();
     final data = {
       "seats": seats,
+      "time_zone": DateTime.now().timeZoneName
     };
     try {
       final token = await SecureStorage.instance.getToken();
@@ -307,11 +308,14 @@ class TripService {
       {required int tripId, required List<int> seats}) async {
     Response response;
     var dio = Dio();
+    final data = {
+      "time_zone": DateTime.now().timeZoneName
+    };
     try {
       final token = await SecureStorage.instance.getToken();
       response = await dio.post(
         "$bookingTripUrl$tripId",
-        data: json.encode({}),
+        data: json.encode(data),
         options: Options(
           headers: {"Authorization": token},
           responseType: ResponseType.json,

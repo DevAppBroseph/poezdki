@@ -1,4 +1,5 @@
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
+import 'package:app_poezdka/bloc/profile/profile_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
 import 'package:app_poezdka/src/profile/profile_screen.dart';
@@ -13,10 +14,14 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'rides/user_trips_screen.dart';
 
 class AppScreens extends StatelessWidget {
-  const AppScreens({Key? key}) : super(key: key);
+  AppScreens({Key? key}) : super(key: key);
+
+  bool message = false;
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<ChatBloc>(context).add(StartSocket());
+    BlocProvider.of<ProfileBloc>(context).add(LoadProfile());
     PersistentTabController _controller;
 
     _controller = PersistentTabController(initialIndex: 0);

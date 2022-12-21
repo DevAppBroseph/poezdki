@@ -111,7 +111,8 @@ class _AppState extends State<App> {
         ),
         BlocProvider<ChatBloc>(
           create: (context) {
-            return ChatBloc()..add(StartSocket());
+            // return ChatBloc()..add(StartSocket());
+            return ChatBloc();
           },
         ),
       ],

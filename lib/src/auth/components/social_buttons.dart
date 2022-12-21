@@ -210,11 +210,11 @@ class _WebViewPageState extends State<WebViewPage> {
           vkModel.token,
           vkModel.id,
         );
-        BlocProvider.of<ChatBloc>(context).add(StartSocket());
+        // BlocProvider.of<ChatBloc>(context).add(StartSocket());
         // ignore: use_build_context_synchronously
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => const AppScreens()),
+          MaterialPageRoute(builder: (context) => AppScreens()),
           (route) => false,
         );
       }
