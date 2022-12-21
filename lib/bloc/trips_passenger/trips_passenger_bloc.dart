@@ -30,6 +30,7 @@ class TripsPassengerBloc
       smoke: event.smoke,
       twoPlacesInBehind: event.twoPlacesInBehind,
       conditioner: event.conditioner,
+      start: event.start,
     );
     trips != null ? add(UpdateTripsList(trips)) : add(ThrowTipsError());
   }

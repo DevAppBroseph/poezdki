@@ -1,3 +1,5 @@
+import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
+import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/server_responce.dart';
 import 'package:app_poezdka/model/user_model.dart';
 import 'package:app_poezdka/service/server/auth_service.dart';
@@ -85,10 +87,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (data != null) {
       await userRepository.persistEmailAndToken(
           event.login, data.token, data.id);
+      BlocProvider.of<ChatBloc>(event.context).add(StartSocket());
+      Navigator.pushAndRemoveUntil(
+        event.context,
+        MaterialPageRoute(builder: (context) => const AppScreens()),
+        (route) => false,
+      );
       add(AppInit());
-      Navigator.pop(event.context);
-      Navigator.pop(event.context);
-      Navigator.pop(event.context);
+      // Navigator.pop(event.context);
+      // Navigator.pop(event.context);
+      // Navigator.pop(event.context);
     } else {
       add(AuthError("Ошибка регистрации."));
     }
@@ -167,6 +175,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // result.token!,
         // result.id!,
       );
+      BlocProvider.of<ChatBloc>(event.context).add(StartSocket());
       Navigator.pushAndRemoveUntil(
         event.context,
         MaterialPageRoute(builder: (context) => const AppScreens()),

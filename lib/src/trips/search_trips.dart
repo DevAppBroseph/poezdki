@@ -565,7 +565,6 @@ class _SearchRidesState extends State<SearchRides>
                     "end": searchHistory[index].end
                   };
 
-
                   final tripsBlocSecond =
                       BlocProvider.of<TripsPassengerBloc>(context);
                   tripsBlocSecond.add(
@@ -733,7 +732,8 @@ class _SearchRidesState extends State<SearchRides>
       );
     }
     timeMilisecondEnd = DateTime.fromMillisecondsSinceEpoch(
-        timeMilisecondStart!.millisecondsSinceEpoch + 86400000);
+        timeMilisecondStart!.millisecondsSinceEpoch +
+            DateTime(DateTime.now().year + 10).millisecondsSinceEpoch);
     fetchTrips(context, page: searchPageIndex);
     setState(() {});
   }
@@ -839,6 +839,9 @@ class _SearchRidesState extends State<SearchRides>
         twoPlacesInBehind: filter.isTwoBackSeat,
         conditioner: filter.isConditioner,
         // gender: filter.gender?.apiTitle,
+        start: timeMilisecondStart == null
+          ? null
+          : (timeMilisecondStart!.microsecondsSinceEpoch),
       ),
     );
 

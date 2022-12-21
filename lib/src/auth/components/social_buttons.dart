@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/server/server_user.dart';
 import 'package:app_poezdka/export/blocs.dart';
@@ -209,6 +210,7 @@ class _WebViewPageState extends State<WebViewPage> {
           vkModel.token,
           vkModel.id,
         );
+        BlocProvider.of<ChatBloc>(context).add(StartSocket());
         // ignore: use_build_context_synchronously
         Navigator.pushAndRemoveUntil(
           context,

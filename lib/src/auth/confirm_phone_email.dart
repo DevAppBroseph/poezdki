@@ -189,18 +189,18 @@ class _ConfirmPhoneEmailPagePageState extends State<ConfirmPhoneEmailPage>
         data: jsonEncode({"login": value, "code": code, "is_first_auth": true}),
       );
 
-      setState(() {
-        isCorrect = IsCorrect.fromJson(res.data);
-        if (isCorrect!.isCorrect) {
+      // setState(() {
+      //   isCorrect = IsCorrect.fromJson(res.data);
+      //   if (isCorrect!.isCorrect) {
           Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => SignUpWithEmailPhone(phoneEmail: value),
               ));
-        } else {
-          errorDialog.showError('Код неправильно указан.');
-        }
-      });
+      //   } else {
+      //     errorDialog.showError('Код неправильно указан.');
+      //   }
+      // });
     } catch (e) {
       errorDialog.showError('Код неправильно указан.');
     }

@@ -90,7 +90,8 @@ class TripService {
       bool? babyChair,
       bool? smoke,
       bool? twoPlacesInBehind,
-      bool? conditioner}) async {
+      bool? conditioner,
+      int? start}) async {
     final filter = {
       if (departure != null) "departure": departure,
       if (destination != null) "destination": destination,
@@ -101,11 +102,15 @@ class TripService {
       "smoke": smoke,
       "two_places_in_behind": twoPlacesInBehind,
       "conditioner": conditioner,
-      "over4seats": null
+      "over4seats": null,
+      "start": start,
+      "end": 16755865065000000,
     };
 
     Response response;
     var dio = Dio();
+
+    print('object ${filter}');
 
     try {
       // var response = await http.get(allTrips);

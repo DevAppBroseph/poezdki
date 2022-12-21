@@ -72,8 +72,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       Uri.parse('ws://194.87.145.140:80/ws/$token'),
     );
 
+    
+    print('object socket start');
     channel?.stream.listen(
       (event) async {
+        print('object socket $event');
         try {
           Future.delayed(const Duration(seconds: 1), (() {
             _checkRead();

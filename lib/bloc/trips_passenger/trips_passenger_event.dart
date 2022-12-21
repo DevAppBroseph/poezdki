@@ -13,6 +13,7 @@ class LoadPassengerTripsList extends TripsPassengerEvent {
   final bool? smoke;
   final bool? twoPlacesInBehind;
   final bool? conditioner;
+  final int? start;
 
   LoadPassengerTripsList(
       {this.departure,
@@ -23,7 +24,8 @@ class LoadPassengerTripsList extends TripsPassengerEvent {
       this.babyChair,
       this.smoke,
       this.twoPlacesInBehind,
-      this.conditioner});
+      this.conditioner,
+      this.start});
 }
 
 class UpdateTripsList extends TripsPassengerEvent {
