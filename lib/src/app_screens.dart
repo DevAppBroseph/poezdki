@@ -13,14 +13,24 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 import 'rides/user_trips_screen.dart';
 
-class AppScreens extends StatelessWidget {
+class AppScreens extends StatefulWidget {
   AppScreens({Key? key}) : super(key: key);
 
+  @override
+  State<AppScreens> createState() => _AppScreensState();
+}
+
+class _AppScreensState extends State<AppScreens> {
   bool message = false;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
     BlocProvider.of<ChatBloc>(context).add(StartSocket());
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     BlocProvider.of<ProfileBloc>(context).add(LoadProfile());
     PersistentTabController _controller;
 
