@@ -30,7 +30,7 @@ class TripService {
     int? end,
   }) async {
     String? fcm = await FirebaseMessaging.instance.getToken();
-    print('object token fcm ${fcm}');
+    // print('object token fcm ${fcm}');
     Map<String, dynamic> filter = {
       if (departure != null) "departure": departure,
       if (destination != null) "destination": destination,
@@ -46,6 +46,8 @@ class TripService {
       "end": 16755865065000000,
       "fcm_token": fcm
     };
+
+    print('object here ${filter}');
 
     Response response;
     var dio = Dio();
@@ -66,6 +68,8 @@ class TripService {
       if (response.statusCode == 200) {
         final body = response.data;
         final list = body['all_trips'] as List;
+
+        // print('object ${response.data}');
 
         List<TripModel> trips = [];
         list.map((e) {
@@ -110,7 +114,7 @@ class TripService {
     Response response;
     var dio = Dio();
 
-    print('object ${filter}');
+    // print('object ${filter}');
 
     try {
       // var response = await http.get(allTrips);

@@ -407,12 +407,16 @@ class _SearchRidesState extends State<SearchRides>
                 List<String>? history = allSearch?.split('#');
                 List<ModelSearch> searchHistory = [];
 
+                // print('ololololo ${allSearch} ${searchHistory}');
+
                 if (history != null) {
                   for (var element in history) {
                     final res = jsonDecode(element);
                     searchHistory.add(ModelSearch.fromJson(res));
                   }
                 }
+
+                // print('ololololo ${allSearch} ${searchHistory}');
 
                 SmartDialog.show(
                   maskColor: const Color.fromRGBO(6, 22, 46, 0.67),
@@ -533,37 +537,39 @@ class _SearchRidesState extends State<SearchRides>
                     ),
                   );
 
-                  Map<String, dynamic> tripOne = {
-                    "page": 1,
-                    "departure": {
-                      "coords": {
-                        "lat": searchHistory[index].departure!.coords!.lat,
-                        "lon": searchHistory[index].departure!.coords!.lon
-                      },
-                      "district": searchHistory[index].departure!.district,
-                      "name": searchHistory[index].departure!.name,
-                      "population": searchHistory[index].departure!.population
-                    },
-                    "destination": {
-                      "coords": {
-                        "lat": searchHistory[index].destination!.coords!.lat,
-                        "lon": searchHistory[index].destination!.coords!.lon
-                      },
-                      "district": searchHistory[index].destination!.district,
-                      "name": searchHistory[index].destination!.name,
-                      "population": searchHistory[index].destination!.population
-                    },
-                    "animals": searchHistory[index].animals,
-                    "package": searchHistory[index].package,
-                    "baggage": searchHistory[index].baggage,
-                    "babyChair": searchHistory[index].babyChair,
-                    "smoke": searchHistory[index].smoke,
-                    "twoPlacesInBehind": searchHistory[index].twoPlacesInBehind,
-                    "conditioner": searchHistory[index].conditioner,
-                    "gender": searchHistory[index].gender,
-                    "start": searchHistory[index].start,
-                    "end": searchHistory[index].end
-                  };
+                  
+
+                  // Map<String, dynamic> tripOne = {
+                  //   "page": 1,
+                  //   "departure": {
+                  //     "coords": {
+                  //       "lat": searchHistory[index].departure!.coords!.lat,
+                  //       "lon": searchHistory[index].departure!.coords!.lon
+                  //     },
+                  //     "district": searchHistory[index].departure!.district,
+                  //     "name": searchHistory[index].departure!.name,
+                  //     "population": searchHistory[index].departure!.population
+                  //   },
+                  //   "destination": {
+                  //     "coords": {
+                  //       "lat": searchHistory[index].destination!.coords!.lat,
+                  //       "lon": searchHistory[index].destination!.coords!.lon
+                  //     },
+                  //     "district": searchHistory[index].destination!.district,
+                  //     "name": searchHistory[index].destination!.name,
+                  //     "population": searchHistory[index].destination!.population
+                  //   },
+                  //   "animals": searchHistory[index].animals,
+                  //   "package": searchHistory[index].package,
+                  //   "baggage": searchHistory[index].baggage,
+                  //   "babyChair": searchHistory[index].babyChair,
+                  //   "smoke": searchHistory[index].smoke,
+                  //   "twoPlacesInBehind": searchHistory[index].twoPlacesInBehind,
+                  //   "conditioner": searchHistory[index].conditioner,
+                  //   "gender": searchHistory[index].gender,
+                  //   "start": searchHistory[index].start,
+                  //   "end": searchHistory[index].end
+                  // };
 
                   final tripsBlocSecond =
                       BlocProvider.of<TripsPassengerBloc>(context);
@@ -590,11 +596,11 @@ class _SearchRidesState extends State<SearchRides>
 
                   // if (from != null &&
                   //     to != null) {
-                  String jsonStr = jsonEncode(tripOne);
-                  final settings = await LocalStorageService.getInstance();
-                  String? allSearch = settings.getSearch();
-                  settings.setSearch(
-                      allSearch == null ? '$jsonStr' : '$jsonStr#$allSearch');
+                  // String jsonStr = jsonEncode(tripOne);
+                  // final settings = await LocalStorageService.getInstance();
+                  // String? allSearch = settings.getSearch();
+                  // settings.setSearch(
+                  //     allSearch == null ? '$jsonStr' : '$jsonStr#$allSearch');
                   setState(() {});
                   SmartDialog.dismiss();
                   // }
@@ -786,6 +792,8 @@ class _SearchRidesState extends State<SearchRides>
             : (timeMilisecondEnd!.microsecondsSinceEpoch),
       ),
     );
+
+    print('object subject ${from?.subject}');
 
     Map<String, dynamic> tripOne = {
       "page": page,
