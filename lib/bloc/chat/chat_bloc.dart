@@ -65,7 +65,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   void _startSocket(StartSocket event, Emitter<ChatState> emit) async {
     final token = await SecureStorage.instance.getToken();
     channel = WebSocketChannel.connect(
-      Uri.parse('ws://194.87.145.140:80/ws/$token'),
+      Uri.parse('ws://$socektDomain:80/ws/$token'),
     );
 
     

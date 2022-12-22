@@ -568,7 +568,7 @@ class TripService {
 
     try {
       response = await dio.post(
-        'http://194.87.145.140/trips/add_trip_not',
+        '$serverURL/trips/add_trip_not',
         data: json.encode(body),
         options: Options(
           headers: {"Authorization": token},
@@ -589,7 +589,7 @@ class TripService {
 
     try {
       response = await dio.get(
-        'http://194.87.145.140/trips/get_trip_nots',
+        '$serverURL/trips/get_trip_nots',
         options: Options(
           headers: {"Authorization": token},
         ),
@@ -616,7 +616,7 @@ class TripService {
 
     try {
       response = await dio.delete(
-        'http://194.87.145.140/trips/del$id',
+        '$serverURL/trips/del$id',
         options: Options(
             headers: {"Authorization": token},
             validateStatus: (status) => status! <= 400),

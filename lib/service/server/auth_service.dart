@@ -66,7 +66,7 @@ class AuthService {
 
     try {
       res = await dio.post(
-        "http://194.87.145.140/users/oauth_user",
+        "$serverURL/users/oauth_user",
         options: Options(
           validateStatus: ((status) => status! >= 200),
         ),
@@ -88,7 +88,7 @@ class AuthService {
     var dio = Dio();
 
     await dio.delete(
-      "http://194.87.145.140/users/delete_user",
+      "$serverURL/users/delete_user",
       options: Options(
         validateStatus: ((status) => status! == 200),
         headers: {"Authorization": token},
@@ -102,7 +102,7 @@ class AuthService {
     var dio = Dio();
 
     res = await dio.post(
-      "http://194.87.145.140/users/oauth_user",
+      "$serverURL/users/oauth_user",
       options: Options(
         validateStatus: ((status) => status! >= 200),
       ),

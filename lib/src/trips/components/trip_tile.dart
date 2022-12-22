@@ -4,6 +4,7 @@ import 'package:app_poezdka/bloc/user_trips_driver/user_trips_driver_bloc.dart';
 import 'package:app_poezdka/bloc/user_trips_passenger/user_trips_passenger_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
 import 'package:app_poezdka/const/images.dart';
+import 'package:app_poezdka/const/server/server_data.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/export/services.dart';
 import 'package:app_poezdka/model/passenger_model.dart';
@@ -13,6 +14,7 @@ import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/button/full_width_elevated_button.dart';
 import 'package:app_poezdka/widget/cached_image/user_image.dart';
 import 'package:app_poezdka/widget/divider/verical_dividers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -62,7 +64,7 @@ class _TripTileState extends State<TripTile> {
           stateCancel = true;
         }
       }
-      if(widget.trip.owner!.id! != int.parse(id)) {
+      if (widget.trip.owner!.id! != int.parse(id)) {
         stateCancelTrip = true;
       }
       setState(() {});
@@ -111,52 +113,81 @@ class _TripTileState extends State<TripTile> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              ListTile(
-                leading: UserCachedImage(
-                  img: ownerImage,
-                ),
-                title: Text(
-                  '${widget.trip.owner!.firstname!} ${widget.trip.owner!.lastname!}',
-                  // "${widget.trip.owner!.firstname! + ' ' + widget.trip.owner!.lastname! ?? " Пользователь не найден"}",
-                  maxLines: 1,
-                  overflow: TextOverflow.clip,
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.trip.passenger!
-                        ? 'Ищу поездку'
-                        : 'Я Подвезу Вас'),
-                    widget.trip.car == null
-                        ? const SizedBox()
-                        : Text(
+              Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  Column(
+                    children: [
+                      ListTile(
+                        leading: UserCachedImage(
+                          img: ownerImage,
+                        ),
+                        title: Text(
+                          '${widget.trip.owner!.firstname!} ${widget.trip.owner!.lastname!}',
+                          // "${widget.trip.owner!.firstname! + ' ' + widget.trip.owner!.lastname! ?? " Пользователь не найден"}",
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(widget.trip.passenger!
+                                ? 'Ищу поездку'
+                                : 'Я Подвезу Вас'),
                             widget.trip.car == null
-                                ? ''
-                                : "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
-                            maxLines: 1,
-                            overflow: TextOverflow.clip,
-                          ),
-                    // Text(
-                    //   widget.trip.car == null
-                    //   ? ''
-                    //   : "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
-                    //   maxLines: 1,
-                    //   overflow: TextOverflow.clip,
-                    // ),
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 5, right: 5),
-                    //   child: Container(
-                    //     height: 5,
-                    //     width: 5,
-                    //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50),
-                    //     color: const Color.fromRGBO(191,212,228, 1))),
-                    // ),
-                    Text('${widget.trip.price} ₽')
-                  ],
-                ),
-                trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
+                                ? const SizedBox()
+                                : Text(
+                                    widget.trip.car == null
+                                        ? ''
+                                        : "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.clip,
+                                  ),
+                            // Text(
+                            //   widget.trip.car == null
+                            //   ? ''
+                            //   : "${widget.trip.car?.color ?? ''} ${widget.trip.car?.mark ?? ''} ${widget.trip.car?.model ?? ''}",
+                            //   maxLines: 1,
+                            //   overflow: TextOverflow.clip,
+                            // ),
+                            // Padding(
+                            //   padding: const EdgeInsets.only(left: 5, right: 5),
+                            //   child: Container(
+                            //     height: 5,
+                            //     width: 5,
+                            //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(50),
+                            //     color: const Color.fromRGBO(191,212,228, 1))),
+                            // ),
+                            Text('${widget.trip.price} ₽')
+                          ],
+                        ),
+                        trailing: SvgPicture.asset("$svgPath/archive-add.svg"),
+                      ),
+                      _trip(widget.trip),
+                    ],
+                  ),
+                  if (widget.trip.passengers != null &&
+                      widget.trip.passengers!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: 350,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Stack(
+                                  alignment: Alignment.bottomRight,
+                                  children:
+                                      getListPassenger(widget.trip.passengers!)),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
               ),
-              _trip(widget.trip),
               if (!widget.last)
                 // passengers.any((element) => element.id == userId)
                 stateCancel
@@ -208,6 +239,27 @@ class _TripTileState extends State<TripTile> {
             ],
           )),
     );
+  }
+
+  List<Widget> getListPassenger(List<PassengerModel> passengers) {
+    List<Widget> list = [];
+    for (int i = 0; i < passengers.length; i++) {
+      list.add(Padding(
+        padding: EdgeInsets.only(right: i * 15),
+        child: SizedBox(
+          height: 25,
+          width: 25,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: CachedNetworkImage(
+              imageUrl: '$serverURL/${passengers[i].photo}',
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ));
+    }
+    return list;
   }
 
   Widget _trip(TripModel? tripData) {

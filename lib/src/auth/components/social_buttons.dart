@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:app_poezdka/bloc/chat/chat_bloc.dart';
 import 'package:app_poezdka/const/colors.dart';
+import 'package:app_poezdka/const/server/server_data.dart';
 import 'package:app_poezdka/const/server/server_user.dart';
 import 'package:app_poezdka/export/blocs.dart';
 import 'package:app_poezdka/model/user_model.dart';
@@ -134,8 +135,7 @@ class _WebViewPageState extends State<WebViewPage> {
             javascriptMode: JavascriptMode.unrestricted,
             onPageStarted: (url) {
               if (url.contains('https://oauth.vk.com/authorize') ||
-                  url.contains(
-                      'http://194.87.145.140/users/login/vk-oauth2/')) {
+                  url.contains('$serverURL/users/login/vk-oauth2/')) {
                 setState(() {
                   visible = false;
                 });
@@ -148,7 +148,7 @@ class _WebViewPageState extends State<WebViewPage> {
             },
             onPageFinished: (url) {
               readJS(context);
-              if (url.contains('http://194.87.145.140/users/new_oauth_user')) {
+              if (url.contains('$serverURL/users/new_oauth_user')) {
                 setState(() {
                   visible = false;
                 });

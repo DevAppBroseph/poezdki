@@ -1,3 +1,4 @@
+import 'package:app_poezdka/const/server/server_data.dart';
 import 'package:app_poezdka/service/local/secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -37,26 +38,13 @@ class _FeedBackState extends State<FeedBack> {
     super.deactivate();
   }
 
-  // WebSocketChannel? channel;
-
-  // void func() async {
-  //   final token = await SecureStorage.instance.getToken();
-  //   channel = WebSocketChannel.connect(
-  //     Uri.parse('ws://194.87.145.140:80/ws/$token'),
-  //   );
-
-  //   channel?.stream.listen((event) async {
-  //     BlocProvider.of<ChatBloc>(context).add(GetChatSupport());
-  //   });
-  // }
-
   void _sendMessage(String message) async {
     if (_controller.text.isNotEmpty) {
       final SecureStorage userRepository = SecureStorage.instance;
       String? token = await userRepository.getToken();
       final body = json.encode({"text": _controller.text});
       var response = await http.post(
-        Uri.parse('http://194.87.145.140/chat/add_question'),
+        Uri.parse('$serverURL/chat/add_question'),
         headers: {"Authorization": token!},
         body: body,
       );

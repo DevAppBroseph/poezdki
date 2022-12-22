@@ -104,7 +104,7 @@ class UserService {
 
     // try {
     res = await dio.put(
-      "http://194.87.145.140/users/update_user",
+      "$serverURL/users/update_user",
       options: Options(
         validateStatus: ((status) => status! <= 400),
         headers: {"Authorization": token},

@@ -1,10 +1,13 @@
 import 'dart:math';
 import 'package:app_poezdka/const/images.dart';
+import 'package:app_poezdka/const/server/server_data.dart';
+import 'package:app_poezdka/model/passenger_model.dart';
 import 'package:app_poezdka/model/trip_model.dart';
 import 'package:app_poezdka/src/trips/components/trip_details_sheet.dart';
 import 'package:app_poezdka/widget/bottom_sheet/btm_builder.dart';
 import 'package:app_poezdka/widget/cached_image/user_image.dart';
 import 'package:app_poezdka/widget/divider/verical_dividers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -104,10 +107,50 @@ class TripTileDefault extends StatelessWidget {
                 //     : const SizedBox()
               ],
             ),
+            if (trip.passengers != null && trip.passengers!.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: 350,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Stack(
+                          alignment: Alignment.bottomRight,
+                          children: getListPassenger(trip.passengers!)
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),
     );
+  }
+
+  List<Widget> getListPassenger(List<PassengerModel> passengers) {
+    List<Widget> list = [];
+    for (int i = 0; i < passengers.length; i++) {
+      list.add(Padding(
+        padding: EdgeInsets.only(right: i * 15),
+        child: SizedBox(
+          height: 25,
+          width: 25,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(100),
+            child: CachedNetworkImage(
+              imageUrl: '$serverURL/${passengers[i].photo}',
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ));
+    }
+    return list;
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2) {

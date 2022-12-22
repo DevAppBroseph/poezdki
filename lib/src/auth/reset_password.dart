@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:app_poezdka/bloc/auth/auth_builder.dart';
+import 'package:app_poezdka/const/server/server_data.dart';
 import 'package:app_poezdka/const/theme.dart';
 import 'package:app_poezdka/model/country_code.dart';
 import 'package:app_poezdka/model/is_correct.dart';
@@ -180,7 +181,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
 
     try {
       res = await dio.post(
-        "http://194.87.145.140/users/reset_password",
+        "$serverURL/users/reset_password",
         options: Options(
           validateStatus: ((status) => status! >= 200),
         ),
@@ -213,7 +214,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
 
     try {
       res = await dio.post(
-        "http://194.87.145.140/users/check_code",
+        "$serverURL/users/check_code",
         options: Options(
           validateStatus: ((status) => status! >= 200),
         ),
@@ -248,7 +249,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage>
 
       try {
         res = await dio.post(
-          "http://194.87.145.140/users/reset_password_confirm",
+          "$serverURL/users/reset_password_confirm",
           options: Options(validateStatus: ((status) => status! >= 200),
               //TODO add token
               headers: {"Authorization": isCorrect?.token}),
