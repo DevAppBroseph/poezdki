@@ -70,6 +70,9 @@ dependencies:
   #share
   share_plus: ^6.3.0
 
+  mytracker_sdk:
+    path: sdk/
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

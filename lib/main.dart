@@ -14,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:hive/hive.dart';
+import 'package:mytracker_sdk/mytracker_sdk.dart';
 import 'package:path_provider/path_provider.dart';
 import 'bloc/auth/auth_builder.dart';
 import 'export/blocs.dart';
@@ -22,6 +23,8 @@ import 'export/services.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  await MyTracker.init('67303572130714408823');
 
   await FirebaseMessaging.instance.requestPermission(
     alert: true,
