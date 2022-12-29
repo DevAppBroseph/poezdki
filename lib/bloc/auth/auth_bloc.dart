@@ -10,6 +10,7 @@ import 'package:bloc/bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mytracker_sdk/mytracker_sdk.dart';
 
 import '../../export/services.dart';
 
@@ -87,6 +88,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (data != null) {
       await userRepository.persistEmailAndToken(
           event.login, data.token, data.id);
+
+      MyTrackerParams trackerParams = MyTracker.trackerParams;
+
+      // trackerParams.setGender(MyTrackerGender.);
+      trackerParams.setCustomUserIds([data.id.toString()]);
+      trackerParams.setPhones([event.login]);
       // BlocProvider.of<ChatBloc>(event.context).add(StartSocket());
       Navigator.pushAndRemoveUntil(
         event.context,
@@ -113,6 +120,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (responceSignIn != null) {
       await userRepository.persistEmailAndToken(
           event.email, responceSignIn.token, responceSignIn.id);
+      MyTrackerParams trackerParams = MyTracker.trackerParams;
+
+      // trackerParams.setGender(responceSignIn..);
+      trackerParams.setCustomUserIds([responceSignIn.id.toString()]);
+      trackerParams.setPhones([event.email]);
       add(AppStarted());
       Navigator.pop(event.context);
     }

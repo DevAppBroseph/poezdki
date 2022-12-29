@@ -26,6 +26,12 @@ void main() async {
 
   await MyTracker.init('67303572130714408823');
 
+  MyTrackerConfig myTrackerConfig = MyTracker.trackerConfig;
+
+  myTrackerConfig.setTrackingLaunchEnabled(true);
+  myTrackerConfig.setLaunchTimeout(30);
+  myTrackerConfig.setRegion(MyTrackerRegion.RU);
+
   await FirebaseMessaging.instance.requestPermission(
     alert: true,
     announcement: false,
